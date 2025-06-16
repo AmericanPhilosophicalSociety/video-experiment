@@ -1,0 +1,13 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+<h1>{{ meeting.display_date }}</h1>
+
+{% for video in meeting.videos_by_time %}
+
+{% include "meetingsvideos/video_preview_symposium.html" %}
+
+{% endfor %}
+
+{% endblock %}

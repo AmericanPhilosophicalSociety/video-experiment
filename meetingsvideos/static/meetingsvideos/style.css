@@ -1,0 +1,27 @@
+.main {
+    margin: 3rem;
+}
+
+th, td {
+    padding: .5rem;
+}
+
+table {
+    border-spacing: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+h1, h2 {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+
+.link-no-decoration {
+    text-decoration: none;
+    color: black;
+}
+
+/* nav {
+    color: purple;
+} */
