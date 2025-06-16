@@ -1,0 +1,19 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+{% for meeting in meetings %}
+
+    <h1><a href="{% url 'meeting' meeting.pk %}">{{ meeting.display_date }}</a></h1>
+
+    {% for video in meeting.videos_by_time %}
+
+        {% include "meetingsvideos/video_preview_symposium.html" %}
+
+    {% endfor %}
+
+<hr>
+
+{% endfor %}
+
+{% endblock %}

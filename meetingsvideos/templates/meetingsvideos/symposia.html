@@ -1,0 +1,17 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+{% for symposium in symposia %}
+
+<h1><a href="{% url 'symposium' symposium.pk %}">{{ symposium.title }}</a></h1>
+
+{% for video in symposium.videos_by_time %}
+
+{% include "meetingsvideos/video_preview.html" %}
+
+{% endfor %}
+
+{% endfor %}
+
+{% endblock %}
