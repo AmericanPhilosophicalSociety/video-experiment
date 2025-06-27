@@ -2,7 +2,6 @@
 # unsure how it will work as a script
 import csv
 from datetime import date
-from zoneinfo import ZoneInfo
 from meetingsvideos.models import Meeting
 
 # import os
@@ -13,26 +12,30 @@ from meetingsvideos.models import Meeting
 
 # from django.core.management import call_command
 
+
 def process_date(str):
-  lst = str.split('-')
+    lst = str.split("-")
 
-  year = int(lst[0])
-  month = int(lst[1])
-  day = int(lst[2])
+    year = int(lst[0])
+    month = int(lst[1])
+    day = int(lst[2])
 
-  return date(year, month, day)  
+    return date(year, month, day)
+
 
 def load_csv():
-    with open('meetings.csv', newline='') as csvfile:
+    with open("meetings.csv", newline="") as csvfile:
         reader = csv.DictReader(csvfile)
 
         for row in reader:
-            meeting = Meeting(display_date=row['display_date'], 
-                            start_date=process_date(row['start_date']), 
-                            end_date=process_date(row['end_date']),
-                            url=row['url'],
-                            display_notes=row['display_notes'],
-                            admin_notes=row['admin_notes'])
+            meeting = Meeting(
+                display_date=row["display_date"],
+                start_date=process_date(row["start_date"]),
+                end_date=process_date(row["end_date"]),
+                url=row["url"],
+                display_notes=row["display_notes"],
+                admin_notes=row["admin_notes"],
+            )
             meeting.save()
             # print(row['display_date'])
             # print(process_date(row['start_date']))
