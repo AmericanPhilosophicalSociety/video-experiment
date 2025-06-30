@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 
-from .models import Video, Meeting, LCSHTopic, Symposium, LCSHGeographic, LCSHTemporal, LCSHNamePersonal, LCSHNameCorporate, Speaker, Affiliation
+from .models import Video, Meeting, LCSHTopic, Symposium, LCSHGeographic, LCSHTemporal, LCSHNamePersonal, LCSHNameCorporate, Speaker, Affiliation, AcademicDiscipline, APSDepartment
 
 # Create your views here.
 def index(request):
@@ -70,3 +70,20 @@ def symposium(request, symposium_id):
 def symposia(request):
     symposia = Symposium.objects.all()
     return render(request, "meetingsvideos/symposia.html", {"symposia": symposia})
+
+def discipline_detail(request, discipline_id):
+    discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
+    return render(request, "meetingsvideos/discipline_detail.html", {"discipline": discipline})
+
+def disciplines(request):
+    disciplines = AcademicDiscipline.objects.all()
+    return render(request, "meetingsvideos/disciplines.html", {"disciplines": disciplines})
+
+def department_detail(request, department_id):
+    department = get_object_or_404(APSDepartment, pk=department_id)
+    return render(request, "meetingsvideos/department_detail.html", {"department": department})
+
+def departments(request):
+    departments = APSDepartment.objects.all()
+    return render(request, "meetingsvideos/departments.html", {"departments": departments})
+

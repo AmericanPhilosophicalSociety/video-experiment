@@ -20,4 +20,8 @@ urlpatterns = [
     path("headings/temporal/<int:pk>", views.temporal_detail, name="temporal_detail"),
     path("symposia/", views.symposia, name="symposia"),
     path("symposia/<int:symposium_id>/", views.symposium, name="symposium"),
+    path("disciplines/", views.disciplines, name="disciplines"),
+    path("disciplines/<int:discipline_id>/", views.discipline_detail, name="discipline_detail"),
+    path("departments/", views.departments, name="departments"),
+    path("departments/<int:department_id>/", views.department_detail, name="department_detail"),
 ]

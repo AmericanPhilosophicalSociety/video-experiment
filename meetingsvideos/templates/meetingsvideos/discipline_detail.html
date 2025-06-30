@@ -1,0 +1,11 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+<h1>{{ discipline.name }}</h1>
+
+{% for video in discipline.video_set.all %}
+    {% include "meetingsvideos/video_preview.html" %}
+{% endfor %}
+
+{% endblock %}

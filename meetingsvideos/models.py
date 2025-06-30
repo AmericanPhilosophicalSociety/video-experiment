@@ -2,7 +2,10 @@ from django.db import models
 from django.urls import reverse
 
 class LCSH(models.Model):
-    heading = models.CharField(max_length = 200, unique=True)
+    heading = models.CharField(max_length = 200)
+    # token = models.CharField(max_length = 200, unique=True)
+    
+    #TODO: rdftypes?
     
     def __str__(self):
         return self.heading
