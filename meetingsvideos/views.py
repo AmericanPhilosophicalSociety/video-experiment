@@ -3,12 +3,8 @@ from django.shortcuts import render, get_object_or_404
 from .models import (
     Video,
     Meeting,
-    LCSHTopic,
+    LCSH,
     Symposium,
-    LCSHGeographic,
-    LCSHTemporal,
-    LCSHNamePersonal,
-    LCSHNameCorporate,
     AcademicDiscipline,
     APSDepartment
 )
@@ -40,7 +36,7 @@ def headings(request):
 
 
 def topics(request):
-    headings = LCSHTopic.objects.all()
+    headings = LCSH.objects.all()
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -49,12 +45,12 @@ def topics(request):
 
 
 def topic_detail(request, pk):
-    lcsh = get_object_or_404(LCSHTopic, pk=pk)
-    return render(request, "meetingsvideos/lcsh_single.html", {"lcsh": lcsh})
+    lcsh = get_object_or_404(LCSH, pk=pk)
+    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
 def names(request):
-    headings = LCSHNamePersonal.objects.all()
+    headings = LCSH.objects.all()
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -63,12 +59,12 @@ def names(request):
 
 
 def name_detail(request, pk):
-    lcsh = get_object_or_404(LCSHNamePersonal, pk=pk)
-    return render(request, "meetingsvideos/lcsh_single.html", {"lcsh": lcsh})
+    lcsh = get_object_or_404(LCSH, pk=pk)
+    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
 def corporate(request):
-    headings = LCSHNameCorporate.objects.all()
+    headings = LCSH.objects.all()
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -77,12 +73,12 @@ def corporate(request):
 
 
 def corporate_detail(request, pk):
-    lcsh = get_object_or_404(LCSHNameCorporate, pk=pk)
-    return render(request, "meetingsvideos/lcsh_single.html", {"lcsh": lcsh})
+    lcsh = get_object_or_404(LCSH, pk=pk)
+    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
 def geographic(request):
-    headings = LCSHGeographic.objects.all()
+    headings = LCSH.objects.all()
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -91,12 +87,12 @@ def geographic(request):
 
 
 def geographic_detail(request, pk):
-    lcsh = get_object_or_404(LCSHGeographic, pk=pk)
-    return render(request, "meetingsvideos/lcsh_single.html", {"lcsh": lcsh})
+    lcsh = get_object_or_404(LCSH, pk=pk)
+    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
 def temporal(request):
-    headings = LCSHTemporal.objects.all()
+    headings = LCSH.objects.all()
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -105,30 +101,34 @@ def temporal(request):
 
 
 def temporal_detail(request, pk):
-    lcsh = get_object_or_404(LCSHTemporal, pk=pk)
-    return render(request, "meetingsvideos/lcsh_single.html", {"lcsh": lcsh})
+    lcsh = get_object_or_404(LCSH, pk=pk)
+    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
 def symposium(request, symposium_id):
     symposium = get_object_or_404(Symposium, pk=symposium_id)
-    return render(request, "meetingsvideos/symposium.html", {"symposium": symposium})
+    return render(request, "meetingsvideos/symposium_detail.html", {"symposium": symposium})
 
 
 def symposia(request):
     symposia = Symposium.objects.all()
     return render(request, "meetingsvideos/symposia.html", {"symposia": symposia})
 
+
 def discipline_detail(request, discipline_id):
     discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
     return render(request, "meetingsvideos/discipline_detail.html", {"discipline": discipline})
+
 
 def disciplines(request):
     disciplines = AcademicDiscipline.objects.all()
     return render(request, "meetingsvideos/disciplines.html", {"disciplines": disciplines})
 
+
 def department_detail(request, department_id):
     department = get_object_or_404(APSDepartment, pk=department_id)
     return render(request, "meetingsvideos/department_detail.html", {"department": department})
+
 
 def departments(request):
     departments = APSDepartment.objects.all()

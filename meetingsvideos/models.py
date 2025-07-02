@@ -4,87 +4,60 @@ from django.urls import reverse
 
 class LCSH(models.Model):
     heading = models.CharField(max_length = 200)
-    # token = models.CharField(max_length = 200, unique=True)
+    uri = models.CharField(max_length = 200, blank=True, null=True)
     
-    #TODO: rdftypes?
+    CATEGORY_CHOICES = {
+        "PERSONAL_NAME": "Personal name",
+        "CORPORATE_NAME": "Corporate name",
+        "GEOGRAPHIC": "Geographic",
+        "TOPIC": "Topic",
+        "COMPLEX_SUBJECT": "Complex subject",
+        "TITLE": "Title",
+        "OTHER": "Other",
+    }
+    
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=50)
+    
+    AUTHORITY_CHOICES = {
+        "LOC": "LOC",
+        "VIAF": "VIAF",
+        "ORCID": "ORCID",
+        "LOCAL": "Local",
+        "OTHER": "OTHER",
+    }
+    
+    authority = models.CharField(choices=AUTHORITY_CHOICES, max_length=50)
     
     def __str__(self):
         return self.heading
 
-    def save(self, **kwargs):
-        while self.heading[-1] == " " or self.heading[-1] == ",":
-            self.heading = self.heading.strip().rstrip(",")
-        super().save(**kwargs)
-
-    class Meta:
-        abstract = True
-
-
-class LCSHTopic(LCSH):
+    # def save(self, **kwargs):
+    #     while self.heading[-1] == " " or self.heading[-1] == ",":
+    #         self.heading = self.heading.strip().rstrip(",")
+    #     super().save(**kwargs)
+        
     def get_absolute_url(self):
         return reverse("topic_detail", kwargs={"pk": self.pk})
 
     class Meta:
-        verbose_name = "Topic (LCSH)"
-        verbose_name_plural = "Topics (LCSH)"
+        verbose_name = "LCSH"
+        verbose_name_plural = "LCSH"
         ordering = ["heading"]
 
 
-class LCSHGeographic(LCSH):
-    def get_absolute_url(self):
-        return reverse("geographic_detail", kwargs={"pk": self.pk})
-
-    class Meta:
-        verbose_name = "Geographic (LCSH)"
-        verbose_name_plural = "Geographic (LCSH)"
-        ordering = ["heading"]
-
-
-class LCSHTemporal(LCSH):
-    def get_absolute_url(self):
-        return reverse("temporal_detail", kwargs={"pk": self.pk})
-
-    class Meta:
-        verbose_name = "Temporal (LCSH)"
-        verbose_name_plural = "Temporal (LCSH)"
-        ordering = ["heading"]
-
-
-class LCSHNamePersonal(LCSH):
-    def get_absolute_url(self):
-        return reverse("name_detail", kwargs={"pk": self.pk})
-
-    class Meta:
-        verbose_name = "Personal name (LCSH)"
-        verbose_name_plural = "Personal names (LCSH)"
-        ordering = ["heading"]
-
-
-class LCSHNameCorporate(LCSH):
-    def get_absolute_url(self):
-        return reverse("corporate_detail", kwargs={"pk": self.pk})
-
-    class Meta:
-        verbose_name = "Corporate name (LCSH)"
-        verbose_name_plural = "Corporate names (LCSH)"
-        ordering = ["heading"]
-
-
-class CategoryChoice(models.Model):
+class AcademicDiscipline(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
-    class Meta:
-        abstract = True
 
+class APSDepartment(models.Model):
+    name = models.CharField(max_length=50)
 
-class AcademicDiscipline(CategoryChoice):
-    pass
-
-
-class APSDepartment(CategoryChoice):
+    def __str__(self):
+        return self.name
+    
     class Meta:
         verbose_name = "APS department"
 
@@ -94,15 +67,8 @@ class Speaker(models.Model):
         max_length=200,
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
-    lcsh_name_personal = models.ForeignKey(
-        LCSHNamePersonal, blank=True, null=True, on_delete=models.SET_NULL
-    )
-    lcsh_name_corporate = models.ForeignKey(
-        LCSHNameCorporate,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        help_text="Use only if the 'Speaker' of the talk is an organization and not an individual, e.g. if an orchestra gives a concert",
+    lcsh = models.ForeignKey(
+        LCSH, blank=True, null=True, on_delete=models.SET_NULL
     )
 
     def get_affiliation(self, meeting_pk):
@@ -126,7 +92,8 @@ class Speaker(models.Model):
 class Affiliation(models.Model):
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
     meeting = models.ForeignKey("Meeting", on_delete=models.CASCADE)
-    text = models.TextField(max_length=1000)
+    position = models.CharField(max_length = 255, blank=True)
+    institution = models.CharField(max_length = 255, blank=True)
 
     def __str__(self):
         return self.text
@@ -138,10 +105,9 @@ class WithNotes(models.Model):
     """
 
     display_notes = models.TextField(
-        max_length=1000, blank=True, help_text="Additional text to display publicly"
+        blank=True, help_text="Additional text to display publicly"
     )
     admin_notes = models.TextField(
-        max_length=1000,
         blank=True,
         help_text="Use to attach additional information to record that will NOT display publicly",
     )
@@ -211,16 +177,11 @@ class Video(ProgramInfo):
         "Month, day, year, and time. If time is unknown, make up times that will preserve the correct order of the videos."
     )
     speakers = models.ManyToManyField(Speaker, blank=True)
-    abstract = models.TextField(max_length=1000, blank=True)
-    lcsh_topic = models.ManyToManyField(LCSHTopic, blank=True)
-    lcsh_geographic = models.ManyToManyField(LCSHGeographic, blank=True)
-    lcsh_temporal = models.ManyToManyField(LCSHTemporal, blank=True)
-    lcsh_name_personal = models.ManyToManyField(LCSHNamePersonal, blank=True)
-    lcsh_name_corporate = models.ManyToManyField(LCSHNameCorporate, blank=True)
-    opac = models.URLField(blank=True, null=True)
+    abstract = models.TextField(blank=True)
+    lcsh = models.ManyToManyField(LCSH, blank=True)
     # add validation for this
     doi = models.CharField(blank=True, max_length=255)
-    diglib_node = models.IntegerField(blank=True, null=True, unique=True)
+    diglib_pid = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
 
