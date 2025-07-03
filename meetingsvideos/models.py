@@ -23,7 +23,7 @@ class LCSH(models.Model):
         "VIAF": "VIAF",
         "ORCID": "ORCID",
         "LOCAL": "Local",
-        "OTHER": "OTHER",
+        "OTHER": "Other",
     }
     
     authority = models.CharField(choices=AUTHORITY_CHOICES, max_length=50)
