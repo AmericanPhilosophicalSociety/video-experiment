@@ -107,7 +107,7 @@ def process_affiliation(position, institution, meeting, speaker):
 
 
 # create speaker object and add to video
-def add_speaker_to_video(video, lcsh, display_name, position, institution, meeting):
+def add_speaker_to_video(video, lcsh, display_name, position_1, institution_1, position_2, institution_2, meeting):
     # determine speaker type
     # category = "PERSONAL_NAME"
     # if lcsh.startswith("corporate:"):
@@ -126,8 +126,11 @@ def add_speaker_to_video(video, lcsh, display_name, position, institution, meeti
         print("Speaker added: " + speaker.display_name)
 
     # if affiliation, create new affiliation
-    if position or institution:
-        process_affiliation(position, institution, meeting, speaker)
+    if position_1 or institution_1:
+        process_affiliation(position_1, institution_1, meeting, speaker)
+    if position_2 or institution_2:
+        process_affiliation(position_2, institution_2, meeting, speaker)
+        print("if position_2 or institution_2 runs")
     video.speakers.add(speaker)
 
 

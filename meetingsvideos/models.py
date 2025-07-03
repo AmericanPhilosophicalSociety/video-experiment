@@ -71,13 +71,6 @@ class Speaker(models.Model):
         LCSH, blank=True, null=True, on_delete=models.SET_NULL
     )
 
-    def get_affiliation(self, meeting_pk):
-        affiliation = self.affiliation_set.filter(meeting__pk=meeting_pk)
-        if affiliation:
-            return affiliation[0]
-        else:
-            return None
-
     def __str__(self):
         return self.display_name
 
@@ -96,7 +89,11 @@ class Affiliation(models.Model):
     institution = models.CharField(max_length = 255, blank=True)
 
     def __str__(self):
-        return self.text
+        if self.position and self.institution:
+            affiliation_str = f"{self.position}\n{self.institution}"
+        else:
+            affiliation_str = f"{self.position}{self.institution}"
+        return affiliation_str
 
 
 class WithNotes(models.Model):

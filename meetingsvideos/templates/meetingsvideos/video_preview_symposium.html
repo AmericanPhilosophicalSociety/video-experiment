@@ -10,8 +10,9 @@
 
 {% for speaker in video.speakers.all %}
     <h4>{{ speaker }}</h4>
-    <!-- <p>{{ speaker.get_affiliation }}</p> -->
-    <p>{% get_affiliation %}</p>
+    {% for affiliation in speaker.affiliation_set.all %}
+        <p>{{ affiliation|linebreaks }}</p>
+    {% endfor %}
 {% endfor %}
 
 {% if video.abstract %}

@@ -18,7 +18,7 @@ def index(request):
 
 def meeting(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
-    return render(request, "meetingsvideos/meeting.html", {"meeting": meeting})
+    return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
 
 
 def meetings(request):
@@ -28,7 +28,7 @@ def meetings(request):
 
 def video(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
-    return render(request, "meetingsvideos/video.html", {"video": video})
+    return render(request, "meetingsvideos/video_detail.html", {"video": video})
 
 
 def headings(request):
