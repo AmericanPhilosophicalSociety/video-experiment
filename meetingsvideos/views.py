@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 
 from .models import (
     Video,
@@ -32,25 +33,26 @@ def video(request, video_id):
 
 
 def headings(request):
-    return render(request, "meetingsvideos/headings.html")
-
-
-def topics(request):
     headings = LCSH.objects.all()
-    return render(
-        request,
-        "meetingsvideos/lcsh_all.html",
-        {"headings": headings, "lcsh_type": "Topics"},
-    )
+    return render(request, "meetingsvideos/headings.html", {"headings": headings})
 
 
-def topic_detail(request, pk):
+def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
     return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
+def topics(request):
+    headings = LCSH.objects.filter(Q(category="TOPIC") | Q(category="COMPLEX_SUBJECT"))
+    return render(
+        request,
+        "meetingsvideos/lcsh_all.html",
+        {"headings": headings, "lcsh_type": "Topic"},
+    )
+
+
 def names(request):
-    headings = LCSH.objects.all()
+    headings = LCSH.objects.filter(category="PERSONAL_NAME")
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -58,13 +60,8 @@ def names(request):
     )
 
 
-def name_detail(request, pk):
-    lcsh = get_object_or_404(LCSH, pk=pk)
-    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
-
-
 def corporate(request):
-    headings = LCSH.objects.all()
+    headings = LCSH.objects.filter(category="CORPORATE_NAME")
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
@@ -72,37 +69,13 @@ def corporate(request):
     )
 
 
-def corporate_detail(request, pk):
-    lcsh = get_object_or_404(LCSH, pk=pk)
-    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
-
-
 def geographic(request):
-    headings = LCSH.objects.all()
+    headings = LCSH.objects.filter(category="GEOGRAPHIC")
     return render(
         request,
         "meetingsvideos/lcsh_all.html",
         {"headings": headings, "lcsh_type": "Geographic Entities"},
     )
-
-
-def geographic_detail(request, pk):
-    lcsh = get_object_or_404(LCSH, pk=pk)
-    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
-
-
-def temporal(request):
-    headings = LCSH.objects.all()
-    return render(
-        request,
-        "meetingsvideos/lcsh_all.html",
-        {"headings": headings, "lcsh_type": "Temporal Entities"},
-    )
-
-
-def temporal_detail(request, pk):
-    lcsh = get_object_or_404(LCSH, pk=pk)
-    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
 
 
 def symposium(request, symposium_id):

@@ -5,33 +5,42 @@ from meetingsvideos.models import (
 )
 from uploadvideos import process_time
 
-
+ 
 def process_category(rdftypes, lcshtype):
+    print("process_category runs")
     if rdftypes:
+        print("If statement runs")
         categories_list = rdftypes.split("|")
         category = categories_list[0]
+        print(category)
         
-        if category == "Topic" or category == "Title" or category == "Geographic":
-            return category
+        #TODO: fix this
+        if category == "Topic":
+            return "TOPIC"
+        elif category == "Title":
+            return "TITLE"
+        elif category == "Geographic":
+            return "GEOGRAPHIC"
         elif category == "ComplexSubject":
-            return "Complex subject"
+            return "COMPLEX_SUBJECT"
         elif category == "PersonalName":
-            return "Personal name"
+            return "PERSONAL_NAME"
         elif category == "CorporateName":
-            return "Corporate name"
+            return "CORPORATE_NAME"
         else:
-            return "Other"   
+            return "OTHER"   
     else:
+        print("else statement runs")
         if lcshtype == "lcsh_topic":
-            return "Topic"
+            return "TOPIC"
         elif lcshtype == "lcsh_geographic":
-            return "Geographic"
+            return "GEOGRAPHIC"
         elif lcshtype == "lcsh_name_personal":
-            return "Personal name"
+            return "PERSONAL_NAME"
         elif lcshtype == "lcsh_name_corporate":
-            return "Corporate name"
+            return "CORPORATE_NAME"
         else:
-            return "Other"
+            return "OTHER"
         
 def upload_lcsh():
     with open("lcsh.csv", newline="", encoding="utf8") as csvfile:

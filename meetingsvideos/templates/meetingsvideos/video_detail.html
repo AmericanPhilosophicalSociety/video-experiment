@@ -51,49 +51,30 @@
     <td>{{ video.admin_category }}</td>
   </tr>
   <tr>
-    <td>Collecting area</td>
-    <td>{{ video.core_collecting_area }}</td>
-  </tr>
-  <tr>
-    <td><p>Topics</p></td>
+    <td><p>Academic Discipline</p></td>
     <td>
-      {% for heading in video.lcsh_topic.all %}
-        <p><a href="{% url 'topic_detail' heading.pk %}">{{ heading }}</a></p>
+      {% for discipline in video.academic_disciplines.all %}
+        <p><a href="{% url 'discipline_detail' discipline.pk %}">{{ discipline }}</a></p>
       {% endfor %}
     </td>
   </tr>
   <tr>
-    <td><p>Names</p></td>
+    <td><p>Subjects</p></td>
     <td>
-      {% for heading in video.lcsh_name_personal.all %}
-      <p><a href="{% url 'name_detail' heading.pk %}">{{ heading }}</a></p>
+      {% for heading in video.lcsh.all %}
+        <p><a href="{% url 'heading_detail' heading.pk %}">{{ heading }}</a></p>
       {% endfor %}
     </td>
   </tr>
+    {% if video.aps_departments.all %}
   <tr>
-    <td><p>Corporate entities</p></td>
+    <td>APS Department</td>
     <td>
-      {% for heading in video.lcsh_name_corporate.all %}
-      <p><a href="{% url 'corporate_detail' heading.pk %}">{{ heading }}</a></p>
-      {% endfor %}
-    </td>
+      {% for department in video.aps_departments.all %}
+        {{ department }}
+      {% endfor %}</td>
   </tr>
-  <tr>
-    <td><p>Geographic entities</p></td>
-    <td>
-      {% for heading in video.lcsh_geographic.all %}
-      <p><a href="{% url 'geographic_detail' heading.pk %}">{{ heading }}</a></p>
-      {% endfor %}
-    </td>
-  </tr>
-  <tr>
-    <td><p>Temporal subjects</p></td>
-    <td>
-      {% for heading in video.lcsh_temporal.all %}
-      <p><a href="{% url 'temporal_detail' heading.pk %}">{{ heading }}</a></p>
-      {% endfor %}
-    </td>
-  </tr>
+  {% endif %}
 </table>
 
 <p><a href="{{ video.diglib_url }}">View in APS Digital Library</a></p>

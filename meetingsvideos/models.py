@@ -37,7 +37,7 @@ class LCSH(models.Model):
     #     super().save(**kwargs)
         
     def get_absolute_url(self):
-        return reverse("topic_detail", kwargs={"pk": self.pk})
+        return reverse("heading_detail", kwargs={"pk": self.pk})
 
     class Meta:
         verbose_name = "LCSH"
