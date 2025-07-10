@@ -71,7 +71,7 @@
     <td>APS Department</td>
     <td>
       {% for department in video.aps_departments.all %}
-        {{ department }}
+        <p><a href="{% url 'department_detail' department.pk %}">{{ department }}</a></p>
       {% endfor %}</td>
   </tr>
   {% endif %}
