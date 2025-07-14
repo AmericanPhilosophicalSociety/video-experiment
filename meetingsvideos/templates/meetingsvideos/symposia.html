@@ -4,7 +4,7 @@
 
 {% for symposium in symposia %}
 
-<h1><a href="{% url 'symposium' symposium.pk %}">{{ symposium.title }}</a></h1>
+<h1><a href="{% url 'symposium_detail' symposium.pk %}">{{ symposium.title }}</a></h1>
 
 {% for video in symposium.videos_by_time %}
 

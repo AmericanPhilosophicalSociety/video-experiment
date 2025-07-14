@@ -17,7 +17,7 @@ def index(request):
     return render(request, "meetingsvideos/index.html", {"videos": videos})
 
 
-def meeting(request, meeting_id):
+def meeting_detail(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
 
@@ -27,7 +27,7 @@ def meetings(request):
     return render(request, "meetingsvideos/meetings.html", {"meetings": meetings})
 
 
-def video(request, video_id):
+def video_detail(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     return render(request, "meetingsvideos/video_detail.html", {"video": video})
 
@@ -39,7 +39,12 @@ def headings(request):
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
-    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh})
+    if len(lcsh.speaker_set.all()) > 0:
+        videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
+    else:
+        videos_by_speaker = None
+        
+    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_by_speaker": videos_by_speaker})
 
 
 def topics(request):
@@ -78,7 +83,7 @@ def geographic(request):
     )
 
 
-def symposium(request, symposium_id):
+def symposium_detail(request, symposium_id):
     symposium = get_object_or_404(Symposium, pk=symposium_id)
     return render(request, "meetingsvideos/symposium_detail.html", {"symposium": symposium})
 

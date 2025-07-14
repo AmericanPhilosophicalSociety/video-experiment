@@ -2,14 +2,14 @@
 
 {% if video.symposium %}
     {% if video.first_in_symposium %}
-        <h2><a href="{% url 'symposium' video.symposium.pk %}">Symposium: {{ video.symposium.title }}</a></h2>
+        <h2><a href="{% url 'symposium_detail' video.symposium.pk %}">Symposium: {{ video.symposium.title }}</a></h2>
     {% endif %}
 {% endif %}
 
-<h3><a href="{% url 'video' video.pk %}">{{ video.title }}</a></h3>
+<h3><a href="{% url 'video_detail' video.pk %}">{{ video.title }}</a></h3>
 
 {% for speaker in video.speakers.all %}
-    <h4>{{ speaker }}</h4>
+    <a href="{% url 'heading_detail' speaker.lcsh.pk %}"><h4>{{ speaker }}</h4></a>
     {% for affiliation in speaker.affiliation_set.all %}
         <p>{{ affiliation|linebreaks }}</p>
     {% endfor %}
