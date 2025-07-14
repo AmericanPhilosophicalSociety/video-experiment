@@ -31,14 +31,6 @@ class LCSH(models.Model):
     def __str__(self):
         return self.heading
 
-    # def save(self, **kwargs):
-    #     while self.heading[-1] == " " or self.heading[-1] == ",":
-    #         self.heading = self.heading.strip().rstrip(",")
-    #     super().save(**kwargs)
-        
-    def get_absolute_url(self):
-        return reverse("heading_detail", kwargs={"pk": self.pk})
-
     class Meta:
         verbose_name = "LCSH"
         verbose_name_plural = "LCSH"

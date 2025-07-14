@@ -111,4 +111,3 @@ def department_detail(request, department_id):
 def departments(request):
     departments = APSDepartment.objects.all()
     return render(request, "meetingsvideos/departments.html", {"departments": departments})
-
