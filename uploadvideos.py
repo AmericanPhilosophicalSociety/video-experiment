@@ -4,7 +4,6 @@ from zoneinfo import ZoneInfo
 from meetingsvideos.models import (
     Meeting,
     Video,
-    LCSH,
     AcademicDiscipline,
     APSDepartment,
     Symposium,
@@ -43,45 +42,6 @@ def process_diglib_url(str):
     return lst[-1]
 
 
-# takes as input string of LCSH headings (separated by semicolons if multiple); creates headings; returns list of Heading objects
-# def process_lcsh(lcsh, ModelName):
-#     if lcsh:
-#         lcsh_list = lcsh.split(";")
-#         headings = []
-#         for item in lcsh_list:
-#             # get or create LCSH
-#             obj, created = ModelName.objects.get_or_create(heading=item.strip())
-#             if created:
-#                 print("New LCSH added: " + item.strip())
-#             headings.append(obj)
-#         return headings
-#     else:
-#         return []
-
-
-# adds LCSH headings to video
-# def add_lcsh_to_video(video, topic, geographic, temporal, personal, corporate):
-#     lcsh_topic = process_lcsh(topic, LCSHTopic)
-#     for heading in lcsh_topic:
-#         video.lcsh_topic.add(heading)
-
-#     lcsh_geographic = process_lcsh(geographic, LCSHGeographic)
-#     for heading in lcsh_geographic:
-#         video.lcsh_geographic.add(heading)
-
-#     lcsh_temporal = process_lcsh(temporal, LCSHTemporal)
-#     for heading in lcsh_temporal:
-#         video.lcsh_temporal.add(heading)
-
-#     lcsh_name_personal = process_lcsh(personal, LCSHNamePersonal)
-#     for heading in lcsh_name_personal:
-#         video.lcsh_name_personal.add(heading)
-
-#     lcsh_name_corporate = process_lcsh(corporate, LCSHNameCorporate)
-#     for heading in lcsh_name_corporate:
-#         video.lcsh_name_corporate.add(heading)
-
-
 # TODO: does this work? print error if category doesn't exist
 # split list of categories on | and add to appropriate field in Video
 # will throw an error if category does not already exist in database
@@ -107,16 +67,8 @@ def process_affiliation(position, institution, meeting, speaker):
 
 
 # create speaker object and add to video
-def add_speaker_to_video(video, lcsh, display_name, position_1, institution_1, position_2, institution_2, meeting):
-    # determine speaker type
-    # category = "PERSONAL_NAME"
-    # if lcsh.startswith("corporate:"):
-    #     lcsh = lcsh.replace("corporate:", "")
-    #     category = "CORPORATE_NAME"
-        
-    # add LCSH for speaker
-    #TODO: change inputs for process_lcsh, figure out how to handle category
-    # speaker_lcsh = process_lcsh(lcsh, category)[0]
+# only process display name and affiliation - LCSH will be handled with other LCSH
+def add_speaker_to_video(video, display_name, position_1, institution_1, position_2, institution_2, meeting):
     speaker, created = Speaker.objects.get_or_create(
             display_name=display_name
         )
@@ -196,7 +148,6 @@ def process_video(row):
         if row["speaker_lcsh"]:
             add_speaker_to_video(
                 video,
-                row["speaker_lcsh"],
                 row["speaker_display_name"],
                 row["speaker_position"],
                 row["speaker_institution"],
@@ -208,7 +159,6 @@ def process_video(row):
         if row["speaker_2_lcsh"]:
             add_speaker_to_video(
                 video,
-                row["speaker_2_lcsh"],
                 row["speaker_2_display_name"],
                 row["speaker_2_position"],
                 row["speaker_2_institution"],

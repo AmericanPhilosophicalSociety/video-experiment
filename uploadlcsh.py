@@ -2,19 +2,17 @@ import csv
 from meetingsvideos.models import (
     LCSH,
     Video,
+    Speaker
 )
 from uploadvideos import process_time
 
  
 def process_category(rdftypes, lcshtype):
-    print("process_category runs")
     if rdftypes:
-        print("If statement runs")
         categories_list = rdftypes.split("|")
         category = categories_list[0]
-        print(category)
         
-        #TODO: fix this
+        #TODO: clean this up
         if category == "Topic":
             return "TOPIC"
         elif category == "Title":
@@ -30,7 +28,6 @@ def process_category(rdftypes, lcshtype):
         else:
             return "OTHER"   
     else:
-        print("else statement runs")
         if lcshtype == "lcsh_topic":
             return "TOPIC"
         elif lcshtype == "lcsh_geographic":
@@ -72,11 +69,22 @@ def upload_lcsh():
                     lcsh.save()
                     print("LCSH created: " + str(lcsh))
                 
-                # find video and add LCSH to it
+                # find video associated with lcsh
                 time = process_time(row["talk_time"])
                 video = Video.objects.get(title=row["talk_title"], time=time)
-                video.lcsh.add(lcsh)
-                video.save()
-                print("saved to video: " + str(video))
+                
+                # if lcsh is for a speaker, add to that speaker
+                # speaker should already exist (created with affiliation during previous process)
+                #TODO: can speaker be a corporate entity?
+                if row["is_speaker"] == "TRUE":
+                    speaker, created = Speaker.objects.get_or_create(display_name=row["display_name"], video=video)
+                    speaker.lcsh = lcsh
+                    speaker.save()
+                    print("saved to speaker: " + str(speaker))
+                # else, add to associated video
+                else:
+                    video.lcsh.add(lcsh)
+                    video.save()
+                    print("saved to video: " + str(video))
             except Exception as e:
                 print(f"An error occurred: {e}")
