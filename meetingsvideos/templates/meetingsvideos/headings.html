@@ -15,7 +15,11 @@
 
 {% for heading_obj in headings %}
 
-<h2><a href="{{ heading_obj.get_absolute_url }}">{{ heading_obj.heading }}</a></h2>
+    {% if heading_obj.video_set.all|length > 0 %}
+
+        <h2><a href="{{ heading_obj.get_absolute_url }}">{{ heading_obj.heading }}</a></h2>
+
+    {% endif %}
 
 {% endfor %}
 
