@@ -7,7 +7,8 @@ from .models import (
     LCSH,
     Symposium,
     AcademicDiscipline,
-    APSDepartment
+    APSDepartment,
+    Speaker
 )
 
 
@@ -111,3 +112,13 @@ def department_detail(request, department_id):
 def departments(request):
     departments = APSDepartment.objects.all()
     return render(request, "meetingsvideos/departments.html", {"departments": departments})
+
+
+def speakers(request):
+    speakers = Speaker.objects.all().order_by('lcsh')
+    return render(request, "meetingsvideos/speakers.html", {"speakers": speakers})
+
+
+def speaker_detail(request, speaker_id):
+    speaker = get_object_or_404(Speaker, pk=speaker_id)
+    return render(request, "meetingsvideos/speaker_detail.html", {"speaker": speaker})

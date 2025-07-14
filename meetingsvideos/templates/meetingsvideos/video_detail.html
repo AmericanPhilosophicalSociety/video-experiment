@@ -8,7 +8,7 @@
 {% endif %}
 
 {% for speaker in video.speakers.all %}
-  <a href="{% url 'heading_detail' speaker.lcsh.pk %}"><h2>{{ speaker }}</h2></a>
+  <a href="{% url 'speaker_detail' speaker.pk %}"><h2>{{ speaker }}</h2></a>
   {% for affiliation in speaker.affiliation_set.all %}
     <p>{{ affiliation|linebreaks }}</p>
   {% endfor %}

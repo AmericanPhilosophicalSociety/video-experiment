@@ -9,7 +9,7 @@
 <h3><a href="{% url 'video_detail' video.pk %}">{{ video.title }}</a></h3>
 
 {% for speaker in video.speakers.all %}
-    <a href="{% url 'heading_detail' speaker.lcsh.pk %}"><h4>{{ speaker }}</h4></a>
+    <a href="{% url 'speaker_detail' speaker.pk %}"><h4>{{ speaker }}</h4></a>
     {% for affiliation in speaker.affiliation_set.all %}
         <p>{{ affiliation|linebreaks }}</p>
     {% endfor %}

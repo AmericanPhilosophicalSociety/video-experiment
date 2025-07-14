@@ -30,6 +30,9 @@ class LCSH(models.Model):
     
     def __str__(self):
         return self.heading
+    
+    def without_dates(self):
+        pass
 
     class Meta:
         verbose_name = "LCSH"
@@ -69,6 +72,11 @@ class Speaker(models.Model):
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
         super().save(**kwargs)
+        
+    def get_most_recent_affiliation(self):
+        #TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
+        # most_recent_video = self.video_set.all().order_by('-time')[0]
+        return self.affiliation_set.all().order_by('-meeting')[0]
 
     class Meta:
         ordering = ["display_name"]

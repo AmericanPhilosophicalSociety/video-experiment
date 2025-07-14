@@ -8,7 +8,7 @@ urlpatterns = [
     path("meetings/<int:meeting_id>/", views.meeting_detail, name="meeting_detail"),
     path("videos/<int:video_id>/", views.video_detail, name="video_detail"),
     path("headings", views.headings, name="headings"),
-    path("headings/topics/<int:pk>/", views.heading_detail, name="heading_detail"),
+    path("headings/<int:pk>/", views.heading_detail, name="heading_detail"),
     path("headings/topics/", views.topics, name="topics"),
     path("headings/names/", views.names, name="names"),
     path("headings/corporate/", views.corporate, name="corporate"),
@@ -19,4 +19,6 @@ urlpatterns = [
     path("disciplines/<int:discipline_id>/", views.discipline_detail, name="discipline_detail"),
     path("departments/", views.departments, name="departments"),
     path("departments/<int:department_id>/", views.department_detail, name="department_detail"),
+    path("speakers/", views.speakers, name="speakers"),
+    path("speakers/<int:speaker_id>/", views.speaker_detail, name="speaker_detail"),
 ]
