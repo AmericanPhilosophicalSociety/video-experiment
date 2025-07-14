@@ -39,14 +39,14 @@ def headings(request):
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
-    return render(request, "meetingsvideos/lcsh_detail.html", {"lcsh": lcsh})
+    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh})
 
 
 def topics(request):
     headings = LCSH.objects.filter(Q(category="TOPIC") | Q(category="COMPLEX_SUBJECT"))
     return render(
         request,
-        "meetingsvideos/lcsh_all.html",
+        "meetingsvideos/heading_category.html",
         {"headings": headings, "lcsh_type": "Topic"},
     )
 
@@ -55,7 +55,7 @@ def names(request):
     headings = LCSH.objects.filter(category="PERSONAL_NAME")
     return render(
         request,
-        "meetingsvideos/lcsh_all.html",
+        "meetingsvideos/heading_category.html",
         {"headings": headings, "lcsh_type": "Names"},
     )
 
@@ -64,7 +64,7 @@ def corporate(request):
     headings = LCSH.objects.filter(category="CORPORATE_NAME")
     return render(
         request,
-        "meetingsvideos/lcsh_all.html",
+        "meetingsvideos/heading_category.html",
         {"headings": headings, "lcsh_type": "Corporate Entities"},
     )
 
@@ -73,7 +73,7 @@ def geographic(request):
     headings = LCSH.objects.filter(category="GEOGRAPHIC")
     return render(
         request,
-        "meetingsvideos/lcsh_all.html",
+        "meetingsvideos/heading_category.html",
         {"headings": headings, "lcsh_type": "Geographic Entities"},
     )
 
