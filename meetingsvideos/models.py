@@ -126,7 +126,7 @@ class Meeting(WithNotes):
     )
 
     def videos_by_time(self):
-        return self.video_set.all().order_by("time")
+        return self.video_set.all().order_by("date", "order_in_day")
 
     def __str__(self):
         return self.display_date
@@ -154,7 +154,7 @@ class Symposium(ProgramInfo):
     moderators = models.ManyToManyField(Speaker, blank=True)
 
     def videos_by_time(self):
-        return self.video_set.all().order_by("time")
+        return self.video_set.all().order_by("date", "order_in_day")
 
     class Meta:
         verbose_name_plural = "Symposia"
@@ -170,13 +170,14 @@ class Video(ProgramInfo):
     symposium = models.ForeignKey(
         Symposium, blank=True, null=True, on_delete=models.SET_NULL
     )
-    time = models.DateTimeField(
-        "Month, day, year, and time. If time is unknown, make up times that will preserve the correct order of the videos."
+    date = models.DateField(
+        "Month, day, and year."
     )
+    order_in_day = models.IntegerField(default=0)
     speakers = models.ManyToManyField(Speaker, blank=True)
     abstract = models.TextField(blank=True)
     lcsh = models.ManyToManyField(LCSH, blank=True)
-    # add validation for this
+    #TODO: add validation for this
     doi = models.CharField(blank=True, max_length=255)
     diglib_pid = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
