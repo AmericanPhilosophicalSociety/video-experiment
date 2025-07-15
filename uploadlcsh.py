@@ -4,7 +4,7 @@ from meetingsvideos.models import (
     Video,
     Speaker
 )
-from uploadvideos import process_time
+from uploadvideos import process_date
 
  
 def process_category(rdftypes, lcshtype):
@@ -70,8 +70,8 @@ def upload_lcsh():
                     print("LCSH created: " + str(lcsh))
                 
                 # find video associated with lcsh
-                time = process_time(row["talk_time"])
-                video = Video.objects.get(title=row["talk_title"], time=time)
+                date = process_date(row["talk_date"])
+                video = Video.objects.get(title=row["talk_title"], date=date)
                 
                 # if lcsh is for a speaker, add to that speaker
                 # speaker should already exist (created with affiliation during previous process)
