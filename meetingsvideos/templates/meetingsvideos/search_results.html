@@ -2,66 +2,53 @@
 
 {% block main %}
 
-<h1>Search Results For:</h1>
+<h1>Search Results For: {{ query }}</h1>
 
-{% if query %}
-    <h2>{{ query }}</h2>
+<hr>
+
+<h2>Videos</h2>
+
+{% if videos %}
+
+{% for video in videos %}
+    {% include "meetingsvideos/video_preview.html" %}
+{% endfor %}
+
+{% else %}
+
+<p>No videos found.</p>
+
 {% endif %}
 
 <hr>
 
-<h3>Morphemes</h3>
+<h2>Speakers</h2>
 
-{% if morphemes %}
+{% if speakers %}
 
-<ul>
-    {% for morpheme in morphemes %}
-      <li>
-        <a href="/flextest/morpheme/{{ morpheme.id }}/">{{ morpheme }}</a> ({{ morpheme.type }}): {{ morpheme.find_senses_str }}
-      </li>
-    {% endfor %}
-</ul>
+{% for speaker in speakers %}
+    <p><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker.display_name }}</a></p>
+{% endfor %}
 
 {% else %}
 
-<p>No morphemes found.</p>
+<p>No speakers found.</p>
 
 {% endif %}
 
-<h3>Dictionary Entries</h3>
+<hr>
 
-{% if senses %}
+<h2>Subjects</h2>
 
-<ul>
-    {% for sense in senses|dictsort:"entry.lexical_unit_tun" %}
-      <li>
-        <a href="/flextest/entry/{{ sense.entry.id }}/">{{ sense.entry }}</a>: {{ sense }}
-      </li>
-    {% endfor %}
-</ul>
+{% if subjects %}
+
+{% for subject in subjects %}
+    <p><a href="{% url 'heading_detail' subject.pk %}">{{ subject.heading }}</a></p>
+{% endfor %}
 
 {% else %}
 
-<p>No dictionary entries found.</p>
-
-{% endif %}
-
-<h3>Sentences</h3>
-
-{% if sentences %}
-
-<ul>
-    {% for sentence in sentences %}
-        <li>
-            <a href="/flextest/sentence/{{ sentence.id }}/">[{{ sentence.text.id }}.{{ sentence.segnum_en }}] {{ sentence.sentence_tun }}</a>
-            <p>{{ sentence.gls_en }}</p>
-        </li>
-    {% endfor %}
-</ul>
-
-{% else %}
-
-<p>No sentences found.</p>
+<p>No subjects found.</p>
 
 {% endif %}
 

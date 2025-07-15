@@ -135,7 +135,7 @@ def search(request):
 def search_results(request):
     if request.method == "POST":
         query = request.POST['q']
-        videos = basic_search(query)
-        return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos})
+        videos, speakers, subjects = basic_search(query)
+        return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos, "speakers": speakers, "subjects": subjects})
     else:
         return redirect("search")
