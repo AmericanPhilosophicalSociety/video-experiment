@@ -1,0 +1,68 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+<h1>Search Results For:</h1>
+
+{% if query %}
+    <h2>{{ query }}</h2>
+{% endif %}
+
+<hr>
+
+<h3>Morphemes</h3>
+
+{% if morphemes %}
+
+<ul>
+    {% for morpheme in morphemes %}
+      <li>
+        <a href="/flextest/morpheme/{{ morpheme.id }}/">{{ morpheme }}</a> ({{ morpheme.type }}): {{ morpheme.find_senses_str }}
+      </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No morphemes found.</p>
+
+{% endif %}
+
+<h3>Dictionary Entries</h3>
+
+{% if senses %}
+
+<ul>
+    {% for sense in senses|dictsort:"entry.lexical_unit_tun" %}
+      <li>
+        <a href="/flextest/entry/{{ sense.entry.id }}/">{{ sense.entry }}</a>: {{ sense }}
+      </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No dictionary entries found.</p>
+
+{% endif %}
+
+<h3>Sentences</h3>
+
+{% if sentences %}
+
+<ul>
+    {% for sentence in sentences %}
+        <li>
+            <a href="/flextest/sentence/{{ sentence.id }}/">[{{ sentence.text.id }}.{{ sentence.segnum_en }}] {{ sentence.sentence_tun }}</a>
+            <p>{{ sentence.gls_en }}</p>
+        </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No sentences found.</p>
+
+{% endif %}
+
+{% endblock %}

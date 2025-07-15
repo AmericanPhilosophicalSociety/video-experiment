@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 
 from .models import (
@@ -10,6 +10,8 @@ from .models import (
     APSDepartment,
     Speaker
 )
+
+from .service import basic_search
 
 
 # Create your views here.
@@ -122,3 +124,18 @@ def speakers(request):
 def speaker_detail(request, speaker_id):
     speaker = get_object_or_404(Speaker, pk=speaker_id)
     return render(request, "meetingsvideos/speaker_detail.html", {"speaker": speaker})
+
+
+def search(request):
+    context = {}
+    # context['advanced_search'] = AdvancedSearchForm()
+    return render(request, "meetingsvideos/search.html", context)
+
+
+def search_results(request):
+    if request.method == "POST":
+        query = request.POST['q']
+        videos = basic_search(query)
+        return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos})
+    else:
+        return redirect("search")
