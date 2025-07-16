@@ -173,7 +173,7 @@ def process_video(row, n, prev_date):
 
 
 # loop through spreadsheet, adding a video for each row
-def add_videos():
+def upload_videos():
     reminders = ""
 
     with open("videos.csv", newline="", encoding="utf8") as csvfile:
