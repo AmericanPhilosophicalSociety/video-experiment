@@ -6,6 +6,7 @@ from .models import Video, Speaker, LCSH
 # searches title, abstract, speaker, and lcsh for search term
 #TODO: fix this - using SearchVector gives a ton of duplicate results that aren't removed by duplicate(), issue seems to be searching on many-to-many field
 def basic_search(query):
+    # query = SearchQuery(q)
     # video_vector = SearchVector('title', 'abstract', 'lcsh__heading')
     video_search = Q(title__search=query) | Q(title__search=query) | Q(abstract__search=query) | Q(speakers__display_name__search=query) | Q(speakers__lcsh__heading__search=query) | Q(lcsh__heading__search=query)
     
