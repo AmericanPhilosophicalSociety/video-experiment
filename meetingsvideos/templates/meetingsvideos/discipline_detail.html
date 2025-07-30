@@ -2,9 +2,9 @@
 
 {% block main %}
 
-<h1>{{ topic.heading }}</h1>
+<h1>{{ discipline.name }}</h1>
 
-{% for video in topic.video_set.all %}
+{% for video in discipline.video_set.all %}
     {% include "meetingsvideos/video_preview.html" %}
 {% endfor %}
 

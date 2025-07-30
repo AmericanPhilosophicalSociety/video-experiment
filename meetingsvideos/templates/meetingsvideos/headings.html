@@ -2,12 +2,25 @@
 
 {% block main %}
 
-<h1>Subject Headings</h1>
+<h1>Sort by Type</h1>
 
 <h2><a href="{% url 'topics' %}">Topics</a></h2>
 <h2><a href="{% url 'names' %}">Names (personal)</a></h2>
 <h2><a href="{% url 'corporate' %}">Names (corporate)</a></h2>
 <h2><a href="{% url 'geographic' %}">Geographic</a></h2>
-<h2><a href="{% url 'temporal' %}">Temporal</a></h2>
+
+<hr>
+
+<h1>All Subject Headings</h1>
+
+{% for heading_obj in headings %}
+
+    {% if heading_obj.video_set.all|length > 0 %}
+
+        <h2><a href="{% url 'heading_detail' heading_obj.pk %}">{{ heading_obj.heading }}</a></h2>
+
+    {% endif %}
+
+{% endfor %}
 
 {% endblock %}

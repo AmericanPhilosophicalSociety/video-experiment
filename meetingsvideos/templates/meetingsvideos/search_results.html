@@ -1,0 +1,55 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+<h1>Search Results For: {{ query }}</h1>
+
+<hr>
+
+<h2>Videos</h2>
+
+{% if videos %}
+
+{% for video in videos %}
+    {% include "meetingsvideos/video_preview.html" %}
+{% endfor %}
+
+{% else %}
+
+<p>No videos found.</p>
+
+{% endif %}
+
+<hr>
+
+<h2>Speakers</h2>
+
+{% if speakers %}
+
+{% for speaker in speakers %}
+    <p><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker.display_name }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No speakers found.</p>
+
+{% endif %}
+
+<hr>
+
+<h2>Subjects</h2>
+
+{% if subjects %}
+
+{% for subject in subjects %}
+    <p><a href="{% url 'heading_detail' subject.pk %}">{{ subject.heading }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No subjects found.</p>
+
+{% endif %}
+
+{% endblock %}

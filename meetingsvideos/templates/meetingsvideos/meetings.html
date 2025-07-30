@@ -4,9 +4,13 @@
 
 {% for meeting in meetings %}
 
-    <h1><a href="{% url 'meeting' meeting.pk %}">{{ meeting.display_date }}</a></h1>
+    <h1><a href="{% url 'meeting_detail' meeting.pk %}">{{ meeting.display_date }}</a></h1>
 
     {% for video in meeting.videos_by_time %}
+
+        {% if video.order_in_day == 1 %}
+        <h2>{{ video.date }}</h2>
+        {% endif %}
 
         {% include "meetingsvideos/video_preview_symposium.html" %}
 

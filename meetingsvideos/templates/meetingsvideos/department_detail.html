@@ -2,9 +2,9 @@
 
 {% block main %}
 
-<h1>{{ lcsh.heading }}</h1>
+<h1>{{ department.name }}</h1>
 
-{% for video in lcsh.video_set.all %}
+{% for video in department.video_set.all %}
     {% include "meetingsvideos/video_preview.html" %}
 {% endfor %}
 

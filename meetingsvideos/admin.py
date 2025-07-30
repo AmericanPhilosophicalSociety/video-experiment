@@ -1,10 +1,6 @@
 from django.contrib import admin
 from .models import (
-    LCSHTopic,
-    LCSHGeographic,
-    LCSHTemporal,
-    LCSHNamePersonal,
-    LCSHNameCorporate,
+    LCSH,
     AcademicDiscipline,
     APSDepartment,
     Speaker,
@@ -18,7 +14,7 @@ from import_export.admin import ImportExportModelAdmin
 
 
 # Register your models here.
-class LCSHTopicAdmin(admin.ModelAdmin):
+class LCSHAdmin(admin.ModelAdmin):
     pass
 
 
@@ -26,35 +22,7 @@ class LCSHTopicAdmin(admin.ModelAdmin):
 #     class Meta:
 #         model = LCSHTopic
 
-admin.site.register(LCSHTopic, LCSHTopicAdmin)
-
-
-class LCSHGeographicAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(LCSHGeographic, LCSHGeographicAdmin)
-
-
-class LCSHTemporalAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(LCSHTemporal, LCSHTemporalAdmin)
-
-
-class LCSHNamePersonalAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(LCSHNamePersonal, LCSHNamePersonalAdmin)
-
-
-class LCSHNameCorporateAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(LCSHNameCorporate, LCSHNameCorporateAdmin)
+admin.site.register(LCSH, LCSHAdmin)
 
 
 class AcademicDisciplineAdmin(admin.ModelAdmin):

@@ -1,0 +1,11 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+{% for department in departments %}
+
+<h1><a href="{% url 'department_detail' department.pk %}">{{ department.name }}</a></h1>
+
+{% endfor %}
+
+{% endblock %}
