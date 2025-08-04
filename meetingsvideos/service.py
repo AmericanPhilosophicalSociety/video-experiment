@@ -3,8 +3,19 @@ from django.contrib.postgres.search import SearchVector
 from .models import Video, Speaker, LCSH, AcademicDiscipline, APSDepartment
     
 
-def build_q_object(query, search_type):
-    pass
+# takes a query and list of fields to search and returns a list of Q objects, chained with the "or" operator
+def build_q_object(query, fields_to_search):
+    search = Q()
+    
+    for field in fields_to_search:
+        search_string = f'{field}__search'
+        search_q = Q((search_string, query))
+        search |= search_q
+        
+        icontains_string = f'{field}__icontains'
+        icontains_q = Q((icontains_string, query))
+        search |= icontains_q
+    return search
 
 # execute basic search
 # searches title, abstract, speaker, and lcsh for search term
@@ -12,28 +23,33 @@ def build_q_object(query, search_type):
 def basic_search(query):
     # query = SearchQuery(q)
     # video_vector = SearchVector('title', 'abstract', 'lcsh__heading')
-    video_search = Q(title__search=query) | Q(abstract__search=query) | Q(speakers__display_name__search=query) | Q(speakers__lcsh__heading__search=query) | Q(lcsh__heading__search=query) | Q(meeting__display_date__search=query)
-    
-    video_icontains = Q(title__icontains=query) | Q(abstract__icontains=query) | Q(speakers__display_name__icontains=query) | Q(speakers__lcsh__heading__icontains=query) | Q(lcsh__heading__icontains=query) | Q(meeting__display_date__icontains=query)
-
     # videos = Video.objects.annotate(search=video_vector).filter(search=query).distinct()
-    videos = Video.objects.filter(video_search | video_icontains).distinct()
+    video_fields_to_search = ["title", "abstract", "speakers__display_name", "speakers__lcsh__heading", "lcsh__heading", "meeting__display_date"]
+    video_search = build_q_object(query, video_fields_to_search)
+
+    videos = Video.objects.filter(video_search).distinct()
+    
+    speaker_fields_to_search = ["display_name", "lcsh__heading", "affiliation__position", "affiliation__institution"]
+    speaker_search = build_q_object(query, speaker_fields_to_search)
+    
+    speakers = Speaker.objects.filter(speaker_search).distinct()
     
     # speaker_vector = SearchVector('display_name', weight='A') + SearchVector('lcsh__heading', weight='B') + SearchVector('affiliation__position', 'affiliation__institution', weight='C')
-    speaker_search = Q(display_name__search=query) | Q(lcsh__heading__search=query) | Q(affiliation__position__search=query) | Q(affiliation__institution__search=query)
-    
-    speaker_icontains = Q(display_name__icontains=query) | Q(lcsh__heading__icontains=query) | Q(affiliation__position__icontains=query) | Q(affiliation__institution__icontains=query)
-    
-    speakers = Speaker.objects.filter(speaker_search | speaker_icontains).distinct()
     
     # search LCSH, excluding any associated only with speakers
+    subject_fields_to_search = ["heading"]
+    subject_search = build_q_object(query, subject_fields_to_search)
+    subjects = LCSH.objects.filter(subject_search).exclude(video=None)
     # subject_vector = SearchVector('heading')
     # subjects = LCSH.objects.annotate(search=subject_vector).filter(search=query).exclude(video=None)
-    subjects = LCSH.objects.filter(Q(heading__search=query) | Q(heading__icontains=query)).exclude(video=None)
     
-    disciplines = AcademicDiscipline.objects.filter(Q(name__search=query) | Q(name__icontains=query))
+    discipline_fields_to_search = ["name"]
+    discipline_search = build_q_object(query, discipline_fields_to_search)
+    disciplines = AcademicDiscipline.objects.filter(discipline_search)
     
-    departments = APSDepartment.objects.filter(Q(name__search=query) | Q(name__icontains=query))
+    department_fields_to_search = ["name"]
+    department_search = build_q_object(query, department_fields_to_search)
+    departments = APSDepartment.objects.filter(department_search)
     
     return videos, speakers, subjects, disciplines, departments
 
@@ -48,13 +64,17 @@ def advanced_search(form):
     start_date = form.cleaned_data['start_date']
     end_date = form.cleaned_data['end_date']
     
-    print(start_date)
-    print(type(start_date))
+    title_fields_to_search = ["title"]
+    title_search = build_q_object(title_q, title_fields_to_search)
     
-    title_search = Q(title__search=title_q) | Q(title__icontains=title_q)
-    abstract_search = Q(abstract__search=abstract_q) | Q(abstract__icontains=abstract_q)
-    speaker_search = Q(speakers__display_name__search=speaker_q) | Q(speakers__display_name__icontains=speaker_q) | Q(speakers__lcsh__heading__search=speaker_q) | Q(speakers__lcsh__heading__icontains=speaker_q)
-    subject_search = Q(lcsh__heading__search=subject_q) | Q(lcsh__heading__icontains=subject_q)
+    abstract_fields_to_search = ["abstract"]
+    abstract_search = build_q_object(abstract_q, abstract_fields_to_search)
+    
+    speaker_fields_to_search = ["speakers__display_name", "speakers__lcsh__heading"]
+    speaker_search = build_q_object(speaker_q, speaker_fields_to_search)
+
+    subject_fields_to_search = ["lcsh__heading"]
+    subject_search = build_q_object(subject_q, subject_fields_to_search)
     
     discipline_search = Q(academic_disciplines__in=disciplines)
     department_search = Q(aps_departments__in=departments)
@@ -82,4 +102,4 @@ def advanced_search(form):
     if end_date:
         q_objects &= end_date_search
         
-    return Video.objects.filter(q_objects)
+    return Video.objects.filter(q_objects).distinct()
