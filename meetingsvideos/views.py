@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from .forms import AdvancedSearchForm
 
 from .models import (
     Video,
@@ -130,7 +131,7 @@ def speaker_detail(request, speaker_id):
 
 def search(request):
     context = {}
-    # context['advanced_search'] = AdvancedSearchForm()
+    context['advanced_search'] = AdvancedSearchForm()
     return render(request, "meetingsvideos/search.html", context)
 
 
@@ -139,5 +140,34 @@ def search_results(request):
         query = request.POST['q']
         videos, speakers, subjects, disciplines, departments = basic_search(query)
         return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos, "speakers": speakers, "subjects": subjects, "disciplines": disciplines, "departments": departments})
+    else:
+        return redirect("search")
+    
+    
+def search_results_advanced(request):
+    if request.method == "POST":
+        query = request.POST
+        title_q = str(query["title"])
+        abstract_q = str(query["abstract"])
+        speaker_q = str(query["speaker"])
+        subject_q = str(query["subject"])
+        
+        title_search = Q(title__search=title_q) | Q(title__icontains=title_q)
+        abstract_search = Q(abstract__search=abstract_q) | Q(abstract__icontains=abstract_q)
+        speaker_search = Q(speakers__display_name__search=speaker_q) | Q(speakers__display_name__icontains=speaker_q) | Q(speakers__lcsh__heading__search=speaker_q) | Q(speakers__lcsh__heading__icontains=speaker_q)
+        subject_search = Q(lcsh__heading__search=subject_q) | Q(lcsh__heading__icontains=subject_q)
+        
+        q_objects = Q()
+        if title_q:
+            q_objects &= title_search
+        if abstract_q:
+            q_objects &= abstract_search
+        if speaker_q:
+            q_objects &= speaker_search
+        if subject_q:
+            q_objects &= subject_search
+        
+        videos = Video.objects.filter(q_objects)
+        return render(request, "meetingsvideos/search_results_advanced.html", {"query": query, "videos": videos})
     else:
         return redirect("search")

@@ -8,9 +8,9 @@ from .models import Video, Speaker, LCSH, AcademicDiscipline, APSDepartment
 def basic_search(query):
     # query = SearchQuery(q)
     # video_vector = SearchVector('title', 'abstract', 'lcsh__heading')
-    video_search = Q(title__search=query) | Q(title__search=query) | Q(abstract__search=query) | Q(speakers__display_name__search=query) | Q(speakers__lcsh__heading__search=query) | Q(lcsh__heading__search=query)
+    video_search = Q(title__search=query) | Q(abstract__search=query) | Q(speakers__display_name__search=query) | Q(speakers__lcsh__heading__search=query) | Q(lcsh__heading__search=query)
     
-    video_icontains = Q(title__icontains=query) | Q(title__icontains=query) | Q(abstract__icontains=query) | Q(speakers__display_name__icontains=query) | Q(speakers__lcsh__heading__icontains=query) | Q(lcsh__heading__icontains=query)
+    video_icontains = Q(title__icontains=query) | Q(abstract__icontains=query) | Q(speakers__display_name__icontains=query) | Q(speakers__lcsh__heading__icontains=query) | Q(lcsh__heading__icontains=query)
 
     # videos = Video.objects.annotate(search=video_vector).filter(search=query).distinct()
     videos = Video.objects.filter(video_search | video_icontains).distinct()

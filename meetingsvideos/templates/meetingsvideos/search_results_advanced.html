@@ -1,0 +1,24 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+
+<h1>Search Results For: {{ query }}</h1>
+
+<hr>
+
+
+<h2>Videos</h2>
+
+{% if videos %}
+
+{% for video in videos %}
+    {% include "meetingsvideos/video_preview.html" %}
+{% endfor %}
+
+{% else %}
+
+<p>No videos found.</p>
+
+{% endif %}
+
+{% endblock %}
