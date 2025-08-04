@@ -36,7 +36,7 @@ def video_detail(request, video_id):
 
 
 def headings(request):
-    headings = LCSH.objects.all()
+    headings = LCSH.objects.filter(video__isnull=False).distinct()
     return render(request, "meetingsvideos/headings.html", {"headings": headings})
 
 
@@ -60,7 +60,7 @@ def topics(request):
 
 
 def names(request):
-    headings = LCSH.objects.filter(category="PERSONAL_NAME")
+    headings = LCSH.objects.filter(Q(category="PERSONAL_NAME") & Q(video__isnull=False))
     return render(
         request,
         "meetingsvideos/heading_category.html",
@@ -69,7 +69,7 @@ def names(request):
 
 
 def corporate(request):
-    headings = LCSH.objects.filter(category="CORPORATE_NAME")
+    headings = LCSH.objects.filter(Q(category="CORPORATE_NAME") & Q(video__isnull=False))
     return render(
         request,
         "meetingsvideos/heading_category.html",
