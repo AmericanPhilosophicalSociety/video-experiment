@@ -23,7 +23,6 @@
     <!-- {{ advanced_search }} -->
     {{ advanced_search.non_field_errors }}
 
-    <h2>Search by Field</h2>
     <div class="fieldWrapper">
         <label for="{{ advanced_search.title.id_for_label }}">{{ advanced_search.title.label }}</label><br>
         {{ advanced_search.title }}
@@ -45,6 +44,24 @@
     <div class="fieldWrapper">
         <label for="{{ advanced_search.subject.id_for_label }}">{{ advanced_search.subject.label }}</label><br>
         {{ advanced_search.subject }}
+        <br>
+    </div>
+
+    <div class="fieldWrapper">
+        <label for="{{ advanced_search.discipline.id_for_label }}">{{ advanced_search.discipline.label }}</label><br>
+        {{ advanced_search.discipline }}
+        <br>
+    </div>
+
+    <div class="fieldWrapper">
+        <label for="{{ advanced_search.department.id_for_label }}">{{ advanced_search.department.label }}</label><br>
+        {{ advanced_search.department }}
+        <br>
+    </div>
+
+    <div class="fieldWrapper">
+        <label for="{{ advanced_search.category.id_for_label }}">{{ advanced_search.category.label }}</label><br>
+        {{ advanced_search.category }}
         <br>
     </div>
 

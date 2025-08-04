@@ -146,16 +146,29 @@ def search_results(request):
     
 def search_results_advanced(request):
     if request.method == "POST":
+        #TODO: remove this once everything is working
         query = request.POST
-        title_q = str(query["title"])
-        abstract_q = str(query["abstract"])
-        speaker_q = str(query["speaker"])
-        subject_q = str(query["subject"])
+        form = AdvancedSearchForm(request.POST)
+        if form.is_valid():
+            title_q = form.cleaned_data['title']
+            abstract_q = form.cleaned_data['abstract']
+            speaker_q = form.cleaned_data['speaker']
+            subject_q = form.cleaned_data['subject']
+            disciplines = form.cleaned_data['discipline']
+            departments = form.cleaned_data['department']
+            categories = form.cleaned_data['category']
+            print(categories)
         
+        #TODO: behavior if form not valid?
         title_search = Q(title__search=title_q) | Q(title__icontains=title_q)
         abstract_search = Q(abstract__search=abstract_q) | Q(abstract__icontains=abstract_q)
         speaker_search = Q(speakers__display_name__search=speaker_q) | Q(speakers__display_name__icontains=speaker_q) | Q(speakers__lcsh__heading__search=speaker_q) | Q(speakers__lcsh__heading__icontains=speaker_q)
         subject_search = Q(lcsh__heading__search=subject_q) | Q(lcsh__heading__icontains=subject_q)
+        
+        discipline_search = Q(academic_disciplines__in=disciplines)
+        department_search = Q(aps_departments__in=departments)
+        
+        category_search = Q(admin_category__in=categories)
         
         q_objects = Q()
         if title_q:
@@ -166,8 +179,14 @@ def search_results_advanced(request):
             q_objects &= speaker_search
         if subject_q:
             q_objects &= subject_search
+        if disciplines:
+            q_objects &= discipline_search
+        if departments:
+            q_objects &= department_search
+        # if categories:
+        #     q_objects &= category_search
         
         videos = Video.objects.filter(q_objects)
-        return render(request, "meetingsvideos/search_results_advanced.html", {"query": query, "videos": videos})
+        return render(request, "meetingsvideos/search_results_advanced.html", {"query": query, "videos": videos, "disciplines": disciplines, "departments": departments})
     else:
         return redirect("search")
