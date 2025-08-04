@@ -36,19 +36,17 @@ def video_detail(request, video_id):
 
 
 def headings(request):
+    # returns only LCSH associated with videos, NOT those associated with speakers
     headings = LCSH.objects.filter(video__isnull=False).distinct()
     return render(request, "meetingsvideos/headings.html", {"headings": headings})
 
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
+    
+    # returns separate lists of videos tagged with this LCSH and videos whose speaker corresponds to this LCSH
     videos_with_topic = lcsh.video_set.all()
     videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-    
-    # if len(lcsh.speaker_set.all()) > 0:
-    #     videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-    # else:
-    #     videos_by_speaker = None
         
     return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_with_topic": videos_with_topic, "videos_by_speaker": videos_by_speaker})
 
@@ -63,6 +61,7 @@ def topics(request):
 
 
 def names(request):
+    # returns only LCSH associated with videos, NOT those associated with speakers
     headings = LCSH.objects.filter(Q(category="PERSONAL_NAME") & Q(video__isnull=False))
     return render(
         request,
