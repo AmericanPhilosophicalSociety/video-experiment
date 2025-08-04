@@ -19,4 +19,7 @@ class AdvancedSearchForm(forms.Form):
         "PANEL": "Panel Discussion",
         "OTHER": "Other",
     }
-    category = forms.MultipleChoiceField(choices=ADMIN_CATEGORY_CHOICES, widget=forms.CheckboxSelectMultiple, initial=[value for value in ADMIN_CATEGORY_CHOICES], required=False)
+    category = forms.MultipleChoiceField(choices=ADMIN_CATEGORY_CHOICES, label="Video category", widget=forms.CheckboxSelectMultiple, initial=[value for value in ADMIN_CATEGORY_CHOICES], required=False)
+    
+    start_date = forms.DateField(label="Start date", widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}), input_formats=["%Y-%m-%d"], required=False)
+    end_date = forms.DateField(label="End date", widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}), input_formats=["%Y-%m-%d"], required=False)

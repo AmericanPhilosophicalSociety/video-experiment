@@ -65,6 +65,18 @@
         <br>
     </div>
 
+    <div class="fieldWrapper">
+        <label for="{{ advanced_search.start_date.id_for_label }}">{{ advanced_search.start_date.label }}</label><br>
+        {{ advanced_search.start_date }}
+        <br>
+    </div>
+
+    <div class="fieldWrapper">
+        <label for="{{ advanced_search.end_date.id_for_label }}">{{ advanced_search.end_date.label }}</label><br>
+        {{ advanced_search.end_date }}
+        <br>
+    </div>
+
     <!-- <h2>Search Terms</h2>
     <div class="fieldWrapper">
         {{ advanced_search.term_1.errors }}
