@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.contrib.postgres.search import SearchVector
-from .models import Video, Speaker, LCSH
+from .models import Video, Speaker, LCSH, AcademicDiscipline, APSDepartment
     
 # execute basic search
 # searches title, abstract, speaker, and lcsh for search term
@@ -27,4 +27,8 @@ def basic_search(query):
     # subjects = LCSH.objects.annotate(search=subject_vector).filter(search=query).exclude(video=None)
     subjects = LCSH.objects.filter(Q(heading__search=query) | Q(heading__icontains=query)).exclude(video=None)
     
-    return videos, speakers, subjects
+    disciplines = AcademicDiscipline.objects.filter(Q(name__search=query) | Q(name__icontains=query))
+    
+    departments = APSDepartment.objects.filter(Q(name__search=query) | Q(name__icontains=query))
+    
+    return videos, speakers, subjects, disciplines, departments
