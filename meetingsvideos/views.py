@@ -42,12 +42,15 @@ def headings(request):
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
-    if len(lcsh.speaker_set.all()) > 0:
-        videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-    else:
-        videos_by_speaker = None
+    videos_with_topic = lcsh.video_set.all()
+    videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
+    
+    # if len(lcsh.speaker_set.all()) > 0:
+    #     videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
+    # else:
+    #     videos_by_speaker = None
         
-    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_by_speaker": videos_by_speaker})
+    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_with_topic": videos_with_topic, "videos_by_speaker": videos_by_speaker})
 
 
 def topics(request):
