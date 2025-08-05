@@ -152,6 +152,8 @@ def search_results_advanced(request):
         if form.is_valid():
             videos = advanced_search(form)
             return render(request, "meetingsvideos/search_results_advanced.html", {"query": query, "videos": videos})
-        #TODO: behavior if form not valid?
+        #TODO: does anything else need to happen if form not valid?
+        else:
+            return redirect("search")
     else:
         return redirect("search")

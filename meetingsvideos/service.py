@@ -25,11 +25,13 @@ def basic_search(query):
     query_lst = query.split()
     # query = SearchQuery(q)
 
-    video_fields_to_search = ["title", "abstract", "speakers__display_name", "speakers__lcsh__heading", "lcsh__heading", "meeting__display_date"]
+    video_fields_to_search = ["title", "abstract", "speakers__display_name", "speakers__lcsh__heading", "lcsh__heading", "meeting__display_date", "academic_disciplines__name", "aps_departments__name"]
     speaker_fields_to_search = ["display_name", "lcsh__heading", "affiliation__position", "affiliation__institution"]
     subject_fields_to_search = ["heading"]
     discipline_fields_to_search = ["name"]
     department_fields_to_search = ["name"]
+    #TODO: do we want to return symposium results? should this include ones where one video matches the search terms (so duplicating results from video search)?
+    symposium_fields_to_search = ["title", "meeting__display_date"]
     
     video_search = Q()
     speaker_search = Q()
