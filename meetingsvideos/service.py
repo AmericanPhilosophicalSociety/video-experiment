@@ -3,7 +3,7 @@ from django.contrib.postgres.search import SearchVector
 from .models import Video, Speaker, LCSH, AcademicDiscipline, APSDepartment
     
 
-# takes a query and list of fields to search and returns a list of Q objects, chained with the "or" operator
+# takes a query and list of fields to search and returns a list of Q objects, chained with the "or" operator, performing both regular search and icontains search
 def build_q_object(query, fields_to_search):
     search = Q()
     
@@ -17,38 +17,46 @@ def build_q_object(query, fields_to_search):
         search |= icontains_q
     return search
 
+
 # execute basic search
 # searches title, abstract, speaker, and lcsh for search term
 #TODO: fix this - using SearchVector gives a ton of duplicate results that aren't removed by duplicate(), issue seems to be searching on many-to-many field
 def basic_search(query):
+    query_lst = query.split()
     # query = SearchQuery(q)
+
+    video_fields_to_search = ["title", "abstract", "speakers__display_name", "speakers__lcsh__heading", "lcsh__heading", "meeting__display_date"]
+    speaker_fields_to_search = ["display_name", "lcsh__heading", "affiliation__position", "affiliation__institution"]
+    subject_fields_to_search = ["heading"]
+    discipline_fields_to_search = ["name"]
+    department_fields_to_search = ["name"]
+    
+    video_search = Q()
+    speaker_search = Q()
+    subject_search = Q()
+    discipline_search = Q()
+    department_search = Q()
+    
+    for search_term in query_lst:
+        video_search &= build_q_object(search_term, video_fields_to_search)
+        speaker_search &= build_q_object(search_term, speaker_fields_to_search)
+        subject_search &= build_q_object(search_term, subject_fields_to_search)
+        discipline_search &= build_q_object(search_term, discipline_fields_to_search)
+        department_search &= build_q_object(search_term, department_fields_to_search)
+        
+    videos = Video.objects.filter(video_search).distinct()
     # video_vector = SearchVector('title', 'abstract', 'lcsh__heading')
     # videos = Video.objects.annotate(search=video_vector).filter(search=query).distinct()
-    video_fields_to_search = ["title", "abstract", "speakers__display_name", "speakers__lcsh__heading", "lcsh__heading", "meeting__display_date"]
-    video_search = build_q_object(query, video_fields_to_search)
-
-    videos = Video.objects.filter(video_search).distinct()
-    
-    speaker_fields_to_search = ["display_name", "lcsh__heading", "affiliation__position", "affiliation__institution"]
-    speaker_search = build_q_object(query, speaker_fields_to_search)
     
     speakers = Speaker.objects.filter(speaker_search).distinct()
-    
     # speaker_vector = SearchVector('display_name', weight='A') + SearchVector('lcsh__heading', weight='B') + SearchVector('affiliation__position', 'affiliation__institution', weight='C')
     
     # search LCSH, excluding any associated only with speakers
-    subject_fields_to_search = ["heading"]
-    subject_search = build_q_object(query, subject_fields_to_search)
     subjects = LCSH.objects.filter(subject_search).exclude(video=None)
     # subject_vector = SearchVector('heading')
     # subjects = LCSH.objects.annotate(search=subject_vector).filter(search=query).exclude(video=None)
-    
-    discipline_fields_to_search = ["name"]
-    discipline_search = build_q_object(query, discipline_fields_to_search)
+
     disciplines = AcademicDiscipline.objects.filter(discipline_search)
-    
-    department_fields_to_search = ["name"]
-    department_search = build_q_object(query, department_fields_to_search)
     departments = APSDepartment.objects.filter(department_search)
     
     return videos, speakers, subjects, disciplines, departments
@@ -101,5 +109,7 @@ def advanced_search(form):
         q_objects &= start_date_search
     if end_date:
         q_objects &= end_date_search
+    if categories:
+        q_objects &= category_search
         
     return Video.objects.filter(q_objects).distinct()
