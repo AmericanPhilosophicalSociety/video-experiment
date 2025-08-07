@@ -48,7 +48,7 @@
   </tr>
   <tr>
     <td>Category</td>
-    <td>{{ video.admin_category }}</td>
+    <td>{{ video.get_admin_category_display }}</td>
   </tr>
   <tr>
     <td><p>Academic Discipline</p></td>
@@ -77,6 +77,7 @@
   {% endif %}
 </table>
 
-<p><a href="{{ video.diglib_url }}">View in APS Digital Library</a></p>
+<!-- TODO: these links don't work -->
+<!-- <p><a href="https://diglib.amphilsoc.org/islandora/object/video:{{ video.diglib_pid }}">View in APS Digital Library</a></p> -->
 
 {% endblock %}

@@ -6,11 +6,7 @@
 
 {% for heading_obj in headings %}
 
-{% if heading_obj.video_set.all|length > 0 %}
-
 <h2><a href="{% url 'heading_detail' heading_obj.pk %}">{{ heading_obj.heading }}</a></h2>
-
-{% endif %}
 
 {% endfor %}
 

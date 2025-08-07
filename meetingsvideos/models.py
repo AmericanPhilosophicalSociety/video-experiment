@@ -40,7 +40,7 @@ class LCSH(models.Model):
 
 
 class AcademicDiscipline(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -74,8 +74,10 @@ class Speaker(models.Model):
         
     def get_most_recent_affiliation(self):
         #TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
-        # most_recent_video = self.video_set.all().order_by('-time')[0]
-        return self.affiliation_set.all().order_by('-meeting')[0]
+        if len(self.affiliation_set.all()) > 0:
+            return self.affiliation_set.all().order_by('-meeting')[0]
+        else:
+            return ""
 
     class Meta:
         ordering = ["display_name"]

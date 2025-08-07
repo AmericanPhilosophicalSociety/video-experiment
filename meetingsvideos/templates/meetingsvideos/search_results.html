@@ -6,6 +6,7 @@
 
 <hr>
 
+
 <h2>Videos</h2>
 
 {% if videos %}
@@ -21,6 +22,7 @@
 {% endif %}
 
 <hr>
+
 
 <h2>Speakers</h2>
 
@@ -38,6 +40,7 @@
 
 <hr>
 
+
 <h2>Subjects</h2>
 
 {% if subjects %}
@@ -51,5 +54,41 @@
 <p>No subjects found.</p>
 
 {% endif %}
+
+<hr>
+
+
+<h2>Academic Disciplines</h2>
+
+{% if disciplines %}
+
+{% for discipline in disciplines %}
+    <p><a href="{% url 'discipline_detail' discipline.pk %}">{{ discipline.name }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No academic disciplines found.</p>
+
+{% endif %}
+
+<hr>
+
+
+<h2>APS Departments</h2>
+
+{% if departments %}
+
+{% for department in departments %}
+    <p><a href="{% url 'department_detail' department.pk %}">{{ department.name }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No APS departments found.</p>
+
+{% endif %}
+
+
 
 {% endblock %}
