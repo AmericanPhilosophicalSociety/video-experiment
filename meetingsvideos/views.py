@@ -8,7 +8,7 @@ from .models import (
     Symposium,
     AcademicDiscipline,
     APSDepartment,
-    Speaker
+    Speaker,
 )
 
 from .service import basic_search
@@ -46,8 +46,12 @@ def heading_detail(request, pk):
         videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
     else:
         videos_by_speaker = None
-        
-    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_by_speaker": videos_by_speaker})
+
+    return render(
+        request,
+        "meetingsvideos/heading_detail.html",
+        {"lcsh": lcsh, "videos_by_speaker": videos_by_speaker},
+    )
 
 
 def topics(request):
@@ -88,7 +92,9 @@ def geographic(request):
 
 def symposium_detail(request, symposium_id):
     symposium = get_object_or_404(Symposium, pk=symposium_id)
-    return render(request, "meetingsvideos/symposium_detail.html", {"symposium": symposium})
+    return render(
+        request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
+    )
 
 
 def symposia(request):
@@ -98,26 +104,34 @@ def symposia(request):
 
 def discipline_detail(request, discipline_id):
     discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
-    return render(request, "meetingsvideos/discipline_detail.html", {"discipline": discipline})
+    return render(
+        request, "meetingsvideos/discipline_detail.html", {"discipline": discipline}
+    )
 
 
 def disciplines(request):
     disciplines = AcademicDiscipline.objects.all()
-    return render(request, "meetingsvideos/disciplines.html", {"disciplines": disciplines})
+    return render(
+        request, "meetingsvideos/disciplines.html", {"disciplines": disciplines}
+    )
 
 
 def department_detail(request, department_id):
     department = get_object_or_404(APSDepartment, pk=department_id)
-    return render(request, "meetingsvideos/department_detail.html", {"department": department})
+    return render(
+        request, "meetingsvideos/department_detail.html", {"department": department}
+    )
 
 
 def departments(request):
     departments = APSDepartment.objects.all()
-    return render(request, "meetingsvideos/departments.html", {"departments": departments})
+    return render(
+        request, "meetingsvideos/departments.html", {"departments": departments}
+    )
 
 
 def speakers(request):
-    speakers = Speaker.objects.all().order_by('lcsh')
+    speakers = Speaker.objects.all().order_by("lcsh")
     return render(request, "meetingsvideos/speakers.html", {"speakers": speakers})
 
 
@@ -134,8 +148,17 @@ def search(request):
 
 def search_results(request):
     if request.method == "POST":
-        query = request.POST['q']
+        query = request.POST["q"]
         videos, speakers, subjects = basic_search(query)
-        return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos, "speakers": speakers, "subjects": subjects})
+        return render(
+            request,
+            "meetingsvideos/search_results.html",
+            {
+                "query": query,
+                "videos": videos,
+                "speakers": speakers,
+                "subjects": subjects,
+            },
+        )
     else:
         return redirect("search")

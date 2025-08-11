@@ -1,22 +1,24 @@
 from django.db import models
+from locpy.api import LocEntity, NameEntity, SubjectEntity
 
 
 class LCSH(models.Model):
-    heading = models.CharField(max_length = 200)
-    uri = models.CharField(max_length = 200, blank=True, null=True)
-    
+    heading = models.CharField(max_length=200)
+    uri = models.CharField(max_length=200, blank=True, null=True)
+
     CATEGORY_CHOICES = {
         "PERSONAL_NAME": "Personal name",
         "CORPORATE_NAME": "Corporate name",
         "GEOGRAPHIC": "Geographic",
         "TOPIC": "Topic",
         "COMPLEX_SUBJECT": "Complex subject",
+        "GENRE_FORM": "Genre/Form",
         "TITLE": "Title",
         "OTHER": "Other",
     }
-    
+
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=50)
-    
+
     AUTHORITY_CHOICES = {
         "LOC": "LOC",
         "VIAF": "VIAF",
@@ -24,23 +26,78 @@ class LCSH(models.Model):
         "LOCAL": "Local",
         "OTHER": "Other",
     }
-    
+
     authority = models.CharField(choices=AUTHORITY_CHOICES, max_length=50)
-    
-    def __str__(self):
-        return self.heading
-    
-    def without_dates(self):
-        pass
+
+    components = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="component_of"
+    )
 
     class Meta:
         verbose_name = "LCSH"
         verbose_name_plural = "LCSH"
         ordering = ["heading"]
 
+    def __str__(self):
+        return self.heading
+
+    def without_dates(self):
+        pass
+
+    def save(self, **kwargs):
+        # setting category as proxy for create vs update
+        # make LOC subjects require lookup - change?
+        if (
+            self.authority == "LOC"
+            and not self.category
+        ):
+            self.set_loc_data()
+        super().save(**kwargs)
+        # set components after save to avoid calling save method twice
+        if (
+            self.category == "COMPLEX_SUBJECT"
+            and not self.components.exists()
+        ):
+            self.get_components()
+
+    @property
+    def loc(self):
+        uri = self.uri
+        if uri.startswith('n'):
+            entity = NameEntity(uri)
+        elif uri.startswith('sh'):
+            entity = SubjectEntity(uri)
+        else:
+            entity = LocEntity(uri)
+        return entity
+
+    def set_loc_data(self):
+        category_mapping = {
+            "http://www.loc.gov/mads/rdf/v1#PersonalName": "PERSONAL_NAME",
+            "http://www.loc.gov/mads/rdf/v1#CorporateName": "CORPORATE_NAME",
+            "http://www.loc.gov/mads/rdf/v1#Geographic": "GEOGRAPHIC",
+            "http://www.loc.gov/mads/rdf/v1#Topic": "TOPIC",
+            "http://www.loc.gov/mads/rdf/v1#ComplexSubject": "COMPLEX_SUBJECT",
+            "http://www.loc.gov/mads/rdf/v1#Title": "TITLE",
+            "http://www.loc.gov/mads/rdf/v1#GenreForm": "GENRE_FORM"
+        }
+        loc_entity = self.loc
+        self.heading = str(loc_entity.authoritative_label)
+        instances = [str(i) for i in loc_entity.instance_of]
+        category = list(set(category_mapping.keys()).intersection(instances))[0]
+        self.category = category_mapping[category]
+
+    def get_components(self):
+        loc_entity = self.loc
+        for c in loc_entity.components:
+            if isinstance(c, NameEntity) or isinstance(c, SubjectEntity):
+                uri_stub = c.uri.split('/')[-1]
+                component, _ = LCSH.objects.get_or_create(uri=uri_stub, authority="LOC")
+                self.components.add(component)
+
 
 class AcademicDiscipline(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -51,7 +108,7 @@ class APSDepartment(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "APS department"
 
@@ -61,9 +118,7 @@ class Speaker(models.Model):
         max_length=200,
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
-    lcsh = models.ForeignKey(
-        LCSH, blank=True, null=True, on_delete=models.SET_NULL
-    )
+    lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.display_name
@@ -71,11 +126,11 @@ class Speaker(models.Model):
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
         super().save(**kwargs)
-        
+
     def get_most_recent_affiliation(self):
-        #TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
+        # TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
         # most_recent_video = self.video_set.all().order_by('-time')[0]
-        return self.affiliation_set.all().order_by('-meeting')[0]
+        return self.affiliation_set.all().order_by("-meeting")[0]
 
     class Meta:
         ordering = ["display_name"]
@@ -84,8 +139,8 @@ class Speaker(models.Model):
 class Affiliation(models.Model):
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
     meeting = models.ForeignKey("Meeting", on_delete=models.CASCADE)
-    position = models.CharField(max_length = 255, blank=True)
-    institution = models.CharField(max_length = 255, blank=True)
+    position = models.CharField(max_length=255, blank=True)
+    institution = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         if self.position and self.institution:
@@ -169,14 +224,12 @@ class Video(ProgramInfo):
     symposium = models.ForeignKey(
         Symposium, blank=True, null=True, on_delete=models.SET_NULL
     )
-    date = models.DateField(
-        "Month, day, and year."
-    )
+    date = models.DateField("Month, day, and year.")
     order_in_day = models.IntegerField(default=0)
     speakers = models.ManyToManyField(Speaker, blank=True)
     abstract = models.TextField(blank=True)
     lcsh = models.ManyToManyField(LCSH, blank=True)
-    #TODO: add validation for this
+    # TODO: add validation for this
     doi = models.CharField(blank=True, max_length=255)
     diglib_pid = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)

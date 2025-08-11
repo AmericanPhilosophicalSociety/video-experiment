@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0003_rename_diglib_node_video_diglib_pid"),
     ]

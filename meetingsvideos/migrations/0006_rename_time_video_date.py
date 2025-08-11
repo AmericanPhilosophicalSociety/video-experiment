@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0005_alter_lcsh_options_video_order_in_day_and_more"),
     ]
