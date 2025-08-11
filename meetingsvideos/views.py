@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from .forms import AdvancedSearchForm
 
 from .models import (
     Video,
@@ -11,7 +12,7 @@ from .models import (
     Speaker,
 )
 
-from .service import basic_search
+from .service import basic_search, advanced_search
 
 
 # Create your views here.
@@ -36,22 +37,19 @@ def video_detail(request, video_id):
 
 
 def headings(request):
-    headings = LCSH.objects.all()
+    # returns only LCSH associated with videos, NOT those associated with speakers
+    headings = LCSH.objects.filter(video__isnull=False).distinct()
     return render(request, "meetingsvideos/headings.html", {"headings": headings})
 
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
-    if len(lcsh.speaker_set.all()) > 0:
-        videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-    else:
-        videos_by_speaker = None
-
-    return render(
-        request,
-        "meetingsvideos/heading_detail.html",
-        {"lcsh": lcsh, "videos_by_speaker": videos_by_speaker},
-    )
+    
+    # returns separate lists of videos tagged with this LCSH and videos whose speaker corresponds to this LCSH
+    videos_with_topic = lcsh.video_set.all()
+    videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
+        
+    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_with_topic": videos_with_topic, "videos_by_speaker": videos_by_speaker})
 
 
 def topics(request):
@@ -64,7 +62,8 @@ def topics(request):
 
 
 def names(request):
-    headings = LCSH.objects.filter(category="PERSONAL_NAME")
+    # returns only LCSH associated with videos, NOT those associated with speakers
+    headings = LCSH.objects.filter(Q(category="PERSONAL_NAME") & Q(video__isnull=False))
     return render(
         request,
         "meetingsvideos/heading_category.html",
@@ -73,7 +72,7 @@ def names(request):
 
 
 def corporate(request):
-    headings = LCSH.objects.filter(category="CORPORATE_NAME")
+    headings = LCSH.objects.filter(Q(category="CORPORATE_NAME") & Q(video__isnull=False))
     return render(
         request,
         "meetingsvideos/heading_category.html",
@@ -142,23 +141,29 @@ def speaker_detail(request, speaker_id):
 
 def search(request):
     context = {}
-    # context['advanced_search'] = AdvancedSearchForm()
+    context['advanced_search'] = AdvancedSearchForm()
     return render(request, "meetingsvideos/search.html", context)
 
 
 def search_results(request):
     if request.method == "POST":
-        query = request.POST["q"]
-        videos, speakers, subjects = basic_search(query)
-        return render(
-            request,
-            "meetingsvideos/search_results.html",
-            {
-                "query": query,
-                "videos": videos,
-                "speakers": speakers,
-                "subjects": subjects,
-            },
-        )
+        query = request.POST['q']
+        videos, speakers, subjects, disciplines, departments = basic_search(query)
+        return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos, "speakers": speakers, "subjects": subjects, "disciplines": disciplines, "departments": departments})
+    else:
+        return redirect("search")
+    
+    
+def search_results_advanced(request):
+    if request.method == "POST":
+        #TODO: remove this once everything is working
+        query = request.POST
+        form = AdvancedSearchForm(request.POST)
+        if form.is_valid():
+            videos = advanced_search(form)
+            return render(request, "meetingsvideos/search_results_advanced.html", {"query": query, "videos": videos})
+        #TODO: does anything else need to happen if form not valid?
+        else:
+            return redirect("search")
     else:
         return redirect("search")

@@ -4,8 +4,8 @@
 
 <h1>{{ lcsh.heading }}</h1>
 
-<!-- if LCSH is used for both speakers and subjects, display these separately -->
-{% if lcsh.video_set.all|length > 0 and lcsh.speaker_set.all|length > 0 %}
+<!-- if LCSH is used for both speakers and videos, display these separately -->
+{% if videos_with_topic|length > 0 and videos_by_speaker|length > 0 %}
 
 <h2>As speaker</h2>
 {% for video in videos_by_speaker %}
@@ -13,12 +13,12 @@
 {% endfor %}
 
 <h2>As subject</h2>
-{% for video in lcsh.video_set.all %}
+{% for video in videos_with_topic %}
     {% include "meetingsvideos/video_preview.html" %}
 {% endfor %}
 
 <!-- if LCSH only used as speaker, display all talks by this speaker -->
-{% elif lcsh.speaker_set.all|length > 0 %}
+{% elif videos_by_speaker|length > 0 %}
 
 {% for video in videos_by_speaker %}
     {% include "meetingsvideos/video_preview_no_names.html" %}
@@ -27,7 +27,7 @@
 <!-- if LCSH only used as subject, display all talks with this subject -->
 {% else %}
 
-{% for video in lcsh.video_set.all %}
+{% for video in videos_with_topic %}
     {% include "meetingsvideos/video_preview.html" %}
 {% endfor %}
 

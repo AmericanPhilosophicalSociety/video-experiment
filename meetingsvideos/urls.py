@@ -33,4 +33,5 @@ urlpatterns = [
     path("speakers/<int:speaker_id>/", views.speaker_detail, name="speaker_detail"),
     path("search/", views.search, name="search"),
     path("search_results/", views.search_results, name="search_results"),
+    path("search_results_advanced/", views.search_results_advanced, name="search_results_advanced"),
 ]
