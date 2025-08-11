@@ -58,10 +58,9 @@ def upload_lcsh():
                 )
 
                 # trigger creation via API
-                if row['token']:
+                if row["token"]:
                     lcsh, created = LCSH.objects.get_or_create(
-                        uri=row['token'],
-                        authority="LOC"
+                        uri=row["token"], authority="LOC"
                     )
 
                 else:

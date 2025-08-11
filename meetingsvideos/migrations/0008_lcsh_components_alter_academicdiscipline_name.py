@@ -4,20 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0007_alter_academicdiscipline_name'),
+        ("meetingsvideos", "0007_alter_academicdiscipline_name"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lcsh',
-            name='components',
-            field=models.ManyToManyField(blank=True, null=True, related_name='component_of', to='meetingsvideos.lcsh'),
+            model_name="lcsh",
+            name="components",
+            field=models.ManyToManyField(
+                blank=True,
+                null=True,
+                related_name="component_of",
+                to="meetingsvideos.lcsh",
+            ),
         ),
         migrations.AlterField(
-            model_name='academicdiscipline',
-            name='name',
+            model_name="academicdiscipline",
+            name="name",
             field=models.CharField(max_length=50),
         ),
     ]

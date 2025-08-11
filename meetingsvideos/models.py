@@ -47,25 +47,19 @@ class LCSH(models.Model):
     def save(self, **kwargs):
         # setting category as proxy for create vs update
         # make LOC subjects require lookup - change?
-        if (
-            self.authority == "LOC"
-            and not self.category
-        ):
+        if self.authority == "LOC" and not self.category:
             self.set_loc_data()
         super().save(**kwargs)
         # set components after save to avoid calling save method twice
-        if (
-            self.category == "COMPLEX_SUBJECT"
-            and not self.components.exists()
-        ):
+        if self.category == "COMPLEX_SUBJECT" and not self.components.exists():
             self.get_components()
 
     @property
     def loc(self):
         uri = self.uri
-        if uri.startswith('n'):
+        if uri.startswith("n"):
             entity = NameEntity(uri)
-        elif uri.startswith('sh'):
+        elif uri.startswith("sh"):
             entity = SubjectEntity(uri)
         else:
             entity = LocEntity(uri)
@@ -79,7 +73,7 @@ class LCSH(models.Model):
             "http://www.loc.gov/mads/rdf/v1#Topic": "TOPIC",
             "http://www.loc.gov/mads/rdf/v1#ComplexSubject": "COMPLEX_SUBJECT",
             "http://www.loc.gov/mads/rdf/v1#Title": "TITLE",
-            "http://www.loc.gov/mads/rdf/v1#GenreForm": "GENRE_FORM"
+            "http://www.loc.gov/mads/rdf/v1#GenreForm": "GENRE_FORM",
         }
         loc_entity = self.loc
         self.heading = str(loc_entity.authoritative_label)
@@ -91,7 +85,7 @@ class LCSH(models.Model):
         loc_entity = self.loc
         for c in loc_entity.components:
             if isinstance(c, NameEntity) or isinstance(c, SubjectEntity):
-                uri_stub = c.uri.split('/')[-1]
+                uri_stub = c.uri.split("/")[-1]
                 component, _ = LCSH.objects.get_or_create(uri=uri_stub, authority="LOC")
                 self.components.add(component)
 
@@ -128,9 +122,9 @@ class Speaker(models.Model):
         super().save(**kwargs)
 
     def get_most_recent_affiliation(self):
-        #TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
+        # TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
         if len(self.affiliation_set.all()) > 0:
-            return self.affiliation_set.all().order_by('-meeting')[0]
+            return self.affiliation_set.all().order_by("-meeting")[0]
         else:
             return ""
 

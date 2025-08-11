@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0008_lcsh_components_alter_academicdiscipline_name'),
+        ("meetingsvideos", "0008_lcsh_components_alter_academicdiscipline_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='academicdiscipline',
-            name='name',
+            model_name="academicdiscipline",
+            name="name",
             field=models.CharField(max_length=100),
         ),
     ]
