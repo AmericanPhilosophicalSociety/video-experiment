@@ -80,11 +80,11 @@ def upload_lcsh():
                     speaker, created = Speaker.objects.get_or_create(display_name=row["display_name"], video=video)
                     speaker.lcsh = lcsh
                     speaker.save()
-                    print("saved to speaker: " + str(speaker))
+                    # print("saved to speaker: " + str(speaker))
                 # else, add to associated video
                 else:
                     video.lcsh.add(lcsh)
                     video.save()
-                    print("saved to video: " + str(video))
+                    # print("saved to video: " + str(video))
             except Exception as e:
                 print(f"An error occurred: {e}")
