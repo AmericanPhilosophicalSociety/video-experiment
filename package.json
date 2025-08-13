@@ -1,0 +1,28 @@
+{
+  "name": "video-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development --watch",
+    "sass": "sass assets/styles/main.scss static/css/main.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmericanPhilosophicalSociety/video-experiment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AmericanPhilosophicalSociety/video-experiment/issues"
+  },
+  "homepage": "https://github.com/AmericanPhilosophicalSociety/video-experiment#readme",
+  "devDependencies": {
+    "sass": "^1.90.0",
+    "webpack": "^5.101.1",
+    "webpack-cli": "^6.0.1"
+  }
+}

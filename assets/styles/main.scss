@@ -1,0 +1,17 @@
+$aps-red: rgb(210, 35, 46);
+$light-gray: rgb(209, 211, 212);
+$medium-gray: rgb(138, 140, 142);
+$dark-gray: rgb(77, 77, 79);
+$aps-white: rgb(255, 255, 255);
+$aps-black: rgb(0, 0, 0);
+
+$body-font: Helvetica, sans-serif;
+$accent-font: Georgia, serif;
+
+body {
+    font: 100% $body-font;
+}
+
+.navbar-brand {
+    font: 100% $accent-font;
+}
