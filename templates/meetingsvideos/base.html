@@ -10,7 +10,9 @@
     </head>
     <body>
       <header class="navbar navbar-expand-lg sticky-top flex-md-nowrap p-0">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'index' %}">Meeetings Videos</a>
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'index' %}">
+          APS Meetings Videos
+        </a>
         <ul class="navbar-nav flex-row d-md-none">
           <li class="nav-item text-nowrap">
             <button class="nav-link px=3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
@@ -30,15 +32,15 @@
         </ul>
         <form id="navbarSearch" role="search" action="{% url 'search_results' %}" method="post" class="navbar-search w-100 collapse navbar-collapse">
           {% csrf_token %}
-          <input type="text" class="form-control w-100 rounded-0 border-0" placeholder="Search..." aria-label="Search" name="q">
+          <input type="text" class="form-control w-100 rounded-0 border-0 text-end" placeholder="Search..." aria-label="Search" name="q">
         </form>
       </header>
       <div class="container-fluid">
         <div class="row">
-          <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-            <div class="offcanvas-md offcanas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+          <div class="sidebar col-md-3 col-lg-2 p-0">
+            <div class="offcanvas-md offcanas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
               <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="sidebarMenuLabel">Meetings Videos</h5>
+                <h5 class="offcanvas-title" id="sidebarMenuLabel">APS Meetings Videos</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close">
                 </button>
               </div>
