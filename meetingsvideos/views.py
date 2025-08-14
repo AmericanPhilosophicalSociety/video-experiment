@@ -9,7 +9,7 @@ from .models import (
     Symposium,
     AcademicDiscipline,
     APSDepartment,
-    Speaker
+    Speaker,
 )
 
 from .service import basic_search, advanced_search
@@ -44,12 +44,20 @@ def headings(request):
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
-    
+
     # returns separate lists of videos tagged with this LCSH and videos whose speaker corresponds to this LCSH
     videos_with_topic = lcsh.video_set.all()
     videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-        
-    return render(request, "meetingsvideos/heading_detail.html", {"lcsh": lcsh, "videos_with_topic": videos_with_topic, "videos_by_speaker": videos_by_speaker})
+
+    return render(
+        request,
+        "meetingsvideos/heading_detail.html",
+        {
+            "lcsh": lcsh,
+            "videos_with_topic": videos_with_topic,
+            "videos_by_speaker": videos_by_speaker,
+        },
+    )
 
 
 def topics(request):
@@ -72,7 +80,9 @@ def names(request):
 
 
 def corporate(request):
-    headings = LCSH.objects.filter(Q(category="CORPORATE_NAME") & Q(video__isnull=False))
+    headings = LCSH.objects.filter(
+        Q(category="CORPORATE_NAME") & Q(video__isnull=False)
+    )
     return render(
         request,
         "meetingsvideos/heading_category.html",
@@ -91,7 +101,9 @@ def geographic(request):
 
 def symposium_detail(request, symposium_id):
     symposium = get_object_or_404(Symposium, pk=symposium_id)
-    return render(request, "meetingsvideos/symposium_detail.html", {"symposium": symposium})
+    return render(
+        request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
+    )
 
 
 def symposia(request):
@@ -101,26 +113,34 @@ def symposia(request):
 
 def discipline_detail(request, discipline_id):
     discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
-    return render(request, "meetingsvideos/discipline_detail.html", {"discipline": discipline})
+    return render(
+        request, "meetingsvideos/discipline_detail.html", {"discipline": discipline}
+    )
 
 
 def disciplines(request):
     disciplines = AcademicDiscipline.objects.all()
-    return render(request, "meetingsvideos/disciplines.html", {"disciplines": disciplines})
+    return render(
+        request, "meetingsvideos/disciplines.html", {"disciplines": disciplines}
+    )
 
 
 def department_detail(request, department_id):
     department = get_object_or_404(APSDepartment, pk=department_id)
-    return render(request, "meetingsvideos/department_detail.html", {"department": department})
+    return render(
+        request, "meetingsvideos/department_detail.html", {"department": department}
+    )
 
 
 def departments(request):
     departments = APSDepartment.objects.all()
-    return render(request, "meetingsvideos/departments.html", {"departments": departments})
+    return render(
+        request, "meetingsvideos/departments.html", {"departments": departments}
+    )
 
 
 def speakers(request):
-    speakers = Speaker.objects.all().order_by('lcsh')
+    speakers = Speaker.objects.all().order_by("lcsh")
     return render(request, "meetingsvideos/speakers.html", {"speakers": speakers})
 
 
@@ -131,28 +151,43 @@ def speaker_detail(request, speaker_id):
 
 def search(request):
     context = {}
-    context['advanced_search'] = AdvancedSearchForm()
+    context["advanced_search"] = AdvancedSearchForm()
     return render(request, "meetingsvideos/search.html", context)
 
 
 def search_results(request):
     if request.method == "POST":
-        query = request.POST['q']
+        query = request.POST["q"]
         videos, speakers, subjects, disciplines, departments = basic_search(query)
-        return render(request, "meetingsvideos/search_results.html", {"query": query, "videos": videos, "speakers": speakers, "subjects": subjects, "disciplines": disciplines, "departments": departments})
+        return render(
+            request,
+            "meetingsvideos/search_results.html",
+            {
+                "query": query,
+                "videos": videos,
+                "speakers": speakers,
+                "subjects": subjects,
+                "disciplines": disciplines,
+                "departments": departments,
+            },
+        )
     else:
         return redirect("search")
-    
-    
+
+
 def search_results_advanced(request):
     if request.method == "POST":
-        #TODO: remove this once everything is working
+        # TODO: remove this once everything is working
         query = request.POST
         form = AdvancedSearchForm(request.POST)
         if form.is_valid():
             videos = advanced_search(form)
-            return render(request, "meetingsvideos/search_results_advanced.html", {"query": query, "videos": videos})
-        #TODO: does anything else need to happen if form not valid?
+            return render(
+                request,
+                "meetingsvideos/search_results_advanced.html",
+                {"query": query, "videos": videos},
+            )
+        # TODO: does anything else need to happen if form not valid?
         else:
             return redirect("search")
     else:

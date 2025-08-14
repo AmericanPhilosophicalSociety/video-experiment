@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0002_lcsh_remove_video_lcsh_geographic_and_more"),
     ]

@@ -69,10 +69,10 @@ def process_affiliation(position, institution, meeting, speaker):
 
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
-def add_speaker_to_video(video, display_name, position_1, institution_1, position_2, institution_2, meeting):
-    speaker, created = Speaker.objects.get_or_create(
-            display_name=display_name
-        )
+def add_speaker_to_video(
+    video, display_name, position_1, institution_1, position_2, institution_2, meeting
+):
+    speaker, created = Speaker.objects.get_or_create(display_name=display_name)
 
     if created:
         try:
@@ -178,7 +178,6 @@ def process_video(row):
                 row["speaker_2_institution_2"],
                 meeting,
             )
-
 
         # add department and discipline
         departments = add_category_to_video(row["aps_departments"], APSDepartment, ",")
