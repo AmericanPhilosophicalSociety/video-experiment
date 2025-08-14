@@ -24,7 +24,6 @@ def process_date(str):
     return datetime.datetime(year, month, day, tzinfo=ZoneInfo("America/New_York"))
 
 
-
 def process_diglib_url(str):
     lst = str.split(":")
     return lst[-1]
@@ -56,10 +55,10 @@ def process_affiliation(position, institution, meeting, speaker):
 
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
-def add_speaker_to_video(video, display_name, position_1, institution_1, position_2, institution_2, meeting):
-    speaker, created = Speaker.objects.get_or_create(
-            display_name=display_name
-        )
+def add_speaker_to_video(
+    video, display_name, position_1, institution_1, position_2, institution_2, meeting
+):
+    speaker, created = Speaker.objects.get_or_create(display_name=display_name)
 
     if created:
         speaker.save()
@@ -97,9 +96,9 @@ def process_video(row, n, prev_date):
 
     # find or create symposium
     symposium, reminders = process_symposium(row["symposium"], meeting)
-    
+
     # create date object
-    date=process_date(row["date"])
+    date = process_date(row["date"])
     if date == prev_date:
         n += 1
     else:
@@ -155,7 +154,6 @@ def process_video(row, n, prev_date):
                 meeting,
             )
 
-
         # add department and discipline
         departments = add_category_to_video(row["aps_departments"], APSDepartment)
         if departments:
@@ -178,7 +176,7 @@ def upload_videos():
 
     with open("videos.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
-        
+
         # set up variables to determine order in day
         n = 1
         date = datetime.datetime(1900, 1, 1, tzinfo=ZoneInfo("America/New_York"))
