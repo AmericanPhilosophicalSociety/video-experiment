@@ -1,5 +1,14 @@
 from django.db import models
+from django.db.models.functions import Substr
+
 from locpy.api import LocEntity, NameEntity, SubjectEntity
+
+
+class AlphaManager(models.Manager):
+    """Custom manager to include first letter of LCSH heading, for use
+    in creating faceted lists"""
+    def with_first_letter(self):
+        return self.annotate(fl=Substr('lcsh__heading', 1, 1)).order_by("lcsh__heading")
 
 
 class LCSH(models.Model):
@@ -113,6 +122,7 @@ class Speaker(models.Model):
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
     lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
+    objects = AlphaManager()
 
     def __str__(self):
         return self.display_name

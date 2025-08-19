@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from .forms import AdvancedSearchForm
 
+from random import sample
+from string import ascii_uppercase
+
 from .models import (
     Video,
     Meeting,
@@ -16,6 +19,17 @@ from .service import basic_search, advanced_search
 
 
 # Create your views here.
+
+def landing_page(request):
+    # get all pks that exist - don't call object into memory
+    pks = Video.objects.values_list('pk', flat=True)
+    # choose three random pks
+    random_pks = sample(list(pks), 3)
+    # call selected object into memory
+    videos = Video.objects.filter(pk__in=random_pks)
+    return render(request, "meetingsvideos/landing-page.html", {"videos": videos})
+
+
 def index(request):
     videos = Video.objects.all()
     return render(request, "meetingsvideos/index.html", {"videos": videos})
@@ -140,8 +154,18 @@ def departments(request):
 
 
 def speakers(request):
-    speakers = Speaker.objects.all().order_by("lcsh")
-    return render(request, "meetingsvideos/speakers.html", {"speakers": speakers})
+    speakers = Speaker.objects.with_first_letter()
+    alpha_list = list(ascii_uppercase)
+    available_letters = set(speakers.values_list('fl', flat=True))
+    param = request.GET.get('q')
+    if param:
+        speakers = speakers.filter(fl=param)
+    return render(
+        request, "meetingsvideos/speakers.html", {
+            "alphabet": alpha_list,
+            "available_letters": available_letters,
+            "speakers": speakers}
+        )
 
 
 def speaker_detail(request, speaker_id):

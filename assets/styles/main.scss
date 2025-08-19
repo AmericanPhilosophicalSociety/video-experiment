@@ -171,6 +171,11 @@ main {
     border-color: $medium-gray;
 }
 
+.btn:active, .btn.active, .btn-primary:active {
+    background-color: $aps-red !important;
+    border-color: $medium-gray !important;
+}
+
 // video teaser
 
 .video-teaser {
@@ -237,4 +242,14 @@ main {
 .video-js {
     // height: 183px;
     width: 100%;
+}
+
+// facets
+
+.alphabet {
+    list-style: none;
+}
+
+.alphabet > li {
+    display: inline-block;
 }
