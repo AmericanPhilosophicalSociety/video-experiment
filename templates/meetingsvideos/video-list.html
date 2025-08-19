@@ -2,7 +2,7 @@
     {% if page_obj.has_next and forloop.last %}
         <span
             hx-get="{% url 'index' %}?page={{ page_obj.next_page_number }}"
-            hx-swap="end"
+            hx-swap="afterend"
             hx-trigger="revealed"
         >
         </span>
