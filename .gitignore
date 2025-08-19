@@ -6,3 +6,5 @@ __pycache__/
 db.sqlite3
 meetings-video-notes.md
 node_modules/
+static/css/main.css
+static/css/main.css.map
