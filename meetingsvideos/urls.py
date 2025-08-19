@@ -4,7 +4,8 @@ from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path('', views.landing_page, name='landing_page'),
+    path("index/", views.IndexView.as_view(), name="index"),
     path("meetings/", views.meetings, name="meetings"),
     path("meetings/<int:meeting_id>/", views.meeting_detail, name="meeting_detail"),
     path("videos/<int:video_id>/", views.video_detail, name="video_detail"),

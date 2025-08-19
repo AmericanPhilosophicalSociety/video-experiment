@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 from django.db.models import Q
 from .forms import AdvancedSearchForm
+from django.views.generic import ListView
 
 from random import sample
 from string import ascii_uppercase
@@ -30,9 +32,25 @@ def landing_page(request):
     return render(request, "meetingsvideos/landing-page.html", {"videos": videos})
 
 
-def index(request):
-    videos = Video.objects.all()
-    return render(request, "meetingsvideos/index.html", {"videos": videos})
+class IndexView(ListView):
+    model = Video
+    template_name = "meetingsvideos/index.html"
+    context_object_name = "videos"
+    paginate_by = 10
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "meetingsvideos/video-list.html"
+        else:
+            return self.template_name
+
+# def index(request):
+    # videos = Video.objects.all()
+    # paginator = Paginator(videos, 5)
+
+    # page_number = request.GET.get("page", 1)
+    # page_obj = paginator.get_page(page_number)
+    # return render(request, "meetingsvideos/index.html", {"videos": page_obj})
 
 
 def meeting_detail(request, meeting_id):
@@ -59,7 +77,8 @@ def headings(request):
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
 
-    # returns separate lists of videos tagged with this LCSH and videos whose speaker corresponds to this LCSH
+    # returns separate lists of videos tagged with this LCSH and videos whose
+    # speaker corresponds to this LCSH
     videos_with_topic = lcsh.video_set.all()
     videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
 

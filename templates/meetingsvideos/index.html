@@ -3,10 +3,7 @@
 {% block main %}
 <div class="container" id="video-container">
 
-{% for video in videos %}
+{% include "meetingsvideos/video-list.html" with videos=videos %}
 
-    {% include "meetingsvideos/video_preview.html" %}
-
-{% endfor %}
 </div>
 {% endblock %}
