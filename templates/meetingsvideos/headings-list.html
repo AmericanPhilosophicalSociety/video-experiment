@@ -1,7 +1,7 @@
-{% for heading_obj in headings %}
-    <div id="headings-list">
-        <ul>
-            <li><a href="{% url 'heading_detail' heading_obj.pk %}">{{ heading_obj.heading }}</a></li>
-        </ul>
-    </div>
-{% endfor %}
+<div id="headings-list">
+  <ul>
+    {% for heading_obj in headings %}
+      <li><a href="{% url 'heading_detail' heading_obj.pk %}">{{ heading_obj.heading }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
