@@ -131,12 +131,15 @@ class Speaker(models.Model):
     )
     lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
     objects = AlphaManager()
+    label = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.display_name
+        return self.label
 
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
+        if self.lcsh and not self.label:
+            self.label = self.lcsh.heading
         super().save(**kwargs)
 
     def get_most_recent_affiliation(self):
