@@ -11,6 +11,12 @@ class AlphaManager(models.Manager):
         return self.annotate(fl=Substr('lcsh__heading', 1, 1)).order_by("lcsh__heading")
 
 
+class LCSHManager(models.Manager):
+    """Only return LCSH headings when used as subjects"""
+    def only_topics(self):
+        return self.filter(video__isnull=False).distinct()
+
+
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
     uri = models.CharField(max_length=200, blank=True, null=True)
@@ -41,6 +47,8 @@ class LCSH(models.Model):
     components = models.ManyToManyField(
         "self", blank=True, symmetrical=False, related_name="component_of"
     )
+
+    objects = LCSHManager()
 
     class Meta:
         verbose_name = "LCSH"

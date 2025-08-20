@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator
 from django.db.models import Q
 from .forms import AdvancedSearchForm
 from django.views.generic import ListView
@@ -69,8 +68,8 @@ def video_detail(request, video_id):
 
 
 def headings(request):
-    # returns only LCSH associated with videos, NOT those associated with speakers
-    headings = LCSH.objects.filter(video__isnull=False).distinct()
+    # call manager method to exclude speakers
+    headings = LCSH.objects.only_topics()
     return render(request, "meetingsvideos/headings.html", {"headings": headings})
 
 
@@ -104,7 +103,7 @@ def topics(request):
 
 def names(request):
     # returns only LCSH associated with videos, NOT those associated with speakers
-    headings = LCSH.objects.filter(Q(category="PERSONAL_NAME") & Q(video__isnull=False))
+    headings = LCSH.objects.only_topics().filter(category="PERSONAL_NAME")
     return render(
         request,
         "meetingsvideos/heading_category.html",
@@ -113,9 +112,7 @@ def names(request):
 
 
 def corporate(request):
-    headings = LCSH.objects.filter(
-        Q(category="CORPORATE_NAME") & Q(video__isnull=False)
-    )
+    headings = LCSH.objects.only_topics().filter(category="CORPORATE_NAME")
     return render(
         request,
         "meetingsvideos/heading_category.html",
