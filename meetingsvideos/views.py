@@ -67,6 +67,12 @@ def video_detail(request, video_id):
     return render(request, "meetingsvideos/video_detail.html", {"video": video})
 
 
+class HeadingsView(ListView):
+    queryset = LCSH.objects.only_topics()
+    context_object_name = "headings"
+    template_name = "meetingsvideos/headings.html"
+
+
 def headings(request):
     # call manager method to exclude speakers
     headings = LCSH.objects.only_topics()
@@ -169,19 +175,21 @@ def departments(request):
     )
 
 
-def speakers(request):
-    speakers = Speaker.objects.with_first_letter()
+class SpeakersView(ListView):
+    queryset = Speaker.objects.with_first_letter()
+    context_object_name = "speakers"
+    template_name = "meetingsvideos/speakers.html"
     alpha_list = list(ascii_uppercase)
-    available_letters = set(speakers.values_list('fl', flat=True))
-    param = request.GET.get('q')
-    if param:
-        speakers = speakers.filter(fl=param)
-    return render(
-        request, "meetingsvideos/speakers.html", {
-            "alphabet": alpha_list,
-            "available_letters": available_letters,
-            "speakers": speakers}
-        )
+    available_letters = set(queryset.values_list('fl', flat=True))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["alphabet"] = self.alpha_list
+        context["available_letters"] = self.available_letters
+        param = self.request.GET.get('q')
+        if param:
+            context['speakers'] = self.queryset.filter(fl=param)
+        return context
 
 
 def speaker_detail(request, speaker_id):
