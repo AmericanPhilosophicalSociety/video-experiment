@@ -1,22 +1,35 @@
 {% extends "meetingsvideos/base.html" %}
 
 {% block main %}
+  <div class="container" id="video-container">
 
-<h1>Sort by Type</h1>
+    <h1>Subject Headings</h1>
 
-<h2><a href="{% url 'topics' %}">Topics</a></h2>
-<h2><a href="{% url 'names' %}">Names (personal)</a></h2>
-<h2><a href="{% url 'corporate' %}">Names (corporate)</a></h2>
-<h2><a href="{% url 'geographic' %}">Geographic</a></h2>
+    <ul class="nav nav-tabs" hx-target
+        hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
+                                  console.log(currentTab)
+                                  currentTab.setAttribute('aria-selected', 'false')
+                                  currentTab.classList.remove('active')
+                                  currentTab.removeAttribute('aria-current')
+                                  let newTab = event.target
+                                  newTab.setAttribute('aria-current', 'page')
+                                  newTab.setAttribute('aria-selected', 'true')
+                                  newTab.classList.add('active')">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=TOPIC&q=COMPLEX_SUBJECT" hx-target="#headings-list" hx-push-url="true">Topics</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=PERSONAL_NAME&q=CORPORATE_NAME" hx-target="#headings-list" hx-push-url="true">Names</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=GEOGRAPHIC" hx-target="#headings-list" hx-push-url="true">Geographic</a>
+      </li>
+</ul>
 
-<hr>
+{% include "meetingsvideos/headings-list.html" with headings=headings %}
 
-<h1>All Subject Headings</h1>
-
-{% for heading_obj in headings %}
-
-        <h2><a href="{% url 'heading_detail' heading_obj.pk %}">{{ heading_obj.heading }}</a></h2>
-
-{% endfor %}
-
+</div>
 {% endblock %}

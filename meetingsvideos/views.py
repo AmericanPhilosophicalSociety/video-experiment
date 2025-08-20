@@ -72,12 +72,19 @@ class HeadingsView(ListView):
     context_object_name = "headings"
     template_name = "meetingsvideos/headings.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        param = self.request.GET.getlist('q')
+        if param:
+            headings = self.queryset.filter(category__in=param)
+            context['headings'] = headings
+        return context
 
-def headings(request):
-    # call manager method to exclude speakers
-    headings = LCSH.objects.only_topics()
-    return render(request, "meetingsvideos/headings.html", {"headings": headings})
-
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "meetingsvideos/headings-list.html"
+        else:
+            return self.template_name
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
@@ -95,43 +102,6 @@ def heading_detail(request, pk):
             "videos_with_topic": videos_with_topic,
             "videos_by_speaker": videos_by_speaker,
         },
-    )
-
-
-def topics(request):
-    headings = LCSH.objects.filter(Q(category="TOPIC") | Q(category="COMPLEX_SUBJECT"))
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Topic"},
-    )
-
-
-def names(request):
-    # returns only LCSH associated with videos, NOT those associated with speakers
-    headings = LCSH.objects.only_topics().filter(category="PERSONAL_NAME")
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Names"},
-    )
-
-
-def corporate(request):
-    headings = LCSH.objects.only_topics().filter(category="CORPORATE_NAME")
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Corporate Entities"},
-    )
-
-
-def geographic(request):
-    headings = LCSH.objects.filter(category="GEOGRAPHIC")
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Geographic Entities"},
     )
 
 

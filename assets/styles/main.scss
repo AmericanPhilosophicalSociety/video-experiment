@@ -254,3 +254,30 @@ main {
 .alphabet > li {
     display: inline-block;
 }
+
+// nav tabs
+
+.nav-tabs {
+    margin-bottom: 1em;
+}
+
+.nav-link {
+    color: $dark-gray;
+}
+
+.nav-link:hover {
+    color: $aps-red;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: $aps-white;
+    background-color: $dark-gray;
+}
+
+// headings styles
+
+#headings-list li {
+    list-style: none;
+    line-height: 1.5;
+    font-size: 1.25em;
+}

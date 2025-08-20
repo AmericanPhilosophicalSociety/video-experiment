@@ -11,10 +11,6 @@ urlpatterns = [
     path("videos/<int:video_id>/", views.video_detail, name="video_detail"),
     path("headings", views.HeadingsView.as_view(), name="headings"),
     path("headings/<int:pk>/", views.heading_detail, name="heading_detail"),
-    path("headings/topics/", views.topics, name="topics"),
-    path("headings/names/", views.names, name="names"),
-    path("headings/corporate/", views.corporate, name="corporate"),
-    path("headings/geographic/", views.geographic, name="geographic"),
     path("symposia/", views.symposia, name="symposia"),
     path(
         "symposia/<int:symposium_id>/", views.symposium_detail, name="symposium_detail"
