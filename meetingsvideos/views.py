@@ -114,11 +114,6 @@ def meeting_detail(request, meeting_id):
     return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
 
 
-def meetings(request):
-    meetings = Meeting.objects.all()
-    return render(request, "meetingsvideos/meetings.html", {"meetings": meetings})
-
-
 def video_detail(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     return render(request, "meetingsvideos/video_detail.html", {"video": video})
