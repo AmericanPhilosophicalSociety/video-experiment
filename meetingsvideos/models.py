@@ -17,6 +17,12 @@ class LCSHManager(models.Manager):
         return self.filter(video__isnull=False).distinct()
 
 
+class VideoManager(models.Manager):
+    def exclude_inductions(self):
+        """Do not return member inductions in queryset"""
+        return self.exclude(admin_category="INDUCTION")
+
+
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
     uri = models.CharField(max_length=200, blank=True, null=True)
@@ -269,6 +275,8 @@ class Video(ProgramInfo):
 
     # add: default=Other
     academic_disciplines = models.ManyToManyField(AcademicDiscipline)
+
+    objects = VideoManager()
 
     def first_in_symposium(self):
         # videos = Symposium.objects.get(pk=self.symposium.pk)
