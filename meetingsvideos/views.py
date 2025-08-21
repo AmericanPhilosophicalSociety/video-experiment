@@ -18,10 +18,19 @@ from .models import (
 from .service import basic_search, advanced_search
 
 
-class FilterView(ListView):
-    queryset_method = None
+class TopicView(ListView):
     context_object_name = "topics"
     paginate_by = 25
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "meetingsvideos/item-list.html"
+        else:
+            return self.template_name
+
+
+class FilterView(TopicView):
+    queryset_method = None
 
     def get_queryset(self):
         queryset = self.queryset_method()
@@ -30,12 +39,6 @@ class FilterView(ListView):
             queryset = queryset.filter(category__in=param)
 
         return queryset
-
-    def get_template_names(self, *args, **kwargs):
-        if self.request.htmx:
-            return "meetingsvideos/item-list.html"
-        else:
-            return self.template_name
 
 
 class Landing(ListView):
@@ -53,10 +56,14 @@ class Landing(ListView):
 
 
 class IndexView(ListView):
-    model = Video
+    # model = Video
     template_name = "meetingsvideos/index.html"
     context_object_name = "videos"
     paginate_by = 10
+
+    def get_queryset(self):
+        queryset = Video.objects.exclude_inductions()
+        return queryset
 
     def get_template_names(self, *args, **kwargs):
         if self.request.htmx:
@@ -69,6 +76,11 @@ class HeadingsView(FilterView):
     queryset_method = LCSH.objects.only_topics
     template_name = "meetingsvideos/headings.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["link_template"] = "heading_detail"
+        return context
+
 
 class SpeakersView(FilterView):
     queryset_method = Speaker.objects.with_first_letter
@@ -80,6 +92,7 @@ class SpeakersView(FilterView):
         context = super().get_context_data(**kwargs)
         context["alphabet"] = self.alpha_list
         context["available_letters"] = self.available_letters
+        context["link_template"] = "speaker_detail"
         return context
 
 
