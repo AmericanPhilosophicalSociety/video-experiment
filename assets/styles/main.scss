@@ -10,6 +10,10 @@ $aps-black: rgb(0, 0, 0);
 $body-font: Raleway, sans-serif;
 $accent-font: Gelasio, serif;
 
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
     font: 100% $body-font;
     color: $aps-black;
