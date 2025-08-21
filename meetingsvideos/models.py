@@ -8,7 +8,7 @@ class AlphaManager(models.Manager):
     """Custom manager to include first letter of LCSH heading, for use
     in creating faceted lists"""
     def with_first_letter(self):
-        return self.annotate(fl=Substr('lcsh__heading', 1, 1)).order_by("lcsh__heading")
+        return self.annotate(category=Substr('lcsh__heading', 1, 1)).order_by("lcsh__heading")
 
 
 class LCSHManager(models.Manager):

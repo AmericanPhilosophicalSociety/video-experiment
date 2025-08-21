@@ -1,7 +1,13 @@
-<div id="headings-list">
-  <ul>
-    {% for heading_obj in headings %}
-      <li><a href="{% url 'heading_detail' heading_obj.pk %}">{{ heading_obj.heading }}</a></li>
-    {% endfor %}
-  </ul>
-</div>
+{% for topic in topics %}
+  {% url template_name topic.pk as the_url %}
+  <li><a href="{{ the_url }}">{{ topic }}</a></li>
+  {% if page_obj.has_next and forloop.last %}
+  {% querystring request.GET page=page_obj.next_page_number as params %}
+  <span
+      hx-get="{{ request.path }}{{ params }}"
+      hx-swap="afterend"
+      hx-trigger="revealed"
+  >
+  </span>
+{% endif %}
+{% endfor %}

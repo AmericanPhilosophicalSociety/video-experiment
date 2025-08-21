@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
 from .forms import AdvancedSearchForm
 from django.views.generic import ListView
 
@@ -19,16 +18,38 @@ from .models import (
 from .service import basic_search, advanced_search
 
 
-# Create your views here.
+class FilterView(ListView):
+    queryset_method = None
+    context_object_name = "topics"
+    paginate_by = 25
 
-def landing_page(request):
-    # get all pks that exist - don't call object into memory
-    pks = Video.objects.values_list('pk', flat=True)
-    # choose three random pks
-    random_pks = sample(list(pks), 3)
-    # call selected object into memory
-    videos = Video.objects.filter(pk__in=random_pks)
-    return render(request, "meetingsvideos/landing-page.html", {"videos": videos})
+    def get_queryset(self):
+        queryset = self.queryset_method()
+        param = self.request.GET.getlist('q')
+        if param:
+            queryset = queryset.filter(category__in=param)
+
+        return queryset
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "meetingsvideos/item-list.html"
+        else:
+            return self.template_name
+
+
+class Landing(ListView):
+    template_name = "meetingsvideos/landing-page.html"
+    context_object_name = "videos"
+
+    def get_queryset(self):
+        # get all pks that exist - don't call object into memory
+        pks = Video.objects.values_list('pk', flat=True)
+        # choose three random pks
+        random_pks = sample(list(pks), 3)
+        # call selected object into memory
+        queryset = Video.objects.filter(pk__in=random_pks)
+        return queryset
 
 
 class IndexView(ListView):
@@ -43,13 +64,23 @@ class IndexView(ListView):
         else:
             return self.template_name
 
-# def index(request):
-    # videos = Video.objects.all()
-    # paginator = Paginator(videos, 5)
 
-    # page_number = request.GET.get("page", 1)
-    # page_obj = paginator.get_page(page_number)
-    # return render(request, "meetingsvideos/index.html", {"videos": page_obj})
+class HeadingsView(FilterView):
+    queryset_method = LCSH.objects.only_topics
+    template_name = "meetingsvideos/headings.html"
+
+
+class SpeakersView(FilterView):
+    queryset_method = Speaker.objects.with_first_letter
+    template_name = "meetingsvideos/speakers.html"
+    alpha_list = list(ascii_uppercase)
+    available_letters = set(Speaker.objects.with_first_letter().values_list('category', flat=True))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["alphabet"] = self.alpha_list
+        context["available_letters"] = self.available_letters
+        return context
 
 
 def meeting_detail(request, meeting_id):
@@ -66,25 +97,6 @@ def video_detail(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     return render(request, "meetingsvideos/video_detail.html", {"video": video})
 
-
-class HeadingsView(ListView):
-    queryset = LCSH.objects.only_topics()
-    context_object_name = "headings"
-    template_name = "meetingsvideos/headings.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        param = self.request.GET.getlist('q')
-        if param:
-            headings = self.queryset.filter(category__in=param)
-            context['headings'] = headings
-        return context
-
-    def get_template_names(self, *args, **kwargs):
-        if self.request.htmx:
-            return "meetingsvideos/headings-list.html"
-        else:
-            return self.template_name
 
 def heading_detail(request, pk):
     lcsh = get_object_or_404(LCSH, pk=pk)
@@ -143,23 +155,6 @@ def departments(request):
     return render(
         request, "meetingsvideos/departments.html", {"departments": departments}
     )
-
-
-class SpeakersView(ListView):
-    queryset = Speaker.objects.with_first_letter()
-    context_object_name = "speakers"
-    template_name = "meetingsvideos/speakers.html"
-    alpha_list = list(ascii_uppercase)
-    available_letters = set(queryset.values_list('fl', flat=True))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["alphabet"] = self.alpha_list
-        context["available_letters"] = self.available_letters
-        param = self.request.GET.get('q')
-        if param:
-            context['speakers'] = self.queryset.filter(fl=param)
-        return context
 
 
 def speaker_detail(request, speaker_id):

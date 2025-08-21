@@ -29,7 +29,10 @@
       </li>
 </ul>
 
-{% include "meetingsvideos/headings-list.html" with headings=headings %}
-
+<div id="headings-list">
+        <ul>
+{% include "meetingsvideos/item-list.html" with template_name='heading_detail' topics=topics %}
+</ul>
+</div>
 </div>
 {% endblock %}

@@ -3,22 +3,22 @@
 {% block main %}
 
 <div class="container" id="video-container">
-<h1>Speakers</h1>
-<ul class="alphabet">
+  <h1>Speakers</h1>
+  <ul class="alphabet">
     {% for a in alphabet %}
-    {% if a in available_letters %}
-    <li><a href="{% url 'speakers' %}?q={{ a }}">{{ a }}</a></li>
-    {% else %}
-    <li>{{ a }}</li>
-    {% endif %}
+      {% if a in available_letters %}
+        <li><a href="{% url 'speakers' %}?q={{ a }}">{{ a }}</a></li>
+      {% else %}
+        <li>{{ a }}</li>
+      {% endif %}
     {% endfor %}
     <li><a href="{% url 'speakers' %}">all</a></li>
-</ul>
-{% for speaker in speakers %}
-
-    <h2><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker.lcsh }}</a></h2>
-
-{% endfor %}
+  </ul>
+  <div id="headings-list">
+    <ul>
+      {% include "meetingsvideos/item-list.html" with template_name='speaker_detail' topics=topics %}
+    </ul>
+  </div>
 </div>
 
 {% endblock %}
