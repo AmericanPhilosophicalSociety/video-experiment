@@ -96,6 +96,19 @@ class SpeakersView(FilterView):
         return context
 
 
+class MeetingsList(ListView):
+    model = Meeting
+    template_name = "meetingsvideos/meetings.html"
+    context_object_name = "meetings"
+    paginate_by = 10
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "meetingsvideos/meetings-list.html"
+        else:
+            return self.template_name
+
+
 def meeting_detail(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})

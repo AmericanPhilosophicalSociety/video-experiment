@@ -179,19 +179,20 @@ main {
     background-color: $aps-red !important;
     border-color: $medium-gray !important;
 }
+// cards
 
-// video teaser
-
-.video-teaser {
+.teaser {
     border-radius: 16px;
     max-width: 540px;
     margin-bottom: 3px;
 }
 
-.video-teaser > .card-header {
+.teaser > .card-header {
     border-left: solid $aps-red;
     font: 1.75em $accent-font;
 }
+
+// video teaser
 
 .video-teaser > img {
     background-color: $dark-gray;
@@ -284,4 +285,9 @@ main {
     list-style: none;
     line-height: 1.5;
     font-size: 1.25em;
+}
+
+// meeting lists
+.meeting-teaser {
+    border-radius: 0.375rem 0.375rem 16px 16px;
 }
