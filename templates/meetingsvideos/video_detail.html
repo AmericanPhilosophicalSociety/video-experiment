@@ -14,7 +14,7 @@
   <ul class="list-group speaker-list">
   {% for speaker in video.speakers.all %}
   <li class="list-group-item">
-  <h3><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker }}</a></h3>
+  <h3><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker.display_name }}</a></h3>
     {% for affiliation in speaker.affiliation_set.all %}
     {{ affiliation|linebreaks }}
     {% endfor %}
