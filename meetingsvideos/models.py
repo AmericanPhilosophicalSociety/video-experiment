@@ -307,4 +307,5 @@ class Video(ProgramInfo):
             return None
 
     class Meta:
-        ordering = ["title"]
+        # ordering = ["title"]
+        ordering = ["date", "order_in_day"]
