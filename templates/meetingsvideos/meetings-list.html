@@ -2,7 +2,7 @@
   <div class="card teaser meeting-teaser">
     <h3 class="card-header"><a href="{% url 'meeting_detail' meeting.pk %}">{{ meeting.display_date }}</a></h3>
     <div class="card-body">
-      <p>{{ meeting.start_date }} - {{ meeting.end_date }}</p>
+      <p>{{ meeting.start_date|date:"F j" }}-{{ meeting.end_date|date:"j, Y" }}</p>
       <a href="{% url 'meeting_detail' meeting.pk %}" class="btn btn-primary">View talks</a>
     </div>
   </div>
