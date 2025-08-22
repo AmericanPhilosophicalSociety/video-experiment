@@ -243,6 +243,11 @@ main {
     margin-top: 0.5em;
 }
 
+.video-date {
+    margin: 0.5em;
+    color: $medium-gray;
+}
+
 // size for video player
 
 .video-js {
@@ -290,4 +295,14 @@ main {
 // meeting lists
 .meeting-teaser {
     border-radius: 0.375rem 0.375rem 16px 16px;
+}
+
+.accordion-header > .accordion-button {
+    font: 0.75em $accent-font;
+    background-color: $light-gray;
+}
+
+.accordion-button:not(.collapsed) {
+    color: $aps-white;
+    background-color: $aps-red;
 }
