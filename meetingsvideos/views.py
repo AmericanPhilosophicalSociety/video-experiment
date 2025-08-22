@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import AdvancedSearchForm
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from random import sample
 from string import ascii_uppercase
@@ -70,6 +70,13 @@ class IndexView(ListView):
             return "meetingsvideos/video-list.html"
         else:
             return self.template_name
+
+
+class VideoDetail(DetailView):
+    model = Video
+    context_object_name = "video"
+    template_name = "meetingsvideos/video_detail.html"
+
 
 
 class HeadingsView(FilterView):
