@@ -29,7 +29,15 @@
                 <div class="card landing-card">
                     <h5 class="card-header">{{ video.title }}</h5>
                     <div class="card-body">
-                        <h6 class="card-title">{{ video.speakers.all|join:", " }}</h6>
+                        <h6 class="card-title">
+                          {% for speaker in video.speakers.all %}
+                            {% if forloop.last %}
+                              {{ speaker.display_name }}
+                            {% else %}
+                              {{ speaker.display_name }}, 
+                            {% endif %}
+                          {% endfor %}
+                        </h6>
                         <!--<h6 class="card-subtitle mb-2">{{ video.speaker }}</h6>-->
                         <p class="card-text">{{ video.abstract }}</p>
                     </div>
