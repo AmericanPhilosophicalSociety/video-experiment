@@ -21,7 +21,7 @@ urlpatterns = [
         views.discipline_detail,
         name="discipline_detail",
     ),
-    path("departments/", views.departments, name="departments"),
+    path("departments/", views.DepartmentList.as_view(), name="departments"),
     path(
         "departments/<int:department_id>/",
         views.department_detail,

@@ -128,6 +128,12 @@ class DisciplineList(ListView):
     context_object_name = "topics"
 
 
+class DepartmentList(ListView):
+    model = APSDepartment
+    template_name = "meetingsvideos/departments.html"
+    context_object_name = "topics"
+
+
 def meeting_detail(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
@@ -173,13 +179,6 @@ def discipline_detail(request, discipline_id):
     discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
     return render(
         request, "meetingsvideos/discipline_detail.html", {"discipline": discipline}
-    )
-
-
-def disciplines(request):
-    disciplines = AcademicDiscipline.objects.all()
-    return render(
-        request, "meetingsvideos/disciplines.html", {"disciplines": disciplines}
     )
 
 
