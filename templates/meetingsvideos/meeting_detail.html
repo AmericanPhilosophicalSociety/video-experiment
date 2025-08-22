@@ -1,7 +1,7 @@
 {% extends "meetingsvideos/base.html" %}
 
 {% block main %}
-
+<div class="container" id="video-container">
 <h1>{{ meeting.display_date }}</h1>
 
 {% for video in meeting.videos_by_time %}
@@ -10,8 +10,8 @@
     <h2>{{ video.date }}</h2>
 {% endif %}
 
-{% include "meetingsvideos/video_preview_symposium.html" %}
+{% include "meetingsvideos/video_preview.html" with with_dates=False %}
 
 {% endfor %}
-
+</div>
 {% endblock %}

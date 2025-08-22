@@ -21,12 +21,18 @@ from .service import basic_search, advanced_search
 class TopicView(ListView):
     context_object_name = "topics"
     paginate_by = 25
+    link_template = None
 
     def get_template_names(self, *args, **kwargs):
         if self.request.htmx:
             return "meetingsvideos/item-list.html"
         else:
             return self.template_name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['link_template'] = self.link_template
+        return context
 
 
 class FilterView(TopicView):
@@ -78,15 +84,10 @@ class VideoDetail(DetailView):
     template_name = "meetingsvideos/video_detail.html"
 
 
-
 class HeadingsView(FilterView):
     queryset_method = LCSH.objects.only_topics
     template_name = "meetingsvideos/headings.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["link_template"] = "heading_detail"
-        return context
+    link_template = "heading_detail"
 
 
 class SpeakersView(FilterView):
@@ -94,12 +95,12 @@ class SpeakersView(FilterView):
     template_name = "meetingsvideos/speakers.html"
     alpha_list = list(ascii_uppercase)
     available_letters = set(Speaker.objects.with_first_letter().values_list('category', flat=True))
+    link_template = "speaker_detail"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["alphabet"] = self.alpha_list
         context["available_letters"] = self.available_letters
-        context["link_template"] = "speaker_detail"
         return context
 
 
@@ -114,6 +115,16 @@ class MeetingsList(ListView):
             return "meetingsvideos/meetings-list.html"
         else:
             return self.template_name
+
+
+class MeetingDetail(DetailView):
+    model = Meeting
+    context_object_name = "meeting"
+    template_name = "meetingsvideos/meeting_detail.html"
+
+def meeting_detail(request, meeting_id):
+    meeting = get_object_or_404(Meeting, pk=meeting_id)
+    return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
 
 
 class SymposiumList(ListView):
@@ -132,21 +143,13 @@ class SymposiumList(ListView):
 class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
+    link_template = "discipline_detail"    
 
 
 class DepartmentList(TopicView):
     model = APSDepartment
     template_name = "meetingsvideos/departments.html"
-
-
-def meeting_detail(request, meeting_id):
-    meeting = get_object_or_404(Meeting, pk=meeting_id)
-    return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
-
-
-def video_detail(request, video_id):
-    video = get_object_or_404(Video, pk=video_id)
-    return render(request, "meetingsvideos/video_detail.html", {"video": video})
+    link_template = "department_detail"
 
 
 def heading_detail(request, pk):
