@@ -15,7 +15,7 @@ urlpatterns = [
     path(
         "symposia/<int:symposium_id>/", views.symposium_detail, name="symposium_detail"
     ),
-    path("disciplines/", views.disciplines, name="disciplines"),
+    path("disciplines/", views.DisciplineList.as_view(), name="disciplines"),
     path(
         "disciplines/<int:discipline_id>/",
         views.discipline_detail,

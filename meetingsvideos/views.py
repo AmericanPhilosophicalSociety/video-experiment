@@ -122,6 +122,12 @@ class SymposiumList(ListView):
             return self.template_name
 
 
+class DisciplineList(ListView):
+    model = AcademicDiscipline
+    template_name = "meetingsvideos/disciplines.html"
+    context_object_name = "topics"
+
+
 def meeting_detail(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
