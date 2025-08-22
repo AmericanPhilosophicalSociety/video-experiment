@@ -109,6 +109,19 @@ class MeetingsList(ListView):
             return self.template_name
 
 
+class SymposiumList(ListView):
+    model = Symposium
+    template_name = "meetingsvideos/symposia.html"
+    context_object_name = "symposia"
+    paginate_by = 10
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "meetingsvideos/symposium-list.html"
+        else:
+            return self.template_name
+
+
 def meeting_detail(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})

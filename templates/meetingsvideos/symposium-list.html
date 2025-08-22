@@ -1,0 +1,50 @@
+{% load meetingsvideos_extras %} 
+  {% with offset=page_obj.number|pagination_offset %}
+  {% for symposium in symposia %}
+    {% with iter=forloop.counter|add:offset %}
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        {% if forloop.first and page_obj.number == 1 %}
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ iter }}" aria-expanded="true" aria-controls="collapse-{{ iter }}">
+            {{ symposium.title }}
+          </button>
+        </h2>
+        <div id="collapse-{{ iter }}" class="accordion-collapse collapse show" data-bs-parent="#symposium-accordion">
+        {% else%}
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ iter }}" aria-expanded="false" aria-controls="collapse-{{ iter }}">
+            {{ symposium.title }}
+          </button>
+        </h2>
+        <div id="collapse-{{ iter }}" class="accordion-collapse collapse" data-bs-parent="#symposium-accordion">
+        {% endif %}
+        {% endwith %}
+        <div class="accordion-body">
+          <h4>{{ symposium.meeting }}</h4>
+          <ul>
+            {% for video in symposium.videos_by_time %}
+              <dl>
+                <dt><a href="{% url 'video_detail' video.pk %}">{{ video.title }}</a></dt>
+                <dl>{% for speaker in video.speakers.all %}
+                      {% if forloop.last %}
+                        {{ speaker.display_name }}
+                      {% else %}
+                        {{ speaker.display_name }}, 
+                      {% endif %}
+                    {% endfor %}
+                </dl>
+              </dl>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% if page_obj.has_next and forloop.last %}
+    <span
+        hx-get="{% url 'symposia' %}?page={{ page_obj.next_page_number }}"
+        hx-swap="afterend"
+        hx-trigger="revealed"
+    >
+    </span>
+    {% endif %}
+  {% endfor %}
+{% endwith %}

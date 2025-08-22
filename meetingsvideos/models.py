@@ -235,7 +235,9 @@ class Symposium(ProgramInfo):
 
     class Meta:
         verbose_name_plural = "Symposia"
-        ordering = ["title"]
+        # for now, naively order by PK - perhaps add explicit date field in
+        # future for ordering
+        # ordering = ["title"]
 
 
 class Video(ProgramInfo):
