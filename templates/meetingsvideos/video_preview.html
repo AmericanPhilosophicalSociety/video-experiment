@@ -20,7 +20,9 @@
             </li>
             {% endfor %}
         </ul>
+        {% if show_dates %}
         <div class="video-date">{{ video.date|date:"F j, Y" }}</div>
+        {% endif %}
         {% if video.abstract %}
         <p>{{ video.abstract }}</p>
         {% endif %}

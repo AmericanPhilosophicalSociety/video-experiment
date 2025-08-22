@@ -7,7 +7,7 @@
 
 {% for video in symposium.videos_by_time %}
 
-{% include "meetingsvideos/video_preview.html" %}
+{% include "meetingsvideos/video_preview.html" with show_dates=True %}
 
 {% endfor %}
 

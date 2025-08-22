@@ -13,12 +13,12 @@
 
     <h2>Talks by this speaker</h2>
     {% for video in speaker.video_set.all %}
-        {% include "meetingsvideos/video_preview.html" %}
+        {% include "meetingsvideos/video_preview.html" with show_dates=True %}
     {% endfor %}
 
     <h2>Talks about this speaker</h2>
     {% for video in speaker.lcsh.video_set.all %}
-        {% include "meetingsvideos/video_preview.html" %}
+        {% include "meetingsvideos/video_preview.html" with show_dates=True %}
     {% endfor %}
 
     <!-- else, display only talks by this speaker -->
@@ -26,7 +26,7 @@
 
     <h2>Talks</h2>
     {% for video in speaker.video_set.all %}
-        {% include "meetingsvideos/video_preview.html" %}
+        {% include "meetingsvideos/video_preview.html" with show_dates=True %}
     {% endfor %}
 
     {% endif %}

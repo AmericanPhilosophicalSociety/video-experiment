@@ -5,7 +5,7 @@
 <h1>{{ discipline.name }}</h1>
 
 {% for video in discipline.video_set.all %}
-    {% include "meetingsvideos/video_preview.html" %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=True %}
 {% endfor %}
 
 {% endblock %}
