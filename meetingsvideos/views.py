@@ -122,16 +122,14 @@ class SymposiumList(ListView):
             return self.template_name
 
 
-class DisciplineList(ListView):
+class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
-    context_object_name = "topics"
 
 
-class DepartmentList(ListView):
+class DepartmentList(TopicView):
     model = APSDepartment
     template_name = "meetingsvideos/departments.html"
-    context_object_name = "topics"
 
 
 def meeting_detail(request, meeting_id):
@@ -170,11 +168,6 @@ def symposium_detail(request, symposium_id):
     )
 
 
-def symposia(request):
-    symposia = Symposium.objects.all()
-    return render(request, "meetingsvideos/symposia.html", {"symposia": symposia})
-
-
 def discipline_detail(request, discipline_id):
     discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
     return render(
@@ -186,13 +179,6 @@ def department_detail(request, department_id):
     department = get_object_or_404(APSDepartment, pk=department_id)
     return render(
         request, "meetingsvideos/department_detail.html", {"department": department}
-    )
-
-
-def departments(request):
-    departments = APSDepartment.objects.all()
-    return render(
-        request, "meetingsvideos/departments.html", {"departments": departments}
     )
 
 
