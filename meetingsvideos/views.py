@@ -122,10 +122,6 @@ class MeetingDetail(DetailView):
     context_object_name = "meeting"
     template_name = "meetingsvideos/meeting_detail.html"
 
-def meeting_detail(request, meeting_id):
-    meeting = get_object_or_404(Meeting, pk=meeting_id)
-    return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
-
 
 class SymposiumList(ListView):
     model = Symposium
@@ -143,7 +139,7 @@ class SymposiumList(ListView):
 class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
-    link_template = "discipline_detail"    
+    link_template = "discipline_detail"
 
 
 class DepartmentList(TopicView):
@@ -152,8 +148,8 @@ class DepartmentList(TopicView):
     link_template = "department_detail"
 
 
-def heading_detail(request, pk):
-    lcsh = get_object_or_404(LCSH, pk=pk)
+def heading_detail(request, slug):
+    lcsh = get_object_or_404(LCSH, slug=slug)
 
     # returns separate lists of videos tagged with this LCSH and videos whose
     # speaker corresponds to this LCSH
@@ -171,29 +167,29 @@ def heading_detail(request, pk):
     )
 
 
-def symposium_detail(request, symposium_id):
-    symposium = get_object_or_404(Symposium, pk=symposium_id)
+def symposium_detail(request, slug):
+    symposium = get_object_or_404(Symposium, slug=slug)
     return render(
         request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
     )
 
 
-def discipline_detail(request, discipline_id):
-    discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
+def discipline_detail(request, slug):
+    discipline = get_object_or_404(AcademicDiscipline, slug=slug)
     return render(
         request, "meetingsvideos/discipline_detail.html", {"discipline": discipline}
     )
 
 
-def department_detail(request, department_id):
-    department = get_object_or_404(APSDepartment, pk=department_id)
+def department_detail(request, slug):
+    department = get_object_or_404(APSDepartment, slug=slug)
     return render(
         request, "meetingsvideos/department_detail.html", {"department": department}
     )
 
 
-def speaker_detail(request, speaker_id):
-    speaker = get_object_or_404(Speaker, pk=speaker_id)
+def speaker_detail(request, slug):
+    speaker = get_object_or_404(Speaker, slug=slug)
     return render(request, "meetingsvideos/speaker_detail.html", {"speaker": speaker})
 
 

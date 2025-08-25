@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.functions import Substr
+from autoslug import AutoSlugField
 
 from locpy.api import LocEntity, NameEntity, SubjectEntity
 
@@ -26,6 +27,7 @@ class VideoManager(models.Manager):
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
     uri = models.CharField(max_length=200, blank=True, null=True)
+    slug = AutoSlugField(populate_from="heading", unique=True)
 
     CATEGORY_CHOICES = {
         "PERSONAL_NAME": "Personal name",
@@ -115,6 +117,7 @@ class LCSH(models.Model):
 
 class AcademicDiscipline(models.Model):
     name = models.CharField(max_length=100)
+    slug = AutoSlugField(populate_from="name", unique=True)
 
     def __str__(self):
         return self.name
@@ -122,6 +125,7 @@ class AcademicDiscipline(models.Model):
 
 class APSDepartment(models.Model):
     name = models.CharField(max_length=50)
+    slug = AutoSlugField(populate_from="name", unique=True)
 
     def __str__(self):
         return self.name
@@ -138,6 +142,7 @@ class Speaker(models.Model):
     lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
     objects = AlphaManager()
     label = models.CharField(max_length=200, blank=True, null=True)
+    slug = AutoSlugField(populate_from="display_name", unique=True)
 
     def __str__(self):
         return self.label
@@ -201,6 +206,7 @@ class Meeting(WithNotes):
         help_text="If this meeting has a page on the APS website, link it here",
         blank=True,
     )
+    slug = AutoSlugField(populate_from="display_date", unique=True)
 
     def videos_by_time(self):
         return self.video_set.all().order_by("date", "order_in_day")
@@ -215,6 +221,7 @@ class Meeting(WithNotes):
 class ProgramInfo(WithNotes):
     title = models.CharField(max_length=200)
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    slug = AutoSlugField(populate_from="title", unique=True)
 
     def __str__(self):
         return self.title

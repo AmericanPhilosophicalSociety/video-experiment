@@ -7,28 +7,28 @@ urlpatterns = [
     path('', views.Landing.as_view(), name='landing_page'),
     path("index/", views.IndexView.as_view(), name="index"),
     path("meetings/", views.MeetingsList.as_view(), name="meetings"),
-    path("meetings/<int:pk>/", views.MeetingDetail.as_view(), name="meeting_detail"),
-    path("videos/<int:pk>/", views.VideoDetail.as_view(), name="video_detail"),
+    path("meetings/<slug:slug>/", views.MeetingDetail.as_view(), name="meeting_detail"),
+    path("videos/<slug:slug>/", views.VideoDetail.as_view(), name="video_detail"),
     path("headings", views.HeadingsView.as_view(), name="headings"),
-    path("headings/<int:pk>/", views.heading_detail, name="heading_detail"),
+    path("headings/<slug:slug>/", views.heading_detail, name="heading_detail"),
     path("symposia/", views.SymposiumList.as_view(), name="symposia"),
     path(
-        "symposia/<int:symposium_id>/", views.symposium_detail, name="symposium_detail"
+        "symposia/<slug:slug>/", views.symposium_detail, name="symposium_detail"
     ),
     path("disciplines/", views.DisciplineList.as_view(), name="disciplines"),
     path(
-        "disciplines/<int:discipline_id>/",
+        "disciplines/<slug:slug>/",
         views.discipline_detail,
         name="discipline_detail",
     ),
     path("departments/", views.DepartmentList.as_view(), name="departments"),
     path(
-        "departments/<int:department_id>/",
+        "departments/<slug:slug>/",
         views.department_detail,
         name="department_detail",
     ),
     path("speakers/", views.SpeakersView.as_view(), name="speakers"),
-    path("speakers/<int:speaker_id>/", views.speaker_detail, name="speaker_detail"),
+    path("speakers/<slug:slug>/", views.speaker_detail, name="speaker_detail"),
     path("search/", views.search, name="search"),
     path("search_results/", views.search_results, name="search_results"),
     path(

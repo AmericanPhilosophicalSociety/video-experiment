@@ -14,7 +14,7 @@
   <ul class="list-group speaker-list">
   {% for speaker in video.speakers.all %}
   <li class="list-group-item">
-  <h3><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker.display_name }}</a></h3>
+  <h3><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h3>
     {% for affiliation in speaker.affiliation_set.all %}
     {{ affiliation|linebreaks }}
     {% endfor %}
@@ -55,7 +55,7 @@
 <table class="table table-striped table-hover table-bordered" id="metadata-table">
   <tr>
     <td>Meeting</td>
-    <td><a href="{% url 'meeting_detail' video.meeting.pk %}">{{ video.meeting }}</a></td>
+    <td><a href="{% url 'meeting_detail' video.meeting.slug %}">{{ video.meeting }}</a></td>
   </tr>
   {% if video.abstract %}
   <tr>
@@ -71,7 +71,7 @@
     <td><p>Academic Discipline</p></td>
     <td>
       {% for discipline in video.academic_disciplines.all %}
-        <p><a href="{% url 'discipline_detail' discipline.pk %}">{{ discipline }}</a></p>
+        <p><a href="{% url 'discipline_detail' discipline.slug %}">{{ discipline }}</a></p>
       {% endfor %}
     </td>
   </tr>
@@ -79,7 +79,7 @@
     <td><p>Subjects</p></td>
     <td>
       {% for heading in video.lcsh.all %}
-        <p><a href="{% url 'heading_detail' heading.pk %}">{{ heading }}</a></p>
+        <p><a href="{% url 'heading_detail' heading.slug %}">{{ heading }}</a></p>
       {% endfor %}
     </td>
   </tr>
@@ -88,7 +88,7 @@
     <td>APS Department</td>
     <td>
       {% for department in video.aps_departments.all %}
-        <p><a href="{% url 'department_detail' department.pk %}">{{ department }}</a></p>
+        <p><a href="{% url 'department_detail' department.slug %}">{{ department }}</a></p>
       {% endfor %}</td>
   </tr>
   {% endif %}
@@ -97,19 +97,19 @@
   <table class="table table-borderless">
     <tr>
       <td>Part of symposium:</td>
-      <td><a href="{% url 'symposium_detail' video.symposium.pk %}">{{ video.symposium.title }}</a></td>
+      <td><a href="{% url 'symposium_detail' video.symposium.slug %}">{{ video.symposium.title }}</a></td>
     </tr>
   {% if video.get_prev %}
     <tr>
       <td>Previous video:</td>
-      <td><a href="{% url 'video_detail' video.get_prev.pk %}">{{ video.get_prev }}</a></td>
+      <td><a href="{% url 'video_detail' video.get_prev.slug %}">{{ video.get_prev }}</a></td>
     </tr>
   {% endif %}
 
   {% if video.get_next %}
     <tr>
       <td>Next video:</td>
-      <td><a href="{% url 'video_detail' video.get_next.pk %}">{{ video.get_next }}</a></td>
+      <td><a href="{% url 'video_detail' video.get_next.slug %}">{{ video.get_next }}</a></td>
     </tr>
   {% endif %}
   </table>

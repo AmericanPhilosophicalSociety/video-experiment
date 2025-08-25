@@ -42,7 +42,7 @@
                         <p class="card-text">{{ video.abstract }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="{% url 'video_detail' video.pk %}" class="btn btn-primary">View talk</a>
+                        <a href="{% url 'video_detail' video.slug %}" class="btn btn-primary">View talk</a>
                     </div>
                 </div>
             {% endfor %}

@@ -1,4 +1,4 @@
-<h3><a href="{% url 'video_detail' video.pk %}">{{ video.title }}</a></h3>
+<h3><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></h3>
 
 {% if video.abstract %}
     <p>{{ video.abstract }}</p>

@@ -29,7 +29,7 @@
 {% if speakers %}
 
 {% for speaker in speakers %}
-    <p><a href="{% url 'speaker_detail' speaker.pk %}">{{ speaker.display_name }}</a></p>
+    <p><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></p>
 {% endfor %}
 
 {% else %}
@@ -46,7 +46,7 @@
 {% if subjects %}
 
 {% for subject in subjects %}
-    <p><a href="{% url 'heading_detail' subject.pk %}">{{ subject.heading }}</a></p>
+    <p><a href="{% url 'heading_detail' subject.slug %}">{{ subject.heading }}</a></p>
 {% endfor %}
 
 {% else %}
@@ -63,7 +63,7 @@
 {% if disciplines %}
 
 {% for discipline in disciplines %}
-    <p><a href="{% url 'discipline_detail' discipline.pk %}">{{ discipline.name }}</a></p>
+    <p><a href="{% url 'discipline_detail' discipline.slug %}">{{ discipline.name }}</a></p>
 {% endfor %}
 
 {% else %}
@@ -80,7 +80,7 @@
 {% if departments %}
 
 {% for department in departments %}
-    <p><a href="{% url 'department_detail' department.pk %}">{{ department.name }}</a></p>
+    <p><a href="{% url 'department_detail' department.slug %}">{{ department.name }}</a></p>
 {% endfor %}
 
 {% else %}

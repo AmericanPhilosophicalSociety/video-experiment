@@ -23,7 +23,7 @@
           <ul>
             {% for video in symposium.videos_by_time %}
               <dl>
-                <dt><a href="{% url 'video_detail' video.pk %}">{{ video.title }}</a></dt>
+                <dt><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></dt>
                 <dl>{% for speaker in video.speakers.all %}
                       {% if forloop.last %}
                         {{ speaker.display_name }}
