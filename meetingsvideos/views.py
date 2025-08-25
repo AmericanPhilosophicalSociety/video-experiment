@@ -97,6 +97,18 @@ class HeadingsView(FilterView):
     link_template = "heading_detail"
 
 
+class HeadingDetail(DetailView):
+    model = LCSH
+    context_object_name = "lcsh"
+    template_name = "meetingsvideos/heading_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        videos_by_speaker = Video.objects.filter(speakers__lcsh=self.get_object().pk)
+        context["videos_by_speaker"] = videos_by_speaker
+        return context
+
+
 class SpeakersView(FilterView):
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
@@ -157,25 +169,6 @@ class DepartmentList(TopicView):
     model = APSDepartment
     template_name = "meetingsvideos/departments.html"
     link_template = "department_detail"
-
-
-def heading_detail(request, slug):
-    lcsh = get_object_or_404(LCSH, slug=slug)
-
-    # returns separate lists of videos tagged with this LCSH and videos whose
-    # speaker corresponds to this LCSH
-    videos_with_topic = lcsh.video_set.all()
-    videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-
-    return render(
-        request,
-        "meetingsvideos/heading_detail.html",
-        {
-            "lcsh": lcsh,
-            "videos_with_topic": videos_with_topic,
-            "videos_by_speaker": videos_by_speaker,
-        },
-    )
 
 
 def symposium_detail(request, slug):
