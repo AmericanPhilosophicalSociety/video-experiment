@@ -123,6 +123,12 @@ class SpeakersView(FilterView):
         return context
 
 
+class SpeakerDetail(DetailView):
+    model = Speaker
+    template_name = "meetingsvideos/speaker_detail.html"
+    context_object_name = "speaker"
+
+
 class MeetingsList(HTMXMixin, ListView):
     model = Meeting
     template_name = "meetingsvideos/meetings.html"
@@ -187,11 +193,6 @@ class DepartmentDetail(DetailView):
     model = APSDepartment
     template_name = "meetingsvideos/department_detail.html"
     context_object_name = "department"
-
-
-def speaker_detail(request, slug):
-    speaker = get_object_or_404(Speaker, slug=slug)
-    return render(request, "meetingsvideos/speaker_detail.html", {"speaker": speaker})
 
 
 def search(request):
