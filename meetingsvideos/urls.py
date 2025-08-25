@@ -13,7 +13,7 @@ urlpatterns = [
     path("headings/<slug:slug>/", views.HeadingDetail.as_view(), name="heading_detail"),
     path("symposia/", views.SymposiumList.as_view(), name="symposia"),
     path(
-        "symposia/<slug:slug>/", views.symposium_detail, name="symposium_detail"
+        "symposia/<slug:slug>/", views.SymposiumDetail.as_view(), name="symposium_detail"
     ),
     path("disciplines/", views.DisciplineList.as_view(), name="disciplines"),
     path(

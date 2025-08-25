@@ -159,6 +159,18 @@ class SymposiumList(HTMXMixin, ListView):
     partial_template = "meetingsvideos/symposium-list.html"
 
 
+class SymposiumDetail(DetailView):
+    model = Symposium
+    template_name = "meetingsvideos/symposium_detail.html"
+    context_object_name = "symposium"
+
+def symposium_detail(request, slug):
+    symposium = get_object_or_404(Symposium, slug=slug)
+    return render(
+        request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
+    )
+
+
 class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
@@ -169,13 +181,6 @@ class DepartmentList(TopicView):
     model = APSDepartment
     template_name = "meetingsvideos/departments.html"
     link_template = "department_detail"
-
-
-def symposium_detail(request, slug):
-    symposium = get_object_or_404(Symposium, slug=slug)
-    return render(
-        request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
-    )
 
 
 def discipline_detail(request, slug):
