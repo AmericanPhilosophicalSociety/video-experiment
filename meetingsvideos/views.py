@@ -164,17 +164,17 @@ class SymposiumDetail(DetailView):
     template_name = "meetingsvideos/symposium_detail.html"
     context_object_name = "symposium"
 
-def symposium_detail(request, slug):
-    symposium = get_object_or_404(Symposium, slug=slug)
-    return render(
-        request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
-    )
-
 
 class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
     link_template = "discipline_detail"
+
+
+class DisciplineDetail(DetailView):
+    model = AcademicDiscipline
+    template_name = "meetingsvideos/discipline_detail.html"
+    context_object_name = "discipline"
 
 
 class DepartmentList(TopicView):
@@ -183,18 +183,10 @@ class DepartmentList(TopicView):
     link_template = "department_detail"
 
 
-def discipline_detail(request, slug):
-    discipline = get_object_or_404(AcademicDiscipline, slug=slug)
-    return render(
-        request, "meetingsvideos/discipline_detail.html", {"discipline": discipline}
-    )
-
-
-def department_detail(request, slug):
-    department = get_object_or_404(APSDepartment, slug=slug)
-    return render(
-        request, "meetingsvideos/department_detail.html", {"department": department}
-    )
+class DepartmentDetail(DetailView):
+    model = APSDepartment
+    template_name = "meetingsvideos/department_detail.html"
+    context_object_name = "department"
 
 
 def speaker_detail(request, slug):

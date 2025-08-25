@@ -18,13 +18,13 @@ urlpatterns = [
     path("disciplines/", views.DisciplineList.as_view(), name="disciplines"),
     path(
         "disciplines/<slug:slug>/",
-        views.discipline_detail,
+        views.DisciplineDetail.as_view(),
         name="discipline_detail",
     ),
     path("departments/", views.DepartmentList.as_view(), name="departments"),
     path(
         "departments/<slug:slug>/",
-        views.department_detail,
+        views.DepartmentDetail.as_view(),
         name="department_detail",
     ),
     path("speakers/", views.SpeakersView.as_view(), name="speakers"),
