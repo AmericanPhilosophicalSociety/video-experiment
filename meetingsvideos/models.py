@@ -211,6 +211,9 @@ class Meeting(WithNotes):
     def videos_by_time(self):
         return self.video_set.all().order_by("date", "order_in_day")
 
+    def videos_by_date(self, query_date):
+        return self.video_set.filter(date=query_date).order_by("order_in_day")
+
     def __str__(self):
         return self.display_date
 

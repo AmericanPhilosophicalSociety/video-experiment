@@ -1,14 +1,11 @@
 {% extends "meetingsvideos/base.html" %}
 
 {% block main %}
-
-<h1>{{ symposium.title }}</h1>
-<h2>{{ symposium.meeting }}</h2>
-
-{% for video in symposium.videos_by_time %}
-
-{% include "meetingsvideos/video_preview.html" with show_dates=True %}
-
-{% endfor %}
-
+<div class="container" id="video-container">
+  <h1>{{ symposium.title }}</h1>
+  <h2>{{ symposium.meeting }}</h2>
+  {% for video in symposium.videos_by_time %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+  {% endfor %}
+</div>
 {% endblock %}

@@ -2,16 +2,31 @@
 
 {% block main %}
 <div class="container" id="video-container">
-<h1>{{ meeting.display_date }}</h1>
-
-{% for video in meeting.videos_by_time %}
-
-{% if video.order_in_day == 1 %}
-    <h2>{{ video.date }}</h2>
-{% endif %}
-
-{% include "meetingsvideos/video_preview.html" with with_dates=False %}
-
+  <h1>{{ meeting.display_date }}</h1>
+  <ul class="nav nav-tabs" hx-target
+  hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
+                            console.log(currentTab)
+                            currentTab.setAttribute('aria-selected', 'false')
+                            currentTab.classList.remove('active')
+                            currentTab.removeAttribute('aria-current')
+                            let newTab = event.target
+                            newTab.setAttribute('aria-current', 'page')
+                            newTab.setAttribute('aria-selected', 'true')
+                            newTab.classList.add('active')">
+{% for date in dates %}
+  {% if forloop.first %}
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" aria-selected="true" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</a>
+    </li>
+  {% else %}
+    <li class="nav-item">
+      <a class="nav-link" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</a>
+    </li>
+  {% endif %}
 {% endfor %}
+</ul>
+  <div class="meetings-videos">
+  {% include "meetingsvideos/meeting-video-list.html" %}
+  </div>
 </div>
 {% endblock %}
