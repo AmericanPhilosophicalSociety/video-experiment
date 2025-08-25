@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import AdvancedSearchForm
 from django.views.generic import ListView, DetailView
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
 
 from random import sample
 from string import ascii_uppercase
+import datetime
 
 from .models import (
     Video,
@@ -18,16 +21,25 @@ from .models import (
 from .service import basic_search, advanced_search
 
 
-class TopicView(ListView):
-    context_object_name = "topics"
-    paginate_by = 25
-    link_template = None
+class HTMXMixin():
+    partial_template = None
 
     def get_template_names(self, *args, **kwargs):
         if self.request.htmx:
-            return "meetingsvideos/item-list.html"
+            return self.partial_template
         else:
             return self.template_name
+
+    @method_decorator(vary_on_headers("HX-Request"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+class TopicView(HTMXMixin, ListView):
+    context_object_name = "topics"
+    paginate_by = 25
+    link_template = None
+    partial_template = "meetingsvideos/item-list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -61,21 +73,16 @@ class Landing(ListView):
         return queryset
 
 
-class IndexView(ListView):
+class IndexView(HTMXMixin, ListView):
     # model = Video
     template_name = "meetingsvideos/index.html"
     context_object_name = "videos"
     paginate_by = 10
+    partial_template = "meetingsvideos/video-list.html"
 
     def get_queryset(self):
         queryset = Video.objects.exclude_inductions()
         return queryset
-
-    def get_template_names(self, *args, **kwargs):
-        if self.request.htmx:
-            return "meetingsvideos/video-list.html"
-        else:
-            return self.template_name
 
 
 class VideoDetail(DetailView):
@@ -104,36 +111,40 @@ class SpeakersView(FilterView):
         return context
 
 
-class MeetingsList(ListView):
+class MeetingsList(HTMXMixin, ListView):
     model = Meeting
     template_name = "meetingsvideos/meetings.html"
     context_object_name = "meetings"
     paginate_by = 10
-
-    def get_template_names(self, *args, **kwargs):
-        if self.request.htmx:
-            return "meetingsvideos/meetings-list.html"
-        else:
-            return self.template_name
+    partial_template = "meetingsvideos/meetings-list.html"
 
 
-class MeetingDetail(DetailView):
+class MeetingDetail(HTMXMixin, DetailView):
     model = Meeting
     context_object_name = "meeting"
     template_name = "meetingsvideos/meeting_detail.html"
+    partial_template = "meetingsvideos/meeting-video-list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dates = sorted(set(self.get_object().video_set.values_list('date', flat=True)))
+        context["dates"] = dates
+        param = self.request.GET.get('q')
+        if param:
+            parsed_param = [int(p) for p in param.split('-')]
+            query_date = datetime.date(*parsed_param)
+        else:
+            query_date = dates[0]
+        context["videos"] = self.get_object().video_set.filter(date=query_date)
+        return context
 
 
-class SymposiumList(ListView):
+class SymposiumList(HTMXMixin, ListView):
     model = Symposium
     template_name = "meetingsvideos/symposia.html"
     context_object_name = "symposia"
     paginate_by = 10
-
-    def get_template_names(self, *args, **kwargs):
-        if self.request.htmx:
-            return "meetingsvideos/symposium-list.html"
-        else:
-            return self.template_name
+    partial_template = "meetingsvideos/symposium-list.html"
 
 
 class DisciplineList(TopicView):
