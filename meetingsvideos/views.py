@@ -23,9 +23,12 @@ from .service import basic_search, advanced_search
 
 class HTMXMixin():
     partial_template = None
+    content_template = None
 
     def get_template_names(self, *args, **kwargs):
-        if self.request.htmx:
+        if self.request.htmx.target == "video-container":
+            return self.content_template
+        elif self.request.htmx:
             return self.partial_template
         else:
             return self.template_name
@@ -108,6 +111,7 @@ class IndexView(HTMXMixin, ListView):
     context_object_name = "videos"
     paginate_by = 10
     partial_template = "meetingsvideos/video-list.html"
+    content_template = "meetingsvideos/index-content.html"
 
     def get_queryset(self):
         queryset = Video.objects.exclude_inductions()
@@ -125,6 +129,7 @@ class HeadingsView(AlphaFilterView):
     queryset_method = LCSH.objects.only_topics_with_first_letter
     template_name = "meetingsvideos/headings.html"
     link_template = "heading_detail"
+    content_template = "meetingsvideos/heading-content.html"
 
 
 class HeadingDetail(DetailView):
@@ -143,8 +148,8 @@ class SpeakersView(AlphaFilterView):
     model = Speaker
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
-    alpha_list = list(ascii_uppercase)
     link_template = "speaker_detail"
+    content_template = "meetingsvideos/speaker-content.html"
 
 
 class SpeakerDetail(DetailView):
@@ -159,6 +164,7 @@ class MeetingsList(HTMXMixin, ListView):
     context_object_name = "meetings"
     paginate_by = 10
     partial_template = "meetingsvideos/meetings-list.html"
+    content_template = "meetingsvideos/meeting-content.html"
 
 
 class MeetingDetail(HTMXMixin, DetailView):
@@ -187,6 +193,7 @@ class SymposiumList(HTMXMixin, ListView):
     context_object_name = "symposia"
     paginate_by = 10
     partial_template = "meetingsvideos/symposium-list.html"
+    content_template = "meetingsvideos/symposium-content.html"
 
 
 class SymposiumDetail(DetailView):
@@ -199,6 +206,7 @@ class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
     link_template = "discipline_detail"
+    content_template = "meetingsvideos/discipline-content.html"
 
 
 class DisciplineDetail(DetailView):
@@ -211,6 +219,7 @@ class DepartmentList(TopicView):
     model = APSDepartment
     template_name = "meetingsvideos/departments.html"
     link_template = "department_detail"
+    content_template = "meetingsvideos/department-content.html"
 
 
 class DepartmentDetail(DetailView):
@@ -222,7 +231,11 @@ class DepartmentDetail(DetailView):
 def search(request):
     context = {}
     context["advanced_search"] = AdvancedSearchForm()
-    return render(request, "meetingsvideos/search.html", context)
+    if request.htmx:
+        template_name = "meetingsvideos/search-content.html"
+    else:
+        template_name = "meetingsvideos/search.html"
+    return render(request, template_name, context)
 
 
 def search_results(request):

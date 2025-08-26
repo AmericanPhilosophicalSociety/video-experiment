@@ -1,8 +1,6 @@
 {% extends "meetingsvideos/base.html" %}
 {% block main %}
 <div class="container" id="video-container">
-  <div class="accordion" id="symposium-accordion">
-    {% include "meetingsvideos/symposium-list.html" %}
-  </div>
+  {% include "meetingsvideos/symposium-content.html" %}
 </div>
 {% endblock %}
