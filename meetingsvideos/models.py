@@ -8,14 +8,26 @@ from locpy.api import LocEntity, NameEntity, SubjectEntity
 class AlphaManager(models.Manager):
     """Custom manager to include first letter of LCSH heading, for use
     in creating faceted lists"""
+    order_field = None
+
     def with_first_letter(self):
-        return self.annotate(category=Substr('lcsh__heading', 1, 1)).order_by("lcsh__heading")
+        return self.annotate(first_letter=Substr(self.order_field, 1, 1)).order_by(self.order_field)
 
 
-class LCSHManager(models.Manager):
+class LCSHManager(AlphaManager):
     """Only return LCSH headings when used as subjects"""
+    order_field = 'heading'
+
     def only_topics(self):
         return self.filter(video__isnull=False).distinct()
+
+    def only_topics_with_first_letter(self):
+        first_queryset = self.with_first_letter()
+        return first_queryset.filter(video__isnull=False).distinct()
+
+
+class SpeakerManager(AlphaManager):
+    order_field = 'label'
 
 
 class VideoManager(models.Manager):
@@ -140,7 +152,7 @@ class Speaker(models.Model):
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
     lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
-    objects = AlphaManager()
+    objects = SpeakerManager()
     label = models.CharField(max_length=200, blank=True, null=True)
     slug = AutoSlugField(populate_from="display_name", unique=True)
 

@@ -1,13 +1,13 @@
 {% extends "meetingsvideos/base.html" %}
 
 {% block main %}
-
+<div class="container" id="video-container">
 <h1>Search Results For: {{ query }}</h1>
 
 <hr>
 
 
-<h2>Videos</h2>
+<h3>Videos</h3>
 
 {% if videos %}
 
@@ -24,7 +24,7 @@
 <hr>
 
 
-<h2>Speakers</h2>
+<h3>Speakers</h3>
 
 {% if speakers %}
 
@@ -41,7 +41,7 @@
 <hr>
 
 
-<h2>Subjects</h2>
+<h3>Subjects</h3>
 
 {% if subjects %}
 
@@ -58,7 +58,7 @@
 <hr>
 
 
-<h2>Academic Disciplines</h2>
+<h3>Academic Disciplines</h3>
 
 {% if disciplines %}
 
@@ -75,7 +75,7 @@
 <hr>
 
 
-<h2>APS Departments</h2>
+<h3>APS Departments</h3>
 
 {% if departments %}
 
@@ -90,5 +90,5 @@
 {% endif %}
 
 
-
+</div>
 {% endblock %}

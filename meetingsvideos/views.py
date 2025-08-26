@@ -47,6 +47,18 @@ class TopicView(HTMXMixin, ListView):
         return context
 
 
+class AlphaMixin():
+    model = None
+    alpha_list = list(ascii_uppercase)   
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["alphabet"] = self.alpha_list
+        available_letters = set(self.model.objects.with_first_letter().values_list('first_letter', flat=True))
+        context["available_letters"] = available_letters
+        return context
+
+
 class FilterView(TopicView):
     queryset_method = None
 
@@ -57,6 +69,23 @@ class FilterView(TopicView):
             queryset = queryset.filter(category__in=param)
 
         return queryset
+
+
+class AlphaFilterView(AlphaMixin, FilterView):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        first_letter = self.request.GET.get('first_letter')
+        if first_letter:
+            queryset = queryset.filter(first_letter=first_letter)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        param = self.request.GET.getlist('q')
+        if param:
+            available_letters = set(self.queryset_method().filter(category__in=param).values_list('first_letter', flat=True))
+            context['available_letters'] = available_letters
+        return context
 
 
 class Landing(ListView):
@@ -91,8 +120,9 @@ class VideoDetail(DetailView):
     template_name = "meetingsvideos/video_detail.html"
 
 
-class HeadingsView(FilterView):
-    queryset_method = LCSH.objects.only_topics
+class HeadingsView(AlphaFilterView):
+    model = LCSH
+    queryset_method = LCSH.objects.only_topics_with_first_letter
     template_name = "meetingsvideos/headings.html"
     link_template = "heading_detail"
 
@@ -109,18 +139,12 @@ class HeadingDetail(DetailView):
         return context
 
 
-class SpeakersView(FilterView):
+class SpeakersView(AlphaFilterView):
+    model = Speaker
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
     alpha_list = list(ascii_uppercase)
-    available_letters = set(Speaker.objects.with_first_letter().values_list('category', flat=True))
     link_template = "speaker_detail"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["alphabet"] = self.alpha_list
-        context["available_letters"] = self.available_letters
-        return context
 
 
 class SpeakerDetail(DetailView):
