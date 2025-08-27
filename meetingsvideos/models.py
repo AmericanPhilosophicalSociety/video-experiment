@@ -276,6 +276,10 @@ class Video(ProgramInfo):
                 return videos[i + 1]
         else:
             return None
+        
+    def get_diglib_url(self):
+        num = self.pid.split(':')[-1]
+        return f"https://diglib.amphilsoc.org/islandora/object/video{num}obj"
 
     class Meta:
         ordering = ["title"]
