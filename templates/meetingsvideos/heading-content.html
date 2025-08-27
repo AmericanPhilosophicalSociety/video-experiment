@@ -5,11 +5,10 @@ hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selecte
                           currentTab.classList.remove('active')
                           currentTab.removeAttribute('aria-current')
                           let newTab = event.target
-                          newTab.setAttribute('aria-current', 'page')
                           newTab.setAttribute('aria-selected', 'true')
                           newTab.classList.add('active')">
 <li class="nav-item">
-<a class="nav-link active" aria-current="page" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</a>
+<a class="nav-link active" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</a>
 </li>
 <li class="nav-item">
 <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=TOPIC&q=COMPLEX_SUBJECT" hx-target="#headings-list" hx-push-url="true">Topics</a>

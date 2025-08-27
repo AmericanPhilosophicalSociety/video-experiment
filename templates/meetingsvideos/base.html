@@ -29,7 +29,7 @@
       </header>
       <div class="container-fluid">
         <div class="row">
-          <div class="sidebar col-md-3 col-lg-2 p-0">
+          <nav class="sidebar col-md-3 col-lg-2 p-0">
             <div class="offcanvas-md offcanas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
               <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="sidebarMenuLabel">APS Meetings Videos</h5>
@@ -37,12 +37,10 @@
                 </button>
               </div>
               <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-                <ul class="nav flex-column">
-                  {% include "meetingsvideos/nav-components.html" %}
-                </ul>
+                {% include "meetingsvideos/nav-components.html" %}
               </div>
             </div>
-          </div>
+          </nav>
           <main class="col md-9 col-lg-10 px-md-4">
             {% block main %}{% endblock %}
           </main>
