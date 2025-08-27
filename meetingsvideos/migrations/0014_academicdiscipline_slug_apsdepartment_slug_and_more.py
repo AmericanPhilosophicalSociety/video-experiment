@@ -5,46 +5,57 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0013_alter_lcsh_slug'),
+        ("meetingsvideos", "0013_alter_lcsh_slug"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='academicdiscipline',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='name'),
+            model_name="academicdiscipline",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="name"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='apsdepartment',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='name'),
+            model_name="apsdepartment",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="name"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='display_date'),
+            model_name="meeting",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="display_date"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='speaker',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='display_name'),
+            model_name="speaker",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="display_name"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='symposium',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='title'),
+            model_name="symposium",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="title"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='video',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='title'),
+            model_name="video",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="title"
+            ),
             preserve_default=False,
         ),
     ]

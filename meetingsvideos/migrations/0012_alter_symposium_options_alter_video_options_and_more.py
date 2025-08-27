@@ -5,24 +5,25 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0011_speaker_label_alter_lcsh_category'),
+        ("meetingsvideos", "0011_speaker_label_alter_lcsh_category"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='symposium',
-            options={'verbose_name_plural': 'Symposia'},
+            name="symposium",
+            options={"verbose_name_plural": "Symposia"},
         ),
         migrations.AlterModelOptions(
-            name='video',
-            options={'ordering': ['date', 'order_in_day']},
+            name="video",
+            options={"ordering": ["date", "order_in_day"]},
         ),
         migrations.AddField(
-            model_name='lcsh',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(default='', editable=False, populate_from='title'),
+            model_name="lcsh",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                default="", editable=False, populate_from="title"
+            ),
             preserve_default=False,
         ),
     ]

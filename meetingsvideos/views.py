@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from .forms import AdvancedSearchForm
 from django.views.generic import ListView, DetailView
 from django.utils.decorators import method_decorator
@@ -21,7 +21,7 @@ from .models import (
 from .service import basic_search, advanced_search
 
 
-class HTMXMixin():
+class HTMXMixin:
     partial_template = None
     content_template = None
 
@@ -46,18 +46,22 @@ class TopicView(HTMXMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['link_template'] = self.link_template
+        context["link_template"] = self.link_template
         return context
 
 
-class AlphaMixin():
+class AlphaMixin:
     model = None
-    alpha_list = list(ascii_uppercase)   
+    alpha_list = list(ascii_uppercase)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["alphabet"] = self.alpha_list
-        available_letters = set(self.model.objects.with_first_letter().values_list('first_letter', flat=True))
+        available_letters = set(
+            self.model.objects.with_first_letter().values_list(
+                "first_letter", flat=True
+            )
+        )
         context["available_letters"] = available_letters
         return context
 
@@ -67,7 +71,7 @@ class FilterView(TopicView):
 
     def get_queryset(self):
         queryset = self.queryset_method()
-        param = self.request.GET.getlist('q')
+        param = self.request.GET.getlist("q")
         if param:
             queryset = queryset.filter(category__in=param)
 
@@ -77,17 +81,21 @@ class FilterView(TopicView):
 class AlphaFilterView(AlphaMixin, FilterView):
     def get_queryset(self):
         queryset = super().get_queryset()
-        first_letter = self.request.GET.get('first_letter')
+        first_letter = self.request.GET.get("first_letter")
         if first_letter:
             queryset = queryset.filter(first_letter=first_letter)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        param = self.request.GET.getlist('q')
+        param = self.request.GET.getlist("q")
         if param:
-            available_letters = set(self.queryset_method().filter(category__in=param).values_list('first_letter', flat=True))
-            context['available_letters'] = available_letters
+            available_letters = set(
+                self.queryset_method()
+                .filter(category__in=param)
+                .values_list("first_letter", flat=True)
+            )
+            context["available_letters"] = available_letters
         return context
 
 
@@ -97,7 +105,7 @@ class Landing(ListView):
 
     def get_queryset(self):
         # get all pks that exist - don't call object into memory
-        pks = Video.objects.values_list('pk', flat=True)
+        pks = Video.objects.values_list("pk", flat=True)
         # choose three random pks
         random_pks = sample(list(pks), 3)
         # call selected object into memory
@@ -175,11 +183,11 @@ class MeetingDetail(HTMXMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        dates = sorted(set(self.get_object().video_set.values_list('date', flat=True)))
+        dates = sorted(set(self.get_object().video_set.values_list("date", flat=True)))
         context["dates"] = dates
-        param = self.request.GET.get('q')
+        param = self.request.GET.get("q")
         if param:
-            parsed_param = [int(p) for p in param.split('-')]
+            parsed_param = [int(p) for p in param.split("-")]
             query_date = datetime.date(*parsed_param)
         else:
             query_date = dates[0]

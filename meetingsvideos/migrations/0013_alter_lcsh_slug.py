@@ -5,15 +5,16 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0012_alter_symposium_options_alter_video_options_and_more'),
+        ("meetingsvideos", "0012_alter_symposium_options_alter_video_options_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lcsh',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='heading'),
+            model_name="lcsh",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="heading"
+            ),
         ),
     ]
