@@ -1,6 +1,9 @@
 from django.db import models
-from locpy.api import LocEntity, NameEntity, SubjectEntity
 
+from locpy.api import LocEntity, NameEntity, SubjectEntity
+import logging
+
+logger = logging.getLogger(__name__)
 
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
@@ -78,14 +81,18 @@ class LCSH(models.Model):
         loc_entity = self.loc
         self.heading = str(loc_entity.authoritative_label)
         instances = [str(i) for i in loc_entity.instance_of]
-        category = list(set(category_mapping.keys()).intersection(instances))[0]
-        self.category = category_mapping[category]
+        try:
+            category = list(set(category_mapping.keys()).intersection(instances))[0]
+            self.category = category_mapping[category]
+        except IndexError:
+            self.category = "OTHER"
+            logger.warning(f"No matching instance found while setting LoC data for {self.uri}.")
 
     def get_components(self):
         loc_entity = self.loc
         for c in loc_entity.components:
             if isinstance(c, NameEntity) or isinstance(c, SubjectEntity):
-                uri_stub = c.uri.split("/")[-1]
+                uri_stub = c.uri.split("/")[-1] 
                 component, _ = LCSH.objects.get_or_create(uri=uri_stub, authority="LOC")
                 self.components.add(component)
 
