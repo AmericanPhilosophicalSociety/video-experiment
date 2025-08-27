@@ -4,10 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% load static %}
+        {% comment %}
         <link rel="stylesheet" href="{% static 'meetingsvideos/bootstrap.css' %}">
-        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"></script>
+        {% endcomment %}
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
-        <script src="{% static 'meetingsvideos/bootstrap.js' %}"></script>
+        <script src="{% static 'index-bundle.js' %}"></script>
     </head>
     <body>
         {% block body %}{% endblock %}

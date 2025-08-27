@@ -1,6 +1,3 @@
-function component() {
-    const element = document.createElement('div');
-    element.innerHTML = 'Hello webpack';
-    return element;
-}
-document.body.appendChild(component());
+import 'bootstrap';
+import 'htmx.org';
+import './javascript/inject_htmx.js';
