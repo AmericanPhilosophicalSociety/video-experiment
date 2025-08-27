@@ -144,7 +144,6 @@ def process_video(row):
     # if record for this video already exists, alert user
     if not created:
         print("Video already exists in database; no new record created")
-        return
     # if record is new, add remaining details
     else:
         try:
@@ -155,29 +154,6 @@ def process_video(row):
             logging.exception(f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}")
             video.delete()
             return
-
-        # add info for up to two speakers; any more will have to be added manually
-        if row["speaker_lcsh"]:
-            add_speaker_to_video(
-                video,
-                row["speaker_display_name"],
-                row["speaker_position"],
-                row["speaker_institution"],
-                row["speaker_position_2"],
-                row["speaker_institution_2"],
-                meeting,
-            )
-
-        if row["speaker_2_lcsh"]:
-            add_speaker_to_video(
-                video,
-                row["speaker_2_display_name"],
-                row["speaker_2_position"],
-                row["speaker_2_institution"],
-                row["speaker_2_position_2"],
-                row["speaker_2_institution_2"],
-                meeting,
-            )
 
         # add department and discipline
         departments = add_category_to_video(row["aps_departments"], APSDepartment, ",")
@@ -191,13 +167,35 @@ def process_video(row):
         if disciplines:
             for discipline in disciplines:
                 video.academic_disciplines.add(discipline)
+        
+    # add speaker info
+    # this will run regardless of whether a new video has been created or not, in order to allow adding more than two speakers to a video by creating an additional row for that video
+    if row["speaker_lcsh"]:
+        add_speaker_to_video(
+            video,
+            row["speaker_display_name"],
+            row["speaker_position"],
+            row["speaker_institution"],
+            row["speaker_position_2"],
+            row["speaker_institution_2"],
+            meeting,
+        )
 
-        return
+    if row["speaker_2_lcsh"]:
+        add_speaker_to_video(
+            video,
+            row["speaker_2_display_name"],
+            row["speaker_2_position"],
+            row["speaker_2_institution"],
+            row["speaker_2_position_2"],
+            row["speaker_2_institution_2"],
+            meeting,
+        )
 
 
 # loop through spreadsheet, adding a video for each row
 def upload_videos():
-    with open("videos.csv", newline="", encoding="utf8") as csvfile:
+    with open("videos-duplicate.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             try:
