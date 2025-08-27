@@ -170,7 +170,8 @@ class Speaker(models.Model):
         super().save(**kwargs)
 
     def get_most_recent_affiliation(self):
-        # TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
+        # TODO: change logic so this returns multiple affiliations if multiple
+        # affiliations are used in most recent video?
         if len(self.affiliation_set.all()) > 0:
             return self.affiliation_set.all().order_by("-meeting")[0]
         else:
@@ -196,8 +197,9 @@ class Affiliation(models.Model):
 
 class WithNotes(models.Model):
     """
-    Includes display_notes field (for additional text to display on the page for a given Meeting, Video, etc.) and admin_notes field (for information attached to a record that should NOT be displayed publicly)
-    """
+    Includes display_notes field (for additional text to display on the page
+    for a given Meeting, Video, etc.) and admin_notes field (for information
+    attached to a record that should NOT be displayed publicly)"""
 
     display_notes = models.TextField(
         blank=True, help_text="Additional text to display publicly"
