@@ -1,5 +1,6 @@
 import csv
 import datetime
+import logging
 from zoneinfo import ZoneInfo
 from meetingsvideos.models import (
     Meeting,
@@ -11,11 +12,15 @@ from meetingsvideos.models import (
     Affiliation,
 )
 
+logging.basicConfig(filename="videoupload.log",
+                    format='%(asctime)s - %(message)s - %(levelname)s',
+                    filemode='w')
+
 
 # converts EDTF date to datetime object
-def process_date(str):
+def process_date(string):
     # process year, month, and day
-    ymd = str.split("-")
+    ymd = string.split("-")
 
     year = int(ymd[0])
     month = int(ymd[1])
@@ -24,22 +29,26 @@ def process_date(str):
     return datetime.datetime(year, month, day, tzinfo=ZoneInfo("America/New_York"))
 
 
-def process_diglib_url(str):
-    lst = str.split(":")
+
+def process_diglib_url(string):
+    lst = string.split(":")
     return lst[-1]
 
 
-# TODO: does this work? print error if category doesn't exist
-# split list of categories on | and add to appropriate field in Video
-# will throw an error if category does not already exist in database
-def add_category_to_video(str, ModelName):
-    if not str:
+# splits list of AcademicDiscipline and APSDepartment on appropriate separator and retrieves database objects
+# will log an error if category not found in database
+def add_category_to_video(string, ModelName, separator):
+    if not string:
         return
-    lst = str.split("|")
+    lst = string.split(separator)
     categories = []
     for item in lst:
-        itemObj = ModelName.objects.get(name=item)
-        categories.append(itemObj)
+        item_cleaned = item.strip()
+        try:
+            itemObj = ModelName.objects.get(name=item_cleaned)
+            categories.append(itemObj)
+        except:
+            logging.exception(f"Category {string} not found in table {ModelName}")
     return categories
 
 
@@ -48,8 +57,13 @@ def process_affiliation(position, institution, meeting, speaker):
         meeting=meeting, position=position, institution=institution, speaker=speaker
     )
     if created:
-        affiliation.save()
-        print("Affiliation created for speaker: " + speaker.display_name)
+        try:
+            affiliation.full_clean()
+            affiliation.save()
+            print("Affiliation created for speaker: " + speaker.display_name)
+        except:
+            logging.exception(f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}")
+            affiliation.delete()
     return
 
 
@@ -61,48 +75,53 @@ def add_speaker_to_video(
     speaker, created = Speaker.objects.get_or_create(display_name=display_name)
 
     if created:
-        speaker.save()
-        print("Speaker added: " + speaker.display_name)
-
+        try:
+            speaker.full_clean()
+            speaker.save()
+        except:
+            logging.exception(f"Speaker {speaker} for video {video} in meeting {meeting}")
+            speaker.delete()
+            return
+            
+    video.speakers.add(speaker)
+    print("Speaker added: " + speaker.display_name)
+    
     # if affiliation, create new affiliation
     if position_1 or institution_1:
         process_affiliation(position_1, institution_1, meeting, speaker)
     if position_2 or institution_2:
         process_affiliation(position_2, institution_2, meeting, speaker)
-    video.speakers.add(speaker)
 
 
 def process_symposium(str, meeting):
-    reminders = ""
     if str:
         symposium, created = Symposium.objects.get_or_create(title=str, meeting=meeting)
         if created:
-            print("Symposium added: " + symposium.title)
-            reminders += (
-                "**ADD MODERATOR INFO for the following symposium: " + str + "\n"
-            )
+            try:
+                symposium.full_clean()
+                symposium.save()
+                print("Symposium added: " + symposium.title)
+            except:
+                logging.exception(f"Symposium {symposium} for meeting {meeting}")
+                symposium.delete()
+                return None
+        return symposium
 
-        return symposium, reminders
-    else:
-        return None, reminders
+    return None
 
 
 # process individual spreadsheet row to create video
-def process_video(row, n, prev_date):
+def process_video(row):
     print("\n-----------\nVIDEO: " + row["title"] + "\n")
 
     # find correct meeting - search by name
     meeting = Meeting.objects.get(display_date=row["meeting"])
 
     # find or create symposium
-    symposium, reminders = process_symposium(row["symposium"], meeting)
-
+    symposium = process_symposium(row["symposium"], meeting)
+    
     # create date object
-    date = process_date(row["date"])
-    if date == prev_date:
-        n += 1
-    else:
-        n = 1
+    date=process_date(row["date"])
 
     # TODO: let this update video object if not all data matches? which fields should ID it?
     video, created = Video.objects.get_or_create(
@@ -114,22 +133,28 @@ def process_video(row, n, prev_date):
         youtube_url=row["youtube_url"],
         display_notes=row["display_notes"],
         admin_notes=row["admin_notes"],
-        diglib_pid=process_diglib_url(row["diglib_url"]),
+        diglib_pid=row["pid"].replace("video:", ""),
         admin_category=row["admin_category"],
         meeting=meeting,
         symposium=symposium,
         date=date,
-        order_in_day=n,
+        order_in_day=row["order_in_day"],
     )
 
     # if record for this video already exists, alert user
     if not created:
         print("Video already exists in database; no new record created")
-        return n, None, None
+        return
     # if record is new, add remaining details
     else:
-        video.save()
-        print("\nVideo saved")
+        try:
+            video.full_clean()
+            video.save()
+            print("Video created: " + video.title)
+        except:
+            logging.exception(f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}")
+            video.delete()
+            return
 
         # add info for up to two speakers; any more will have to be added manually
         if row["speaker_lcsh"]:
@@ -155,41 +180,27 @@ def process_video(row, n, prev_date):
             )
 
         # add department and discipline
-        departments = add_category_to_video(row["aps_departments"], APSDepartment)
+        departments = add_category_to_video(row["aps_departments"], APSDepartment, ",")
         if departments:
             for department in departments:
                 video.aps_departments.add(department)
 
         disciplines = add_category_to_video(
-            row["academic_disciplines"], AcademicDiscipline
+            row["academic_disciplines"], AcademicDiscipline, "|"
         )
         if disciplines:
             for discipline in disciplines:
                 video.academic_disciplines.add(discipline)
 
-        return n, date, reminders
+        return
 
 
 # loop through spreadsheet, adding a video for each row
 def upload_videos():
-    reminders = ""
-
     with open("videos.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
-
-        # set up variables to determine order in day
-        n = 1
-        date = datetime.datetime(1900, 1, 1, tzinfo=ZoneInfo("America/New_York"))
-
         for row in reader:
             try:
-                n, date, new_reminders = process_video(row, n, date)
-                reminders += new_reminders
-            except Exception as e:
-                print(f"An error occurred: {e}")
-                reminders += "AN ERROR OCCURRED: " + row["title"] + "\n"
-
-    if not reminders:
-        reminders = "None"
-
-    print("\n\n-----------\nReminders:\n" + reminders)
+                process_video(row)
+            except:
+                logging.exception(f"Video {row["title"]} in meeting {row["meeting"]}")
