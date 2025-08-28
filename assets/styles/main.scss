@@ -1,0 +1,322 @@
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+$aps-red: rgb(210, 35, 46);
+$light-gray: rgb(209, 211, 212);
+$light-gray-reduced-opacity: rgb(209, 211, 212, 0.8);
+$medium-gray: rgb(138, 140, 142);
+$dark-gray: rgb(77, 77, 79);
+$dark-gray-reduced-opacity: rgb(77, 77, 79, 0.4);
+$aps-white: rgb(255, 255, 255);
+$aps-black: rgb(0, 0, 0);
+
+$body-font: Raleway, sans-serif;
+$accent-font: Gelasio, serif;
+
+html {
+    scrollbar-gutter: stable;
+}
+
+body {
+    font: 100% $body-font;
+    color: $aps-black;
+}
+
+h1 {
+    font-family: $accent-font;
+}
+
+// link styles
+
+a {
+    color: $aps-red;
+    text-decoration: none;
+}
+
+h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a, .overlay {
+    color: $dark-gray;
+    text-decoration: none;
+}
+
+h1 > a:hover, h2 > a:hover, h3 > a:hover, h4 > a:hover, h5 > a:hover, h6 > a:hover, .overlay:hover {
+    color: $aps-red;
+}
+
+h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:focus, .overlay:focus {
+    color: $aps-red;
+}
+
+// navigation styles
+
+@media (max-width: 768px) {
+    .navbar {
+        background-color: $aps-white;
+    }
+}
+
+.navbar-brand {
+    font: 100% $accent-font;
+    background-color: $aps-red;
+    color: $aps-white;
+}
+
+
+.bi {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+  }
+  
+
+// Sidebar
+.sidebar .offcanvas-md {
+    right: 0;
+}
+
+.offcanvas-header {
+    background-color: $aps-red;
+    color: $aps-white;
+}
+
+@media (min-width: 768px) {
+    .sidebar .offcanvas-md {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 48px;
+        background-color: $light-gray !important;
+        border-radius: 8px;
+        opacity: 0.6;
+        border-block: 0.125em inset $dark-gray;
+    }
+}
+
+@media (min-width: 1400px) {
+    .sidebar .offcanvas-md {
+        margin: 0 1.5em;
+    }
+}
+
+.navbar-search {
+    display: block;
+}
+  
+.sidebar .nav-link {
+    font-size: .875rem;
+    font-weight: 500;
+}
+  
+.sidebar .nav-link {
+    color: $aps-black;
+}
+
+.sidebar .nav-link.active {
+    color: $aps-white;
+    background-color: $aps-red;
+}
+  
+.sidebar-heading {
+    font-size: .75rem;
+}
+
+// Navbar
+  
+.navbar-brand {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+}
+  
+.navbar .form-control {
+    padding: .75rem 1rem;
+}
+
+// Main
+
+/*
+main {
+    max-width: 80em;
+}
+*/
+
+// Landing page
+
+#landing {
+    background-image: url("/static/images/aps-seal.png");
+    background-color: rgb(255, 255, 255, 0.9);
+    background-blend-mode: lighten;
+    // background properties need media queries
+    background-size: auto 70%;
+    background-repeat: no-repeat;
+    // background-position: 75% 100%;
+    background-position: Max(0px, calc(100vw - 550px)) bottom;
+    background-attachment: fixed;
+}
+
+#hero {
+    background-color: $light-gray-reduced-opacity;
+    margin-top: 3rem;
+    padding-bottom: 3em;
+    border-radius: 1.5em;
+    border-block: 0.125em inset $dark-gray;
+}
+
+#hero-title {
+    font: 2em $accent-font;
+}
+
+.landing-card {
+    background-color: rgb(255, 255, 255, 0.8);
+}
+
+.landing-card > .card-header {
+    border-left: solid $aps-red;
+    font: 1.25em $accent-font;
+}
+// buttons
+
+.btn-primary {
+    background-color: $medium-gray;
+    border-color: $medium-gray;
+}
+
+.btn-primary:focus, .btn-primary:hover {
+    background-color: $dark-gray;
+    border-color: $medium-gray;
+}
+
+.btn:active, .btn.active, .btn-primary:active {
+    background-color: $aps-red !important;
+    border-color: $medium-gray !important;
+}
+// cards
+
+.teaser {
+    border-radius: 16px;
+    max-width: 540px;
+    margin-bottom: 3px;
+}
+
+.teaser > .card-header {
+    border-left: solid $aps-red;
+    font: 1.75em $accent-font;
+}
+
+// video teaser
+
+.video-teaser > img {
+    background-color: $dark-gray;
+    border-radius: 16px;
+}
+
+.video-placeholder {
+    background-image: url("/static/images/aps-logo-mono.png");
+    background-color: $dark-gray-reduced-opacity;
+    background-blend-mode: lighten;
+    border-radius: 16px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    text-align: center;
+    font-size: 10em;
+}
+
+.overlay {
+    width: 1em;
+    height: 1em;
+}
+// video display page
+
+#video-container {
+    max-width: 825px;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+#video-container > .video-title {
+    border-left: solid $aps-red 0.5em;
+}
+
+.video-title > h1 {
+    font: 2em $accent-font;
+    padding-left: 0.5em;
+}
+
+#video-container .list-group-item {
+    background-color: $light-gray;
+}
+
+.speaker-list {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+#metadata-table {
+    margin-top: 0.5em;
+}
+
+.video-date {
+    margin: 0.5em;
+    color: $medium-gray;
+}
+
+// size for video player
+
+.video-js {
+    // height: 183px;
+    width: 100%;
+}
+
+// facets
+
+.alphabet {
+    list-style: none;
+}
+
+.alphabet > li {
+    display: inline-block;
+}
+
+.alpha-link {
+    color: $aps-red;
+    cursor: pointer;
+}
+
+// nav tabs
+
+.nav-tabs {
+    margin-bottom: 1em;
+}
+
+.nav-link {
+    color: $dark-gray;
+}
+
+.nav-link:hover {
+    color: $aps-red;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: $aps-white;
+    background-color: $dark-gray;
+}
+
+// headings styles
+
+#headings-list li {
+    list-style: none;
+    line-height: 1.5;
+    font-size: 1.25em;
+}
+
+// meeting lists
+.meeting-teaser {
+    border-radius: 0.375rem 0.375rem 16px 16px;
+}
+
+.accordion-header > .accordion-button {
+    font: 0.75em $accent-font;
+    background-color: $light-gray;
+}
+
+.accordion-button:not(.collapsed) {
+    color: $aps-white;
+    background-color: $aps-red;
+}

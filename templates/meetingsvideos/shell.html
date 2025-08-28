@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% load static %}
+        {% comment %}
+        <link rel="stylesheet" href="{% static 'meetingsvideos/bootstrap.css' %}">
+        {% endcomment %}
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <script src="{% static 'index-bundle.js' %}"></script>
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+    </body>
+    </html>

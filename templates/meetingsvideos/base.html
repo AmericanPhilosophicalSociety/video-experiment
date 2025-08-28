@@ -1,0 +1,49 @@
+{% extends "meetingsvideos/shell.html" %}
+
+{% block body %}
+      <header class="navbar navbar-expand-lg sticky-top flex-md-nowrap p-0">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'landing_page' %}">
+          APS Meetings Videos
+        </a>
+        <ul class="navbar-nav flex-row d-md-none">
+          <li class="nav-item text-nowrap">
+            <button class="nav-link px=3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-search" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+              </svg>
+            </button>
+          </li>
+          <li class="nav-item text-nowrap">
+            <button class="nav-link px-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+              <!-- TODO: Set fill for SVG in scss -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-list" viewBox="0 0 16 16" aria-hidden="true">
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+              </svg>
+            </button>
+          </li>
+        </ul>
+        <form id="navbarSearch" role="search" action="{% url 'search_results' %}" method="post" class="navbar-search w-100 collapse navbar-collapse">
+          {% csrf_token %}
+          <input type="text" class="form-control w-100 rounded-0 border-0 text-end" placeholder="Search..." aria-label="Search" name="q">
+        </form>
+      </header>
+      <div class="container-fluid">
+        <div class="row">
+          <nav class="sidebar col-md-3 col-lg-2 p-0">
+            <div class="offcanvas-md offcanas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="sidebarMenuLabel">APS Meetings Videos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close">
+                </button>
+              </div>
+              <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+                {% include "meetingsvideos/nav-components.html" %}
+              </div>
+            </div>
+          </nav>
+          <main class="col md-9 col-lg-10 px-md-4">
+            {% block main %}{% endblock %}
+          </main>
+        </div>
+      </div>
+    {% endblock %}

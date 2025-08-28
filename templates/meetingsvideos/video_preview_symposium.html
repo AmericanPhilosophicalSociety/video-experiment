@@ -1,0 +1,20 @@
+{% load meetingsvideos_extras %}
+
+{% if video.symposium %}
+    {% if video.first_in_symposium %}
+        <h2><a href="{% url 'symposium_detail' video.symposium.slug %}">Symposium: {{ video.symposium.title }}</a></h2>
+    {% endif %}
+{% endif %}
+
+<h3><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></h3>
+
+{% for speaker in video.speakers.all %}
+    <a href="{% url 'speaker_detail' speaker.slug %}"><h4>{{ speaker }}</h4></a>
+    {% for affiliation in speaker.affiliation_set.all %}
+        <p>{{ affiliation|linebreaks }}</p>
+    {% endfor %}
+{% endfor %}
+
+{% if video.abstract %}
+    <p>{{ video.abstract }}</p>
+{% endif %}

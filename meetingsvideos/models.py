@@ -1,13 +1,51 @@
 from django.db import models
+from django.db.models.functions import Substr
+from autoslug import AutoSlugField
 
 from locpy.api import LocEntity, NameEntity, SubjectEntity
 import logging
 
 logger = logging.getLogger(__name__)
 
+class AlphaManager(models.Manager):
+    """Custom manager to include first letter of LCSH heading, for use
+    in creating faceted lists"""
+
+    order_field = None
+
+    def with_first_letter(self):
+        return self.annotate(first_letter=Substr(self.order_field, 1, 1)).order_by(
+            self.order_field
+        )
+
+
+class LCSHManager(AlphaManager):
+    """Only return LCSH headings when used as subjects"""
+
+    order_field = "heading"
+
+    def only_topics(self):
+        return self.filter(video__isnull=False).distinct()
+
+    def only_topics_with_first_letter(self):
+        first_queryset = self.with_first_letter()
+        return first_queryset.filter(video__isnull=False).distinct()
+
+
+class SpeakerManager(AlphaManager):
+    order_field = "label"
+
+
+class VideoManager(models.Manager):
+    def exclude_inductions(self):
+        """Do not return member inductions in queryset"""
+        return self.exclude(admin_category="INDUCTION")
+
+
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
     uri = models.CharField(max_length=200, blank=True, null=True)
+    slug = AutoSlugField(populate_from="heading", unique=True)
 
     CATEGORY_CHOICES = {
         "PERSONAL_NAME": "Personal name",
@@ -35,6 +73,8 @@ class LCSH(models.Model):
     components = models.ManyToManyField(
         "self", blank=True, symmetrical=False, related_name="component_of"
     )
+
+    objects = LCSHManager()
 
     class Meta:
         verbose_name = "LCSH"
@@ -99,6 +139,7 @@ class LCSH(models.Model):
 
 class AcademicDiscipline(models.Model):
     name = models.CharField(max_length=100)
+    slug = AutoSlugField(populate_from="name", unique=True)
 
     def __str__(self):
         return self.name
@@ -106,6 +147,7 @@ class AcademicDiscipline(models.Model):
 
 class APSDepartment(models.Model):
     name = models.CharField(max_length=50)
+    slug = AutoSlugField(populate_from="name", unique=True)
 
     def __str__(self):
         return self.name
@@ -120,16 +162,22 @@ class Speaker(models.Model):
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
     lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
+    objects = SpeakerManager()
+    label = models.CharField(max_length=200, blank=True, null=True)
+    slug = AutoSlugField(populate_from="display_name", unique=True)
 
     def __str__(self):
-        return self.display_name
+        return self.label
 
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
+        if self.lcsh and not self.label:
+            self.label = self.lcsh.heading
         super().save(**kwargs)
 
     def get_most_recent_affiliation(self):
-        # TODO: change logic so this returns multiple affiliations if multiple affiliations are used in most recent video?
+        # TODO: change logic so this returns multiple affiliations if multiple
+        # affiliations are used in most recent video?
         if len(self.affiliation_set.all()) > 0:
             return self.affiliation_set.all().order_by("-meeting")[0]
         else:
@@ -155,8 +203,9 @@ class Affiliation(models.Model):
 
 class WithNotes(models.Model):
     """
-    Includes display_notes field (for additional text to display on the page for a given Meeting, Video, etc.) and admin_notes field (for information attached to a record that should NOT be displayed publicly)
-    """
+    Includes display_notes field (for additional text to display on the page
+    for a given Meeting, Video, etc.) and admin_notes field (for information
+    attached to a record that should NOT be displayed publicly)"""
 
     display_notes = models.TextField(
         blank=True, help_text="Additional text to display publicly"
@@ -181,9 +230,13 @@ class Meeting(WithNotes):
         help_text="If this meeting has a page on the APS website, link it here",
         blank=True,
     )
+    slug = AutoSlugField(populate_from="display_date", unique=True)
 
     def videos_by_time(self):
         return self.video_set.all().order_by("date", "order_in_day")
+
+    def videos_by_date(self, query_date):
+        return self.video_set.filter(date=query_date).order_by("order_in_day")
 
     def __str__(self):
         return self.display_date
@@ -195,6 +248,7 @@ class Meeting(WithNotes):
 class ProgramInfo(WithNotes):
     title = models.CharField(max_length=200)
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    slug = AutoSlugField(populate_from="title", unique=True)
 
     def __str__(self):
         return self.title
@@ -215,7 +269,9 @@ class Symposium(ProgramInfo):
 
     class Meta:
         verbose_name_plural = "Symposia"
-        ordering = ["title"]
+        # for now, naively order by PK - perhaps add explicit date field in
+        # future for ordering
+        # ordering = ["title"]
 
 
 class Video(ProgramInfo):
@@ -256,6 +312,8 @@ class Video(ProgramInfo):
     # add: default=Other
     academic_disciplines = models.ManyToManyField(AcademicDiscipline)
 
+    objects = VideoManager()
+
     def first_in_symposium(self):
         # videos = Symposium.objects.get(pk=self.symposium.pk)
         # videos = Video.objects.filter(symposium=self.symposium).order_by('time')
@@ -289,4 +347,5 @@ class Video(ProgramInfo):
         return f"https://diglib.amphilsoc.org/islandora/object/video{num}obj"
 
     class Meta:
-        ordering = ["title"]
+        # ordering = ["title"]
+        ordering = ["date", "order_in_day"]
