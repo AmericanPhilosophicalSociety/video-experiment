@@ -1,0 +1,11 @@
+{% for video in videos %}
+    {% if page_obj.has_next and forloop.last %}
+        <span
+            hx-get="{% url 'index' %}?page={{ page_obj.next_page_number }}"
+            hx-swap="afterend"
+            hx-trigger="revealed"
+        >
+        </span>
+    {% endif %}
+  {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+{% endfor %}

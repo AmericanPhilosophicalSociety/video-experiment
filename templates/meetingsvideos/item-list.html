@@ -1,0 +1,38 @@
+{% if page_obj.number == 1 %}
+ {% if alphabet %}
+  <ul class="alphabet">
+    {% for a in alphabet %}
+    {% if a in available_letters %}
+    {% querystring request.GET first_letter=a as query %}
+    <li><a class="alpha-link" hx-get="{{ request.path }}{{ query }}" hx-target="#headings-list" hx-push-url="true">{{ a }}</a></li>
+    {% comment %}
+      <li><a href="{{ request.path }}{{ query }}">{{ a }}</a></li>
+    {% endcomment %}
+    {% else %}
+      <li>{{ a }}</li>
+    {% endif %}
+    {% endfor %}
+    {% querystring request.GET first_letter=None as query %}
+    <li><a class="alpha-link" hx-get="{{ request.path }}{{ query }}" hx-target="#headings-list" hx-push-url="true">all</a></li>
+  </ul>
+{% endif %}
+<div id="topic-list">
+<ul>
+{% endif %}
+{% for topic in topics %}
+  {% url link_template topic.slug as the_url %}
+  <li><a href="{{ the_url }}">{{ topic }}</a></li>
+  {% if page_obj.has_next and forloop.last %}
+  {% querystring request.GET page=page_obj.next_page_number as params %}
+  <span
+      hx-get="{{ request.path }}{{ params }}"
+      hx-swap="afterend"
+      hx-trigger="revealed"
+  >
+  </span>
+{% endif %}
+{% endfor %}
+{% if page_obj.number == 1%}
+  </ul>
+</div>
+{% endif %}

@@ -1,6 +1,12 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
+from django.shortcuts import render, redirect
 from .forms import AdvancedSearchForm
+from django.views.generic import ListView, DetailView
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
+
+from random import sample
+from string import ascii_uppercase
+import datetime
 
 from .models import (
     Video,
@@ -15,144 +21,229 @@ from .models import (
 from .service import basic_search, advanced_search
 
 
-# Create your views here.
-def index(request):
-    videos = Video.objects.all()
-    return render(request, "meetingsvideos/index.html", {"videos": videos})
+class HTMXMixin:
+    partial_template = None
+    content_template = None
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx.target == "video-container":
+            return self.content_template
+        elif self.request.htmx and not self.request.htmx.history_restore_request:
+            return self.partial_template
+        else:
+            return self.template_name
+
+    @method_decorator(vary_on_headers("HX-Request"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 
-def meeting_detail(request, meeting_id):
-    meeting = get_object_or_404(Meeting, pk=meeting_id)
-    return render(request, "meetingsvideos/meeting_detail.html", {"meeting": meeting})
+class TopicView(HTMXMixin, ListView):
+    context_object_name = "topics"
+    paginate_by = 25
+    link_template = None
+    partial_template = "meetingsvideos/item-list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["link_template"] = self.link_template
+        return context
 
 
-def meetings(request):
-    meetings = Meeting.objects.all()
-    return render(request, "meetingsvideos/meetings.html", {"meetings": meetings})
+class AlphaMixin:
+    model = None
+    alpha_list = list(ascii_uppercase)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["alphabet"] = self.alpha_list
+        available_letters = set(
+            self.model.objects.with_first_letter().values_list(
+                "first_letter", flat=True
+            )
+        )
+        context["available_letters"] = available_letters
+        return context
 
 
-def video_detail(request, video_id):
-    video = get_object_or_404(Video, pk=video_id)
-    return render(request, "meetingsvideos/video_detail.html", {"video": video})
+class FilterView(TopicView):
+    queryset_method = None
+
+    def get_queryset(self):
+        queryset = self.queryset_method()
+        param = self.request.GET.getlist("q")
+        if param:
+            queryset = queryset.filter(category__in=param)
+
+        return queryset
 
 
-def headings(request):
-    # returns only LCSH associated with videos, NOT those associated with speakers
-    headings = LCSH.objects.filter(video__isnull=False).distinct()
-    return render(request, "meetingsvideos/headings.html", {"headings": headings})
+class AlphaFilterView(AlphaMixin, FilterView):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        first_letter = self.request.GET.get("first_letter")
+        if first_letter:
+            queryset = queryset.filter(first_letter=first_letter)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        param = self.request.GET.getlist("q")
+        if param:
+            available_letters = set(
+                self.queryset_method()
+                .filter(category__in=param)
+                .values_list("first_letter", flat=True)
+            )
+            context["available_letters"] = available_letters
+        return context
 
 
-def heading_detail(request, pk):
-    lcsh = get_object_or_404(LCSH, pk=pk)
+class Landing(ListView):
+    template_name = "meetingsvideos/landing-page.html"
+    context_object_name = "videos"
 
-    # returns separate lists of videos tagged with this LCSH and videos whose speaker corresponds to this LCSH
-    videos_with_topic = lcsh.video_set.all()
-    videos_by_speaker = Video.objects.filter(speakers__lcsh=lcsh)
-
-    return render(
-        request,
-        "meetingsvideos/heading_detail.html",
-        {
-            "lcsh": lcsh,
-            "videos_with_topic": videos_with_topic,
-            "videos_by_speaker": videos_by_speaker,
-        },
-    )
+    def get_queryset(self):
+        # get all pks that exist - don't call object into memory
+        pks = Video.objects.values_list("pk", flat=True)
+        # choose three random pks
+        random_pks = sample(list(pks), 3)
+        # call selected object into memory
+        queryset = Video.objects.filter(pk__in=random_pks)
+        return queryset
 
 
-def topics(request):
-    headings = LCSH.objects.filter(Q(category="TOPIC") | Q(category="COMPLEX_SUBJECT"))
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Topic"},
-    )
+class IndexView(HTMXMixin, ListView):
+    # model = Video
+    template_name = "meetingsvideos/index.html"
+    context_object_name = "videos"
+    paginate_by = 10
+    partial_template = "meetingsvideos/video-list.html"
+    content_template = "meetingsvideos/index-content.html"
+
+    def get_queryset(self):
+        queryset = Video.objects.exclude_inductions()
+        return queryset
 
 
-def names(request):
-    # returns only LCSH associated with videos, NOT those associated with speakers
-    headings = LCSH.objects.filter(Q(category="PERSONAL_NAME") & Q(video__isnull=False))
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Names"},
-    )
+class VideoDetail(DetailView):
+    model = Video
+    context_object_name = "video"
+    template_name = "meetingsvideos/video_detail.html"
 
 
-def corporate(request):
-    headings = LCSH.objects.filter(
-        Q(category="CORPORATE_NAME") & Q(video__isnull=False)
-    )
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Corporate Entities"},
-    )
+class HeadingsView(AlphaFilterView):
+    model = LCSH
+    queryset_method = LCSH.objects.only_topics_with_first_letter
+    template_name = "meetingsvideos/headings.html"
+    link_template = "heading_detail"
+    content_template = "meetingsvideos/heading-content.html"
 
 
-def geographic(request):
-    headings = LCSH.objects.filter(category="GEOGRAPHIC")
-    return render(
-        request,
-        "meetingsvideos/heading_category.html",
-        {"headings": headings, "lcsh_type": "Geographic Entities"},
-    )
+class HeadingDetail(DetailView):
+    model = LCSH
+    context_object_name = "lcsh"
+    template_name = "meetingsvideos/heading_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        videos_by_speaker = Video.objects.filter(speakers__lcsh=self.get_object().pk)
+        context["videos_by_speaker"] = videos_by_speaker
+        return context
 
 
-def symposium_detail(request, symposium_id):
-    symposium = get_object_or_404(Symposium, pk=symposium_id)
-    return render(
-        request, "meetingsvideos/symposium_detail.html", {"symposium": symposium}
-    )
+class SpeakersView(AlphaFilterView):
+    model = Speaker
+    queryset_method = Speaker.objects.with_first_letter
+    template_name = "meetingsvideos/speakers.html"
+    link_template = "speaker_detail"
+    content_template = "meetingsvideos/speaker-content.html"
 
 
-def symposia(request):
-    symposia = Symposium.objects.all()
-    return render(request, "meetingsvideos/symposia.html", {"symposia": symposia})
+class SpeakerDetail(DetailView):
+    model = Speaker
+    template_name = "meetingsvideos/speaker_detail.html"
+    context_object_name = "speaker"
 
 
-def discipline_detail(request, discipline_id):
-    discipline = get_object_or_404(AcademicDiscipline, pk=discipline_id)
-    return render(
-        request, "meetingsvideos/discipline_detail.html", {"discipline": discipline}
-    )
+class MeetingsList(HTMXMixin, ListView):
+    model = Meeting
+    template_name = "meetingsvideos/meetings.html"
+    context_object_name = "meetings"
+    paginate_by = 10
+    partial_template = "meetingsvideos/meetings-list.html"
+    content_template = "meetingsvideos/meeting-content.html"
 
 
-def disciplines(request):
-    disciplines = AcademicDiscipline.objects.all()
-    return render(
-        request, "meetingsvideos/disciplines.html", {"disciplines": disciplines}
-    )
+class MeetingDetail(HTMXMixin, DetailView):
+    model = Meeting
+    context_object_name = "meeting"
+    template_name = "meetingsvideos/meeting_detail.html"
+    partial_template = "meetingsvideos/meeting-video-list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dates = sorted(set(self.get_object().video_set.values_list("date", flat=True)))
+        context["dates"] = dates
+        param = self.request.GET.get("q")
+        if param:
+            parsed_param = [int(p) for p in param.split("-")]
+            query_date = datetime.date(*parsed_param)
+        else:
+            query_date = dates[0]
+        context["videos"] = self.get_object().video_set.filter(date=query_date)
+        return context
 
 
-def department_detail(request, department_id):
-    department = get_object_or_404(APSDepartment, pk=department_id)
-    return render(
-        request, "meetingsvideos/department_detail.html", {"department": department}
-    )
+class SymposiumList(HTMXMixin, ListView):
+    model = Symposium
+    template_name = "meetingsvideos/symposia.html"
+    context_object_name = "symposia"
+    paginate_by = 10
+    partial_template = "meetingsvideos/symposium-list.html"
+    content_template = "meetingsvideos/symposium-content.html"
 
 
-def departments(request):
-    departments = APSDepartment.objects.all()
-    return render(
-        request, "meetingsvideos/departments.html", {"departments": departments}
-    )
+class SymposiumDetail(DetailView):
+    model = Symposium
+    template_name = "meetingsvideos/symposium_detail.html"
+    context_object_name = "symposium"
 
 
-def speakers(request):
-    speakers = Speaker.objects.all().order_by("lcsh")
-    return render(request, "meetingsvideos/speakers.html", {"speakers": speakers})
+class DisciplineList(TopicView):
+    model = AcademicDiscipline
+    template_name = "meetingsvideos/disciplines.html"
+    link_template = "discipline_detail"
+    content_template = "meetingsvideos/discipline-content.html"
 
 
-def speaker_detail(request, speaker_id):
-    speaker = get_object_or_404(Speaker, pk=speaker_id)
-    return render(request, "meetingsvideos/speaker_detail.html", {"speaker": speaker})
+class DisciplineDetail(DetailView):
+    model = AcademicDiscipline
+    template_name = "meetingsvideos/discipline_detail.html"
+    context_object_name = "discipline"
+
+
+class DepartmentList(TopicView):
+    model = APSDepartment
+    template_name = "meetingsvideos/departments.html"
+    link_template = "department_detail"
+    content_template = "meetingsvideos/department-content.html"
+
+
+class DepartmentDetail(DetailView):
+    model = APSDepartment
+    template_name = "meetingsvideos/department_detail.html"
+    context_object_name = "department"
 
 
 def search(request):
     context = {}
     context["advanced_search"] = AdvancedSearchForm()
-    return render(request, "meetingsvideos/search.html", context)
+    if request.htmx:
+        template_name = "meetingsvideos/search-content.html"
+    else:
+        template_name = "meetingsvideos/search.html"
+    return render(request, template_name, context)
 
 
 def search_results(request):

@@ -1,0 +1,34 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+<div class="container" id="video-container">
+    <h1>{{ speaker.display_name }}</h1>
+    <!--
+    <p>{{ speaker.get_most_recent_affiliation|linebreaks }}</p>
+    -->
+    <hr>
+
+    <!-- if this person appears as both speaker and subject of videos, display these separately -->
+    {% if speaker.lcsh.video_set.all|length > 0 %}
+
+    <h2>Talks by this speaker</h2>
+    {% for video in speaker.video_set.all %}
+        {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+    {% endfor %}
+
+    <h2>Talks about this speaker</h2>
+    {% for video in speaker.lcsh.video_set.all %}
+        {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+    {% endfor %}
+
+    <!-- else, display only talks by this speaker -->
+    {% else %}
+
+    <h2>Talks</h2>
+    {% for video in speaker.video_set.all %}
+        {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+    {% endfor %}
+
+    {% endif %}
+</div>
+{% endblock %}
