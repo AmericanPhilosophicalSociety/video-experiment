@@ -28,7 +28,7 @@ class HTMXMixin:
     def get_template_names(self, *args, **kwargs):
         if self.request.htmx.target == "video-container":
             return self.content_template
-        elif self.request.htmx:
+        elif self.request.htmx and not self.request.htmx.history_restore_request:
             return self.partial_template
         else:
             return self.template_name
