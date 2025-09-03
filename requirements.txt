@@ -4,7 +4,9 @@ certifi==2025.8.3
 charset-normalizer==3.4.2
 diff-match-patch==20230430
 Django==5.2.3
+django-autoslug==1.9.9
 django-debug-toolbar==4.4.6
+django-htmx==1.23.2
 django-import-export==4.1.1
 idna==3.10
 locpy @ git+https://github.com/AmericanPhilosophicalSociety/locpy@58cc2951bd15c97f9cf741d42b100a1103f4b5c5
