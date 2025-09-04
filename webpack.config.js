@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+    mode: 'production', 
     entry: './assets/index.js',  // path to our input file
     output: {
         filename: 'index-bundle.js',  // output bundle file name
