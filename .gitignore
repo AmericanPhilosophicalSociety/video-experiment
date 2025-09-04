@@ -1,6 +1,8 @@
 # Environment files
 .env
 .env.dev
+.env.prod
+.env.prod.db
 .venv
 # Python files
 __pycache__/
