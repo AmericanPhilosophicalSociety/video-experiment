@@ -14,3 +14,11 @@ def get_affiliation(context):
     else:
         return None
     # return speaker.get_affiliation(meeting.pk)
+
+
+@register.filter
+def pagination_offset(value):
+    if int(value) == 1:
+        return 0
+    else:
+        return int(value) * 10

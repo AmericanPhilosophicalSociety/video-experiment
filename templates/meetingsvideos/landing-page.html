@@ -1,0 +1,52 @@
+{% extends "meetingsvideos/shell.html" %}
+{% load static %}
+
+{% block body %}
+
+<div id="landing">
+    <div class="container col-xxl-8 px-4 py-5">
+        <div id="hero" class="row flex-lg-row-reverse align-items-center g-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="{% static 'images/aps-logo.jpg' %}" class="d-block mx-lg-auto img-fluid" alt="Logo of the American Philosophical Society" width="700" height="500" loading="lazy">
+                <form role="search" action="{% url 'search_results' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="form-control w-100 text-end" placeholder="Search..." aria-label="Search" name="q">
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <h1 id="hero-title" class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Past Membership Meetings of the American Philosophical Society</h1>
+                <p class="lead">{% lorem %}</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> 
+                    <a href="{% url 'index' %}" class="btn btn-lg btn-primary">Explore</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class="container">
+        <div class="card-group">
+            {% for video in videos %}
+                <div class="card landing-card">
+                    <h5 class="card-header">{{ video.title }}</h5>
+                    <div class="card-body">
+                        <h6 class="card-title">
+                          {% for speaker in video.speakers.all %}
+                            {% if forloop.last %}
+                              {{ speaker.display_name }}
+                            {% else %}
+                              {{ speaker.display_name }}, 
+                            {% endif %}
+                          {% endfor %}
+                        </h6>
+                        <!--<h6 class="card-subtitle mb-2">{{ video.speaker }}</h6>-->
+                        <p class="card-text">{{ video.abstract }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'video_detail' video.slug %}" class="btn btn-primary">View talk</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}

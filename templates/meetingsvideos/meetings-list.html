@@ -1,0 +1,17 @@
+{% for meeting in meetings %}
+  <div class="card teaser meeting-teaser">
+    <h3 class="card-header"><a href="{% url 'meeting_detail' meeting.slug %}">{{ meeting.display_date }}</a></h3>
+    <div class="card-body">
+      <p>{{ meeting.start_date|date:"F j" }}-{{ meeting.end_date|date:"j, Y" }}</p>
+      <a href="{% url 'meeting_detail' meeting.slug %}" class="btn btn-primary">View talks</a>
+    </div>
+  </div>
+  {% if page_obj.has_next and forloop.last %}
+  <span
+      hx-get="{% url 'meetings' %}?page={{ page_obj.next_page_number }}"
+      hx-swap="afterend"
+      hx-trigger="revealed"
+  >
+  </span>
+  {% endif %}
+{% endfor %}

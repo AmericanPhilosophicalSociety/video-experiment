@@ -1,0 +1,123 @@
+{% extends "meetingsvideos/base.html" %}
+{% load static %}
+
+{% block main %}
+<link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet" />
+
+<div class="container" id="video-container">
+  <div class="video-title">
+    <h1>{{ video.title }}</h1>
+  </div>
+  {% if video.lecture_additional_info %}
+  <h2>{{ video.lecture_additional_info }}</h2>
+  {% endif %}
+  <ul class="list-group speaker-list">
+  {% for speaker in video.speakers.all %}
+  <li class="list-group-item">
+  <h3><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h3>
+    {% for affiliation in speaker.affiliation_set.all %}
+    {{ affiliation|linebreaks }}
+    {% endfor %}
+  </li>
+  {% endfor %}
+  </ul>
+
+  <!--Set width and height in CSS and use media query for small breakpoints-->
+  <video
+    id="meeting-video"
+    class="video-js vjs-16-9"
+    controls
+    preload="auto"
+    poster="{% static 'images/aps-logo-mono.png' %}"
+    data-setup='{}'
+  >
+    <source src="{{ video.service_file }}" type="video/mp4" />
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a
+      web browser that
+      <a href="https://videojs.com/html5-video-support/" target="_blank"
+        >supports HTML5 video</a>
+    </p>
+  </video>
+<!--
+<video width="320" height="240" controls>
+    <source src="{{ video.service_file }}" type="video/mp4">
+    <source src="{{ video.service_file }}" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+-->
+
+{% if video.display_notes %}
+<p>{{ video.display_notes }}</p>
+{% endif %}
+
+
+<table class="table table-striped table-hover table-bordered" id="metadata-table">
+  <tr>
+    <td>Meeting</td>
+    <td><a href="{% url 'meeting_detail' video.meeting.slug %}">{{ video.meeting }}</a></td>
+  </tr>
+  {% if video.abstract %}
+  <tr>
+    <td>Abstract</td>
+    <td>{{ video.abstract }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>Category</td>
+    <td>{{ video.get_admin_category_display }}</td>
+  </tr>
+  <tr>
+    <td><p>Academic Discipline</p></td>
+    <td>
+      {% for discipline in video.academic_disciplines.all %}
+        <p><a href="{% url 'discipline_detail' discipline.slug %}">{{ discipline }}</a></p>
+      {% endfor %}
+    </td>
+  </tr>
+  <tr>
+    <td><p>Subjects</p></td>
+    <td>
+      {% for heading in video.lcsh.all %}
+        <p><a href="{% url 'heading_detail' heading.slug %}">{{ heading }}</a></p>
+      {% endfor %}
+    </td>
+  </tr>
+    {% if video.aps_departments.all %}
+  <tr>
+    <td>APS Department</td>
+    <td>
+      {% for department in video.aps_departments.all %}
+        <p><a href="{% url 'department_detail' department.slug %}">{{ department }}</a></p>
+      {% endfor %}</td>
+  </tr>
+  {% endif %}
+</table>
+{% if video.symposium %}
+  <table class="table table-borderless">
+    <tr>
+      <td>Part of symposium:</td>
+      <td><a href="{% url 'symposium_detail' video.symposium.slug %}">{{ video.symposium.title }}</a></td>
+    </tr>
+  {% if video.get_prev %}
+    <tr>
+      <td>Previous video:</td>
+      <td><a href="{% url 'video_detail' video.get_prev.slug %}">{{ video.get_prev }}</a></td>
+    </tr>
+  {% endif %}
+
+  {% if video.get_next %}
+    <tr>
+      <td>Next video:</td>
+      <td><a href="{% url 'video_detail' video.get_next.slug %}">{{ video.get_next }}</a></td>
+    </tr>
+  {% endif %}
+  </table>
+  {% endif %}
+
+</div>
+<!-- TODO: these links don't work -->
+<!-- <p><a href="https://diglib.amphilsoc.org/islandora/object/video:{{ video.diglib_pid }}">View in APS Digital Library</a></p> -->
+
+<script src="https://vjs.zencdn.net/8.23.3/video.min.js"></script>
+{% endblock %}

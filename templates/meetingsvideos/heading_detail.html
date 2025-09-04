@@ -1,0 +1,35 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+<div class="container" id="video-container">
+<h1>{{ lcsh.heading }}</h1>
+<!-- if LCSH is used for both speakers and videos, display these separately -->
+{% if lcsh.video_set.all|length > 0 and videos_by_speaker|length > 0 %}
+
+<h3>As speaker</h3>
+{% for video in videos_by_speaker %}
+  {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+{% endfor %}
+<hr>
+<h3>As subject</h3>
+{% for video in lcsh.video_set.all %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+{% endfor %}
+
+<!-- if LCSH only used as speaker, display all talks by this speaker -->
+{% elif videos_by_speaker|length > 0 %}
+
+{% for video in videos_by_speaker %}
+    {% include "meetingsvideos/video_preview_no_names.html" %}
+{% endfor %}
+
+<!-- if LCSH only used as subject, display all talks with this subject -->
+{% else %}
+
+{% for video in lcsh.video_set.all %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+{% endfor %}
+
+{% endif %}
+</div>
+{% endblock %}

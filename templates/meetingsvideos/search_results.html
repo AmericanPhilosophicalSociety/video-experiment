@@ -1,0 +1,94 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block main %}
+<div class="container" id="video-container">
+<h1>Search Results For: {{ query }}</h1>
+
+<hr>
+
+
+<h3>Videos</h3>
+
+{% if videos %}
+
+{% for video in videos %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+{% endfor %}
+
+{% else %}
+
+<p>No videos found.</p>
+
+{% endif %}
+
+<hr>
+
+
+<h3>Speakers</h3>
+
+{% if speakers %}
+
+{% for speaker in speakers %}
+    <p><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No speakers found.</p>
+
+{% endif %}
+
+<hr>
+
+
+<h3>Subjects</h3>
+
+{% if subjects %}
+
+{% for subject in subjects %}
+    <p><a href="{% url 'heading_detail' subject.slug %}">{{ subject.heading }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No subjects found.</p>
+
+{% endif %}
+
+<hr>
+
+
+<h3>Academic Disciplines</h3>
+
+{% if disciplines %}
+
+{% for discipline in disciplines %}
+    <p><a href="{% url 'discipline_detail' discipline.slug %}">{{ discipline.name }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No academic disciplines found.</p>
+
+{% endif %}
+
+<hr>
+
+
+<h3>APS Departments</h3>
+
+{% if departments %}
+
+{% for department in departments %}
+    <p><a href="{% url 'department_detail' department.slug %}">{{ department.name }}</a></p>
+{% endfor %}
+
+{% else %}
+
+<p>No APS departments found.</p>
+
+{% endif %}
+
+
+</div>
+{% endblock %}

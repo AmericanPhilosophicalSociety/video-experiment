@@ -1,0 +1,30 @@
+{% load static %}
+<div class="card teaser video-teaser">
+    <div class="video-placeholder" role="image">
+        <a href="{% url 'video_detail' video.slug %}">
+            <svg class="overlay" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-btn" viewBox="0 0 16 16">
+                <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
+                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
+            </svg>
+        </a>
+    </div>
+    <h3 class=card-header><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></h3>
+    <div class="card-body">
+        <ul class="list-group speaker-list">
+            {% for speaker in video.speakers.all %}
+            <li class="list-group-item">
+            <h4><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h4>
+              {% for affiliation in speaker.affiliation_set.all %}
+              {{ affiliation|linebreaks }}
+              {% endfor %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% if show_dates %}
+        <div class="video-date">{{ video.date|date:"F j, Y" }}</div>
+        {% endif %}
+        {% if video.abstract %}
+        <p>{{ video.abstract }}</p>
+        {% endif %}
+    </div>
+</div>
