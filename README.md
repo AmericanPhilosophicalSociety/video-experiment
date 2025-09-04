@@ -35,3 +35,5 @@ Run Django-specific commands:
 docker compose exec web python manage.py migrate --noinput
 docker compsoe exec web python manage.py collectstatic --noinput --clear
 ```
+
+Access the site at <http://localhost:1337>.
