@@ -12,7 +12,7 @@ def upload_lcsh():
                 try:
                     heading = row["aLabel"]
                     authority = "LOC"
-                    
+
                     lcsh, created = LCSH.objects.get_or_create(
                         heading=heading,
                         uri=row["loc_id"],
@@ -25,7 +25,11 @@ def upload_lcsh():
 
                     # find video associated with lcsh
                     date = process_date(row["talk_date"])
-                    video = Video.objects.get(title=row["talk_title"], date=date, order_in_day=row["order_in_day"])
+                    video = Video.objects.get(
+                        title=row["talk_title"],
+                        date=date,
+                        order_in_day=row["order_in_day"],
+                    )
 
                     # if lcsh is for a speaker, add to that speaker
                     # speaker should already exist (created with affiliation during previous process)
@@ -42,4 +46,6 @@ def upload_lcsh():
                         video.save()
                         # print("saved to video: " + str(video))
                 except Exception as e:
-                    print(f"An error occurred while processing header {row["aLabel"]} ({row['loc_id']}): {e}")
+                    print(
+                        f"An error occurred while processing header {row['aLabel']} ({row['loc_id']}): {e}"
+                    )

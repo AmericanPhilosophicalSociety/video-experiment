@@ -4,15 +4,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0010_alter_lcsh_components'),
+        ("meetingsvideos", "0010_alter_lcsh_components"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lcsh',
-            name='category',
-            field=models.CharField(choices=[('PERSONAL_NAME', 'Personal name'), ('CORPORATE_NAME', 'Corporate name'), ('GEOGRAPHIC', 'Geographic'), ('TOPIC', 'Topic'), ('COMPLEX_SUBJECT', 'Complex subject'), ('GENRE_FORM', 'Genre/Form'), ('TITLE', 'Title'), ('OTHER', 'Other')], max_length=50),
+            model_name="lcsh",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("PERSONAL_NAME", "Personal name"),
+                    ("CORPORATE_NAME", "Corporate name"),
+                    ("GEOGRAPHIC", "Geographic"),
+                    ("TOPIC", "Topic"),
+                    ("COMPLEX_SUBJECT", "Complex subject"),
+                    ("GENRE_FORM", "Genre/Form"),
+                    ("TITLE", "Title"),
+                    ("OTHER", "Other"),
+                ],
+                max_length=50,
+            ),
         ),
     ]

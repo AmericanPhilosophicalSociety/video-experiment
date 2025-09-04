@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AlphaManager(models.Manager):
     """Custom manager to include first letter of LCSH heading, for use
     in creating faceted lists"""
@@ -126,13 +127,15 @@ class LCSH(models.Model):
             self.category = category_mapping[category]
         except IndexError:
             self.category = "OTHER"
-            logger.warning(f"No matching instance found while setting LoC data for {self.uri}.")
+            logger.warning(
+                f"No matching instance found while setting LoC data for {self.uri}."
+            )
 
     def get_components(self):
         loc_entity = self.loc
         for c in loc_entity.components:
             if isinstance(c, NameEntity) or isinstance(c, SubjectEntity):
-                uri_stub = c.uri.split("/")[-1] 
+                uri_stub = c.uri.split("/")[-1]
                 component, _ = LCSH.objects.get_or_create(uri=uri_stub, authority="LOC")
                 self.components.add(component)
 
@@ -341,9 +344,9 @@ class Video(ProgramInfo):
                 return videos[i + 1]
         else:
             return None
-        
+
     def get_diglib_url(self):
-        num = self.pid.split(':')[-1]
+        num = self.pid.split(":")[-1]
         return f"https://diglib.amphilsoc.org/islandora/object/video{num}obj"
 
     class Meta:

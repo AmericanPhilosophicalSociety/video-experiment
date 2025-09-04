@@ -12,9 +12,11 @@ from meetingsvideos.models import (
     Affiliation,
 )
 
-logging.basicConfig(filename="videoupload.log",
-                    format='%(asctime)s - %(message)s - %(levelname)s',
-                    filemode='w')
+logging.basicConfig(
+    filename="videoupload.log",
+    format="%(asctime)s - %(message)s - %(levelname)s",
+    filemode="w",
+)
 
 
 # converts EDTF date to datetime object
@@ -27,7 +29,6 @@ def process_date(string):
     day = int(ymd[2])
 
     return datetime.datetime(year, month, day, tzinfo=ZoneInfo("America/New_York"))
-
 
 
 def process_diglib_url(string):
@@ -62,7 +63,9 @@ def process_affiliation(position, institution, meeting, speaker):
             affiliation.save()
             print("Affiliation created for speaker: " + speaker.display_name)
         except:
-            logging.exception(f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}")
+            logging.exception(
+                f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}"
+            )
             affiliation.delete()
     return
 
@@ -79,13 +82,15 @@ def add_speaker_to_video(
             speaker.full_clean()
             speaker.save()
         except:
-            logging.exception(f"Speaker {speaker} for video {video} in meeting {meeting}")
+            logging.exception(
+                f"Speaker {speaker} for video {video} in meeting {meeting}"
+            )
             speaker.delete()
             return
-            
+
     video.speakers.add(speaker)
     print("Speaker added: " + speaker.display_name)
-    
+
     # if affiliation, create new affiliation
     if position_1 or institution_1:
         process_affiliation(position_1, institution_1, meeting, speaker)
@@ -119,9 +124,9 @@ def process_video(row):
 
     # find or create symposium
     symposium = process_symposium(row["symposium"], meeting)
-    
+
     # create date object
-    date=process_date(row["date"])
+    date = process_date(row["date"])
 
     # TODO: let this update video object if not all data matches? which fields should ID it?
     video, created = Video.objects.get_or_create(
@@ -152,7 +157,9 @@ def process_video(row):
             video.save()
             print("Video created: " + video.title)
         except:
-            logging.exception(f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}")
+            logging.exception(
+                f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}"
+            )
             video.delete()
             return
 
@@ -203,4 +210,4 @@ def upload_videos():
             try:
                 process_video(row)
             except:
-                logging.exception(f"Video {row["title"]} in meeting {row["meeting"]}")
+                logging.exception(f"Video {row['title']} in meeting {row['meeting']}")

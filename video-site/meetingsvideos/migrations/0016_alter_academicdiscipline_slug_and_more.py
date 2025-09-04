@@ -5,45 +5,58 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0015_merge_20250828_1009'),
+        ("meetingsvideos", "0015_merge_20250828_1009"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='academicdiscipline',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='name', unique=True),
+            model_name="academicdiscipline",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="name", unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='apsdepartment',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='name', unique=True),
+            model_name="apsdepartment",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="name", unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='lcsh',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='heading', unique=True),
+            model_name="lcsh",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="heading", unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='meeting',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='display_date', unique=True),
+            model_name="meeting",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="display_date", unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='speaker',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='display_name', unique=True),
+            model_name="speaker",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="display_name", unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='symposium',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='title', unique=True),
+            model_name="symposium",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="title", unique=True
+            ),
         ),
         migrations.AlterField(
-            model_name='video',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='title', unique=True),
+            model_name="video",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from="title", unique=True
+            ),
         ),
     ]
