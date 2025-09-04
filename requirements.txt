@@ -8,10 +8,13 @@ django-autoslug==1.9.9
 django-debug-toolbar==4.4.6
 django-htmx==1.23.2
 django-import-export==4.1.1
+gunicorn==23.0.0
 idna==3.10
 locpy @ git+https://github.com/AmericanPhilosophicalSociety/locpy@58cc2951bd15c97f9cf741d42b100a1103f4b5c5
+packaging==25.0
 pip-autoremove==0.10.0
 psycopg==3.2.2
+psycopg2-binary==2.9.10
 pyparsing==3.2.3
 python-dotenv==1.0.1
 rdflib==7.1.4
