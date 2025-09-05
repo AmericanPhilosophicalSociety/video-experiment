@@ -16,5 +16,7 @@ node_modules/
 static/css/main.css
 static/css/main.css.map
 static/index-bundle.js
+video-site/static/css
+video-site/static/index-bundle.js*
 # Logs
 videoupload.log
