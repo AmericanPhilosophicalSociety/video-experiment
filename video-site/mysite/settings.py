@@ -30,6 +30,7 @@ SECRET_KEY = os.getenv("DB_SECRET_KEY")
 DEBUG = bool(int(os.getenv("DEBUG")))
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS").split(" ")
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_TRUSTED_ORIGINS").split(" ")
 
 
 # Application definition
