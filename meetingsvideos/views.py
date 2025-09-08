@@ -190,7 +190,10 @@ class MeetingDetail(HTMXMixin, DetailView):
             parsed_param = [int(p) for p in param.split("-")]
             query_date = datetime.date(*parsed_param)
         else:
-            query_date = dates[0]
+            try:
+                query_date = dates[0]
+            except IndexError:
+                query_date = None
         context["videos"] = self.get_object().video_set.filter(date=query_date)
         return context
 
