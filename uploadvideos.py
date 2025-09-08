@@ -54,7 +54,7 @@ def add_category_to_video(string, ModelName, separator):
 
 def process_affiliation(position, institution, meeting, speaker):
     affiliation, created = Affiliation.objects.get_or_create(
-        meeting=meeting, position=position, institution=institution, speaker=speaker
+        position=position, institution=institution, speaker=speaker
     )
     if created:
         try:
@@ -64,6 +64,8 @@ def process_affiliation(position, institution, meeting, speaker):
         except:
             logging.exception(f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}")
             affiliation.delete()
+    # add meeting
+    affiliation.meetings.add(meeting)
     return
 
 
@@ -195,7 +197,7 @@ def process_video(row):
 
 # loop through spreadsheet, adding a video for each row
 def upload_videos():
-    with open("videos-duplicate.csv", newline="", encoding="utf8") as csvfile:
+    with open("videos.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             try:
