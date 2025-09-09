@@ -1,5 +1,6 @@
 import csv, time, re
 from locpy.api import LocAPI, NameEntity, SubjectEntity, LocEntity
+from wakepy import keep
 
 """
 + Takes a csv of videos as input
@@ -207,7 +208,7 @@ def process_videos():
 
 
 # run script and write results to spreadsheet
-def run_script():
+def process_spreadsheet():
     loc_dict = process_videos()
     print(loc_dict)
     
@@ -231,3 +232,7 @@ def run_script():
                 writer.writerow(video)
             except:
                 print(f"failed to write row for: {video["orig_heading"]}")
+                
+def run_script():
+    with keep.running():
+        process_spreadsheet()

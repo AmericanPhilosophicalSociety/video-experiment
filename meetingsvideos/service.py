@@ -28,8 +28,6 @@ def basic_search(query):
     video_fields_to_search = [
         "title",
         "abstract",
-        "speakers__display_name",
-        "speakers__lcsh__heading",
         "lcsh__heading",
         "meeting__display_date",
         "academic_disciplines__name",
@@ -42,23 +40,17 @@ def basic_search(query):
         "affiliation__institution",
     ]
     subject_fields_to_search = ["heading"]
-    discipline_fields_to_search = ["name"]
-    department_fields_to_search = ["name"]
     # TODO: do we want to return symposium results? should this include ones where one video matches the search terms (so duplicating results from video search)?
     symposium_fields_to_search = ["title", "meeting__display_date"]
 
     video_search = Q()
     speaker_search = Q()
     subject_search = Q()
-    discipline_search = Q()
-    department_search = Q()
 
     for search_term in query_lst:
         video_search &= build_q_object(search_term, video_fields_to_search)
         speaker_search &= build_q_object(search_term, speaker_fields_to_search)
         subject_search &= build_q_object(search_term, subject_fields_to_search)
-        discipline_search &= build_q_object(search_term, discipline_fields_to_search)
-        department_search &= build_q_object(search_term, department_fields_to_search)
 
     videos = Video.objects.filter(video_search).distinct()
     # video_vector = SearchVector('title', 'abstract', 'lcsh__heading')
@@ -72,10 +64,7 @@ def basic_search(query):
     # subject_vector = SearchVector('heading')
     # subjects = LCSH.objects.annotate(search=subject_vector).filter(search=query).exclude(video=None)
 
-    disciplines = AcademicDiscipline.objects.filter(discipline_search)
-    departments = APSDepartment.objects.filter(department_search)
-
-    return videos, speakers, subjects, disciplines, departments
+    return videos, speakers, subjects
 
 
 def advanced_search(form):
@@ -85,7 +74,16 @@ def advanced_search(form):
     subject_q = form.cleaned_data["subject"]
     disciplines = form.cleaned_data["discipline"]
     departments = form.cleaned_data["department"]
+    
     categories = form.cleaned_data["category"]
+    # a few categories are combined in display to make form more easily readable - separate them back out here
+    if categories:
+        if "LECTURE" in categories:
+            categories.append("PANEL")
+            categories.append("CONVERSATION")
+        if "OTHER" in categories:
+            categories.append("ARCHIVES")
+
     start_date = form.cleaned_data["start_date"]
     end_date = form.cleaned_data["end_date"]
 

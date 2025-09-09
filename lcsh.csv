@@ -158,7 +158,8 @@ True,"Jefferson, Thomas, 1743-1826","Jefferson, Thomas, 1743-1826",n79089957,htt
 True,"Jefferson, Thomas, 1743-1826","Jefferson, Thomas, 1743-1826",n79089957,http://id.loc.gov/authorities/n79089957,"Pioneering APS Paleontologists Jefferson, Darwin, and Walcott: The Known History of Life, Then and Now",2018-04-28,5,False,
 True,"Allen, John Logan, 1941-","Allen, John Logan, 1941-",n89643589,http://id.loc.gov/authorities/n89643589,Legacies of Lewis and Clark: The Immediate Response of the American Fur Trade,2004-11-12,2,True,John Logan Allen
 True,"Allen, John Logan, 1941-","Allen, John Logan, 1941-",n89643589,http://id.loc.gov/authorities/n89643589,Legacies of Lewis and Clark: The Immediate Response of the American Fur Trade,2004-11-12,2,False,
-True,"Oberg, Barbara","Oberg, Barbara",n81083506,http://id.loc.gov/authorities/n81083506,Legacies of Lewis and Clark: The Immediate Response of the American Fur Trade,2004-11-12,2,True,Barbara Oberg
+True,"Oberg, Barbara B.","Oberg, Barbara",n81083506,http://id.loc.gov/authorities/n81083506,Legacies of Lewis and Clark: The Immediate Response of the American Fur Trade,2004-11-12,2,True,Barbara B. Oberg
+True,"Oberg, Barbara B.","Oberg, Barbara",n81083506,http://id.loc.gov/authorities/n81083506,"""An Irreparable Misfortune Has Deprived Me of Them"": Thomas Jefferson's Indian Vocabularies",2010-04-22,3,True,Barbara B. Oberg
 True,Fur trade,Fur trade,sh85052495,http://id.loc.gov/authorities/sh85052495,Legacies of Lewis and Clark: The Immediate Response of the American Fur Trade,2004-11-12,2,False,
 True,Cartography,Cartography,sh85020515,http://id.loc.gov/authorities/sh85020515,Legacies of Lewis and Clark: The Immediate Response of the American Fur Trade,2004-11-12,2,False,
 True,Cartography,Cartography,sh85020515,http://id.loc.gov/authorities/sh85020515,A Young Man from “Ultima Thule” Visits Jefferson: Alexander von Humboldt in Philadelphia and Washington,2009-11-14,4,False,
@@ -349,6 +350,8 @@ True,"Clark, Brian C.","Clark, Brian C.",no2022101616,http://id.loc.gov/authorit
 True,"Mandelbrot, Benoit B.","Mandelbrot, Benoit B.",n81107154,http://id.loc.gov/authorities/n81107154,Admission of New Members,2005-04-28,2,False,
 True,"Meinwald, Jerrold, 1927-2018","Meinwald, Jerrold, 1927-2018",n95039335,http://id.loc.gov/authorities/n95039335,Moderator's Remarks,2005-04-28,4,True,Jerrold Meinwald
 True,"Meinwald, Jerrold, 1927-2018","Meinwald, Jerrold, 1927-2018",n95039335,http://id.loc.gov/authorities/n95039335,Panel Discussion: Discovery and Invention in Contemporary Chemistry,2005-04-28,9,True,Jerrold Meinwald
+True,"Meinwald, Jerrold, 1927-2018","Meinwald, Jerrold, 1927-2018",n95039335,http://id.loc.gov/authorities/n95039335,Chemical Studies of Violence and Sex In and Beyond the World of Insects,2011-11-17,5,True,Jerrold Meinwald
+True,"Meinwald, Jerrold, 1927-2018","Meinwald, Jerrold, 1927-2018",n95039335,http://id.loc.gov/authorities/n95039335,Looking Backwards: A Half-Century Collaboration with Thomas Eisner,2014-04-25,4,True,Jerrold Meinwald
 True,Chemistry,Chemistry,sh85022986,http://id.loc.gov/authorities/sh85022986,Moderator's Remarks,2005-04-28,4,False,
 True,Chemistry,Chemistry,sh85022986,http://id.loc.gov/authorities/sh85022986,Using Deadly Cone Snails to Understand Nervous Systems,2005-04-28,5,False,
 True,Chemistry,Chemistry,sh85022986,http://id.loc.gov/authorities/sh85022986,Nano Toys and Nano Art: How Fun and Beauty Inspire Chemical Creativity,2005-04-28,6,False,
@@ -455,7 +458,7 @@ True,Nuclear nonproliferation,Nuclear nonproliferation,sh85093020,http://id.loc.
 True,Nuclear nonproliferation,Nuclear nonproliferation,sh85093020,http://id.loc.gov/authorities/sh85093020,Living with Nuclear Weapons: Fifty Years and Counting,2005-04-30,5,False,
 True,Nuclear nonproliferation,Nuclear nonproliferation,sh85093020,http://id.loc.gov/authorities/sh85093020,The Iran Nuclear Deal,2015-11-13,8,False,
 True,"Garwin, Richard L.","Garwin, Richard L.",n84135318,http://id.loc.gov/authorities/n84135318,Living with Nuclear Weapons: Fifty Years and Counting,2005-04-30,5,True,Richard L. Garwin
-True,"Garwin, Richard L.","Garwin, Richard L.",n84135318,http://id.loc.gov/authorities/n84135318,The Iran Nuclear Deal,2015-11-13,8,True,Richard Garwin
+True,"Garwin, Richard L.","Garwin, Richard L.",n84135318,http://id.loc.gov/authorities/n84135318,The Iran Nuclear Deal,2015-11-13,8,True,Richard L. Garwin
 True,"Bennet, Jean","Bennet, Jean",n85100424,http://id.loc.gov/authorities/n85100424,Gene Therapy for Congenital Blindness,2005-11-10,1,True,Jean Bennett
 True,Gene therapy,Gene therapy,sh85053738,http://id.loc.gov/authorities/sh85053738,Gene Therapy for Congenital Blindness,2005-11-10,1,False,
 True,Blindness--Genetic aspects,Blindness--Genetic aspects,sh85014887,http://id.loc.gov/authorities/sh85014887,Gene Therapy for Congenital Blindness,2005-11-10,1,False,
@@ -482,11 +485,11 @@ False,Military casualties--Research,,,,Research Issues Related to Combat Casualt
 True,"Sabloff, Jeremy A.","Sabloff, Jeremy A.",n79003991,http://id.loc.gov/authorities/n79003991,It Depends on How We Look at Things: New Perspectives on the Postclassic Period in the Northern Maya Lowlands,2005-11-11,3,True,Jeremy A. Sabloff
 True,Mayas--History,Mayas--History,sh2008107579,http://id.loc.gov/authorities/sh2008107579,It Depends on How We Look at Things: New Perspectives on the Postclassic Period in the Northern Maya Lowlands,2005-11-11,3,False,
 True,Maya chronology,Maya chronology,sh94000550,http://id.loc.gov/authorities/sh94000550,It Depends on How We Look at Things: New Perspectives on the Postclassic Period in the Northern Maya Lowlands,2005-11-11,3,False,
-True,Indians of Mexico--Antiquities,Indians of Mexico--Antiquities,sh85065137,http://id.loc.gov/authorities/sh85065137,It Depends on How We Look at Things: New Perspectives on the Postclassic Period in the Northern Maya Lowlands,2005-11-11,3,False,
+False,Indigenous peoples of Mexico--Antiquities,,,,It Depends on How We Look at Things: New Perspectives on the Postclassic Period in the Northern Maya Lowlands,2005-11-11,3,False,
 True,Mexico--Antiquities,Mexico--Antiquities,sh85084538,http://id.loc.gov/authorities/sh85084538,It Depends on How We Look at Things: New Perspectives on the Postclassic Period in the Northern Maya Lowlands,2005-11-11,3,False,
 True,"Bricker, Victoria Reifler, 1940-","Bricker, Victoria Reifler, 1940-",n81043517,http://id.loc.gov/authorities/n81043517,Literary Continuities Across the Transformation from Maya Hieroglyphic to Alphabetic Writing,2005-11-11,4,True,Victoria R. Bricker
 True,"Bricker, Victoria Reifler, 1940-","Bricker, Victoria Reifler, 1940-",n81043517,http://id.loc.gov/authorities/n81043517,Presentation of Society Awards and Prizes,2011-11-18,5,False,
-True,Indians of Mexico--Languages--Writing,Indians of Mexico--Languages--Writing,sh85065182,http://id.loc.gov/authorities/sh85065182,Literary Continuities Across the Transformation from Maya Hieroglyphic to Alphabetic Writing,2005-11-11,4,False,
+False,Indigenous peoples of Mexico--Languages--Writing,,,,Literary Continuities Across the Transformation from Maya Hieroglyphic to Alphabetic Writing,2005-11-11,4,False,
 True,Mayan languages--Writing,Mayan languages--Writing,sh85082417,http://id.loc.gov/authorities/sh85082417,Literary Continuities Across the Transformation from Maya Hieroglyphic to Alphabetic Writing,2005-11-11,4,False,
 True,Ethnography,Ethnology,sh85045198,http://id.loc.gov/authorities/sh85045198,Literary Continuities Across the Transformation from Maya Hieroglyphic to Alphabetic Writing,2005-11-11,4,False,
 True,Hieroglyphics,Hieroglyphics,sh85060649,http://id.loc.gov/authorities/sh85060649,Literary Continuities Across the Transformation from Maya Hieroglyphic to Alphabetic Writing,2005-11-11,4,False,
@@ -525,13 +528,13 @@ False,Slavery--Jamaica--History,,,,"The Contrast between Slave Life in Jamaica a
 True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Introduction,2006-4-27,1,True,Baruch S. Blumberg
 True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,The Work of the Supreme Court,2006-4-29,7,False,
 True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Opening Remarks,2009-11-12,2,True,Baruch S. Blumberg
-True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Introduction to Space Science and Engineering: Present and Future,2010-04-24,2,True,Baruch Blumberg
-True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Introduction to Beneath the Surface: Oil in Troubled Waters,2010-11-13,6,True,Baruch Blumberg
+True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Introduction to Space Science and Engineering: Present and Future,2010-04-24,2,True,Baruch S. Blumberg
+True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Introduction to Beneath the Surface: Oil in Troubled Waters,2010-11-13,6,True,Baruch S. Blumberg
 True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Session Introduction: Tribute to Baruch Blumberg,2011-04-29,2,False,
 True,"Blumberg, Baruch S., 1925-2011","Blumberg, Baruch S., 1925-2011",n82144388,http://id.loc.gov/authorities/n82144388,Fauci and Thompson in Honor of Barry Blumberg,2016-04-29,5,False,
 False,"American Philosophical Society, Congresses",,,,Introduction,2006-4-27,1,False,
 False,"American Philosophical Society, Congresses",,,,Introduction to Afternoon Session,2006-4-27,6,False,
-True,"Thomas, J. M. (John Meurig)","Thomas, J. M. (John Meurig)",n80120938,http://id.loc.gov/authorities/n80120938,Faraday and Franklin,2006-4-27,2,True,John Meurig Thomas
+True,"Thomas, J. M. (John Meurig)","Thomas, J. M. (John Meurig)",n80120938,http://id.loc.gov/authorities/n80120938,Faraday and Franklin,2006-4-27,2,True,Sir John Meurig Thomas
 True,"Thomas, J. M. (John Meurig)","Thomas, J. M. (John Meurig)",n80120938,http://id.loc.gov/authorities/n80120938,"Sir Humphry Davy: Natural Philosopher, Discoverer, Inventor, Poet and Man of Action",2012-04-19,4,True,Sir John Meurig Thomas
 False,Scientists--History--18th century,,,,Faraday and Franklin,2006-4-27,2,False,
 False,Scientists--History--18th century,,,,Franklin’s Vision,2006-4-27,3,False,
@@ -547,6 +550,7 @@ False,Scientists--History--20th century,,,,Franklin and Einstein,2006-4-27,5,Fal
 True,"Einstein, Albert, 1879-1955","Einstein, Albert, 1879-1955",n79022889,http://id.loc.gov/authorities/n79022889,Franklin and Einstein,2006-4-27,5,False,
 True,"Einstein, Albert, 1879-1955","Einstein, Albert, 1879-1955",n79022889,http://id.loc.gov/authorities/n79022889,Did Einstein Get it Right? A Centennial Assessment,2016-04-29,2,False,
 True,"Harper, Conrad K.","Harper, Conrad K.",n85046741,http://id.loc.gov/authorities/n85046741,Introduction to Afternoon Session,2006-4-27,6,True,Conrad Harper
+True,"Harper, Conrad K.","Harper, Conrad K.",n85046741,http://id.loc.gov/authorities/n85046741,Symposium on Newly Acquired Jefferson Letters for the APS Library: Introduction,2010-04-22,2,True,Conrad Harper
 True,"LeClerc, Paul, 1941-","LeClerc, Paul, 1941-",n97055394,http://id.loc.gov/authorities/n97055394,The Enlightenment On-Line: Opportunities and Complexities,2006-4-27,7,True,Paul LeClerc
 True,Humanities--Research--21st century,Humanities--Research,sh2023000573,http://id.loc.gov/authorities/sh2023000573,The Enlightenment On-Line: Opportunities and Complexities,2006-4-27,7,False,
 True,Electronic Enlightenment Project,Electronic Enlightenment Project,no2017134852,http://id.loc.gov/authorities/no2017134852,The Enlightenment On-Line: Opportunities and Complexities,2006-4-27,7,False,
@@ -613,7 +617,7 @@ False,"Franklin, Benjamin, 1706-1790--Exhibitions",,,,"How Do You Fit Benjamin F
 False,"Angier, Natalie Marie",,,,Admission of New Members,2006-4-29,1,False,
 True,"Diaconis, Persi","Diaconis, Persi",n88606004,http://id.loc.gov/authorities/n88606004,Admission of New Members,2006-4-29,1,False,
 True,"Matlock, Jack F.","Matlock, Jack F.",n85320162,http://id.loc.gov/authorities/n85320162,American Empire? The Role of the United States in the World Today: Introduction,2006-4-29,2,True,"Jack F. Matlock, Jr."
-True,"Matlock, Jack F.","Matlock, Jack F.",n85320162,http://id.loc.gov/authorities/n85320162,A Five Minute Perspective on Ukraine,2014-04-26,1,True,Jack F. Matlock
+True,"Matlock, Jack F.","Matlock, Jack F.",n85320162,http://id.loc.gov/authorities/n85320162,A Five Minute Perspective on Ukraine,2014-04-26,1,True,"Jack F. Matlock, Jr."
 True,"Odom, William E.","Odom, William E.",nr88004437,http://id.loc.gov/authorities/nr88004437,"The Nature of American Hegemony: How to Use it, How to Lose It",2006-4-29,3,True,William E. Odom
 True,United States--Foreign relations,United States--Foreign relations,sh85140058,http://id.loc.gov/authorities/sh85140058,"The Nature of American Hegemony: How to Use it, How to Lose It",2006-4-29,3,False,
 True,United States--Foreign relations,United States--Foreign relations,sh85140058,http://id.loc.gov/authorities/sh85140058,How to Achieve Non-Proliferation Without Force: Solving the Problem of Rogue States,2006-4-29,4,False,
@@ -682,6 +686,7 @@ True,Curtis Institute of Music,Curtis Institute of Music,n84209463,http://id.loc
 True,Curtis Institute of Music,Curtis Institute of Music,n84209463,http://id.loc.gov/authorities/n84209463,Concert,2014-04-25,9,False,
 True,Curtis Institute of Music,Curtis Institute of Music,n84209463,http://id.loc.gov/authorities/n84209463,Concert,2014-11-07,10,True,Students From the Curtis Institute of Music
 True,Curtis Institute of Music,Curtis Institute of Music,n84209463,http://id.loc.gov/authorities/n84209463,Concert,2014-11-07,10,False,
+True,Curtis Institute of Music,Curtis Institute of Music,n84209463,http://id.loc.gov/authorities/n84209463,Inside the Composer's Studio: Of Being is a Bird (Emily Dickinson),2016-11-11,5,True,Students from the Curtis Institute of Music
 True,Curtis Institute of Music,Curtis Institute of Music,n84209463,http://id.loc.gov/authorities/n84209463,Music as Praise and Protest,2018-04-27,9,False,
 True,"Lubar, Robert S.","Lubar, Robert S.",n87811022,http://id.loc.gov/authorities/n87811022,"Barcelona and Modernity: Art and Social Movements in the ""City of Bombs""",2007-4-27,1,True,Robert S. Lubar
 True,Art and society,Art and society,sh85007975,http://id.loc.gov/authorities/sh85007975,"Barcelona and Modernity: Art and Social Movements in the ""City of Bombs""",2007-4-27,1,False,
@@ -778,7 +783,9 @@ True,"Jackson, Shirley Ann, 1946-","Jackson, Shirley Ann, 1946-",no95039923,http
 True,"Mendelsohn, Daniel Adam, 1960-","Mendelsohn, Daniel Adam, 1960-",nr94015790,http://id.loc.gov/authorities/nr94015790,Admission of New Members,2008-04-24,1,False,
 True,"Mendelsohn, Daniel Adam, 1960-","Mendelsohn, Daniel Adam, 1960-",nr94015790,http://id.loc.gov/authorities/nr94015790,"Spectacles of Humiliation and Imperial Politics: Athens, Rome, Reality TV",2008-04-24,4,True,Daniel Mendelsohn
 True,"Rakove, Jack N., 1947-","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,Admission of New Members,2008-04-24,1,False,
-True,"Rakove, Jack N., 1947-","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,James Madison’s Dilemma – And Ours,2014-11-08,5,True,Jack Rakove
+True,"Rakove, Jack N., 1947-","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,James Madison’s Dilemma – And Ours,2014-11-08,5,True,Jack N. Rakove
+True,"Rakove, Jack N., 1947-","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,"Introduction to Democracy Today: Ancient Lessons, Modern Challenges",2018-04-27,1,True,Jack N. Rakove
+True,"Rakove, Jack N., 1947-","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,Symposium Panel,2018-04-27,7,True,Jack N. Rakove
 True,"Grabar, Oleg","Grabar, Oleg",n79006617,http://id.loc.gov/authorities/n79006617,When is a Bird a Bird? Representation and/or Abstraction in Islamic Art,2008-04-24,2,True,Oleg Grabar
 True,Islamic art,Islamic art,sh85007710,http://id.loc.gov/authorities/sh85007710,When is a Bird a Bird? Representation and/or Abstraction in Islamic Art,2008-04-24,2,False,
 True,Material culture--Religious aspects--Islam,Material culture--Religious aspects--Islam,sh2019100397,http://id.loc.gov/authorities/sh2019100397,When is a Bird a Bird? Representation and/or Abstraction in Islamic Art,2008-04-24,2,False,
@@ -922,8 +929,9 @@ True,Educational attainment--United States,Educational attainment--United States
 True,Economics--United States,Economics--United States,sh85040868,http://id.loc.gov/authorities/sh85040868,Finishing College: The Educational Attainment Gap in America,2008-11-14,10,False,
 True,"Naquin, Susan","Naquin, Susan",n81014393,http://id.loc.gov/authorities/n81014393,Admission of New Members,2008-11-15,1,False,
 True,"Rochberg, Francesca, 1952-","Rochberg, Francesca, 1952-",n81049750,http://id.loc.gov/authorities/n81049750,Admission of New Members,2008-11-15,1,False,
-True,"Tatel, David","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,The Supreme Court and Useful Knowledge: Introduction,2008-11-15,2,True,David S. Tatel
-True,"Tatel, David","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,The Right to Vote: Introduction,2013-11-15,2,True,David S. Tatel
+True,"Tatel, David S.","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,The Supreme Court and Useful Knowledge: Introduction,2008-11-15,2,True,David S. Tatel
+True,"Tatel, David S.","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,The Right to Vote: Introduction,2013-11-15,2,True,David S. Tatel
+True,"Tatel, David S.","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,Separation of Powers and Statutory Interpretation: A Battle Hidden in Plain Sight,2019-04-25,5,True,David S. Tatel
 True,Suffrage--United States,Suffrage--United States,sh85129646,http://id.loc.gov/authorities/sh85129646,The Supreme Court and Useful Knowledge: Introduction,2008-11-15,2,False,
 True,United States. Congress--Voting,United States. Congress--Voting,sh85140803,http://id.loc.gov/authorities/sh85140803,The Supreme Court and Useful Knowledge: Introduction,2008-11-15,2,False,
 True,United States. Supreme Court,United States. Supreme Court,n79006848,http://id.loc.gov/authorities/n79006848,The Supreme Court and Useful Knowledge: Introduction,2008-11-15,2,False,
@@ -933,10 +941,12 @@ True,United States. Supreme Court,United States. Supreme Court,n79006848,http://
 True,United States. Supreme Court,United States. Supreme Court,n79006848,http://id.loc.gov/authorities/n79006848,The Roberts Court and the Constitution,2012-11-09,3,False,
 False,"Greenhouse, Linda Joyce, 1947-",,,,How Do Judges Know What They Know?,2008-11-15,3,True,Linda Greenhouse
 False,"Greenhouse, Linda Joyce, 1947-",,,,Panel Discussion: The Supreme Court and Useful Knowledge,2008-11-15,4,True,Linda Greenhouse
+False,"Greenhouse, Linda Joyce, 1947-",,,,Truth in Journalism,2013-4-27,4,True,Linda Greenhouse
+False,"Greenhouse, Linda Joyce, 1947-",,,,Collaboration: Introduction,2014-04-25,2,True,Linda Greenhouse
 False,"Greenhouse, Linda Joyce, 1947-",,,,Dinner with Ben Franklin: The Origins of the American Philosophical Society,2018-04-26,2,True,Linda Greenhouse
 True,"Ginsburg, Ruth Bader","Ginsburg, Ruth Bader, 1933-2020",n50029918,http://id.loc.gov/authorities/n50029918,Panel Discussion: The Supreme Court and Useful Knowledge,2008-11-15,4,True,Ruth Bader Ginsburg
 True,"Souter, David H., 1939-2025","Souter, David H., 1939-2025",no90022546,http://id.loc.gov/authorities/no90022546,Panel Discussion: The Supreme Court and Useful Knowledge,2008-11-15,4,True,David Souter
-True,"Tatel, David S","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,Panel Discussion: The Supreme Court and Useful Knowledge,2008-11-15,4,True,David Tatel
+True,"Tatel, David S","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,Panel Discussion: The Supreme Court and Useful Knowledge,2008-11-15,4,True,David S. Tatel
 True,"Browne, Janet","Browne, Janet",n81001172,http://id.loc.gov/authorities/n81001172,Two Hundred Years of Darwin: The Role of Anniversaries in the History of Science,2009-4-23,1,True,Janet Browne
 True,History of science,"Spangenburg, Ray, 1939- History of science",n2003013919,http://id.loc.gov/authorities/n2003013919,Two Hundred Years of Darwin: The Role of Anniversaries in the History of Science,2009-4-23,1,False,
 True,Anniversaries,Anniversaries,sh85005357,http://id.loc.gov/authorities/sh85005357,Two Hundred Years of Darwin: The Role of Anniversaries in the History of Science,2009-4-23,1,False,
@@ -1077,7 +1087,8 @@ True,"Doyle, Michael W., 1948-","Doyle, Michael, 1948-",n85132905,http://id.loc.
 True,"Doyle, Michael W., 1948-","Doyle, Michael, 1948-",n85132905,http://id.loc.gov/authorities/n85132905,The Model International Mobility Convention: Beyond Migrants and Refugees,2019-04-27,2,True,Michael W. Doyle
 True,"Kaiser, Karl, 1934-","Kaiser, Karl, 1934-",n50045069,http://id.loc.gov/authorities/n50045069,Admission of New Members,2009-11-14,1,False,
 True,"Portes, Alejandro, 1944-","Portes, Alejandro, 1944-",n81037009,http://id.loc.gov/authorities/n81037009,Admission of New Members,2009-11-14,1,False,
-True,"Silverstein, Michael","Silverstein, Michael",no96068755,http://id.loc.gov/authorities/no96068755,Seized by Eminent “Domaine:” The “Vinification” of Comestible Prestige,2009-11-14,2,True,Michael Silverstein
+True,"Silverstein, Michael, 1945-2020","Silverstein, Michael, 1945-2020",n82070180,http://id.loc.gov/authorities/n82070180,Seized by Eminent “Domaine:” The “Vinification” of Comestible Prestige,2009-11-14,2,True,Michael Silverstein
+True,"Silverstein, Michael, 1945-2020","Silverstein, Michael, 1945-2020",n82070180,http://id.loc.gov/authorities/n82070180,"Fabrication, Verification, Authentication: Introduction",2015-04-24,1,True,Michael Silverstein
 True,Viticulture,Viticulture,sh85144017,http://id.loc.gov/authorities/sh85144017,Seized by Eminent “Domaine:” The “Vinification” of Comestible Prestige,2009-11-14,2,False,
 True,"Stewart, Frank H.","Stewart, Frank H., 1873-1948",n84107679,http://id.loc.gov/authorities/n84107679,The Tribal Background to the Contemporary Arab World,2009-11-14,3,True,Frank H. Stewart
 True,Books,Books,sh85015738,http://id.loc.gov/authorities/sh85015738,The Tribal Background to the Contemporary Arab World,2009-11-14,3,False,
@@ -1098,13 +1109,12 @@ True,"Arnon, Ruth","Arnon, R.",n79061568,http://id.loc.gov/authorities/n79061568
 True,"Deligne, Pierre","Deligne, Pierre",n82119174,http://id.loc.gov/authorities/n82119174,Admission of New Members,2010-04-22,1,False,
 False,"Matthews, Rowena G.",,,,Admission of New Members,2010-04-22,1,False,
 True,"Sarnak, Peter","Sarnak, Peter",n85265591,http://id.loc.gov/authorities/n85265591,Admission of New Members,2010-04-22,1,False,
-True,"Harper, Conrad","Harper, Conrad K.",n85046741,http://id.loc.gov/authorities/n85046741,Symposium on Newly Acquired Jefferson Letters for the APS Library: Introduction,2010-04-22,2,True,Conrad Harper
-True,"Oberg, Barbara B.","Oberg, Barbara",n81083506,http://id.loc.gov/authorities/n81083506,"""An Irreparable Misfortune Has Deprived Me of Them"": Thomas Jefferson's Indian Vocabularies",2010-04-22,3,True,Barbara B. Oberg
 True,Indigenous peoples--Languages,Indigenous peoples--Languages,sh2018002650,http://id.loc.gov/authorities/sh2018002650,"""An Irreparable Misfortune Has Deprived Me of Them"": Thomas Jefferson's Indian Vocabularies",2010-04-22,3,False,
 True,Linguistics,Linguistics,sh85077222,http://id.loc.gov/authorities/sh85077222,"""An Irreparable Misfortune Has Deprived Me of Them"": Thomas Jefferson's Indian Vocabularies",2010-04-22,3,False,
 True,"Barton, Benjamin Smith, 1766-1815","Barton, Benjamin Smith, 1766-1815",n84024505,http://id.loc.gov/authorities/n84024505,"""An Irreparable Misfortune Has Deprived Me of Them"": Thomas Jefferson's Indian Vocabularies",2010-04-22,3,False,
-True,"Thomson, Keith Stewart","Thomson, Keith Stewart",n50012245,http://id.loc.gov/authorities/n50012245,"The ""Great Claw"" and the Science of Thomas Jefferson",2010-04-22,4,True,Keith Thomson
+True,"Thomson, Keith Stewart","Thomson, Keith Stewart",n50012245,http://id.loc.gov/authorities/n50012245,"The ""Great Claw"" and the Science of Thomas Jefferson",2010-04-22,4,True,Keith S. Thomson
 True,"Thomson, Keith Stewart","Thomson, Keith Stewart",n50012245,http://id.loc.gov/authorities/n50012245,Admission of New Members,2011-11-17,1,False,
+True,"Thomson, Keith Stewart","Thomson, Keith Stewart",n50012245,http://id.loc.gov/authorities/n50012245,Admission of New Members,2012-11-09,1,True,Keith S. Thomson
 True,Imagocnus,Imagocnus,sh95001337,http://id.loc.gov/authorities/sh95001337,"The ""Great Claw"" and the Science of Thomas Jefferson",2010-04-22,4,False,
 False,Miocene sloth,,,,"The ""Great Claw"" and the Science of Thomas Jefferson",2010-04-22,4,False,
 True,"Buffon, Georges Louis Leclerc, comte de, 1707-1788","Buffon, Georges Louis Leclerc, comte de, 1707-1788",n50041361,http://id.loc.gov/authorities/n50041361,"The ""Great Claw"" and the Science of Thomas Jefferson",2010-04-22,4,False,
@@ -1354,8 +1364,6 @@ True,Great Britain--Colonies,Great Britain--Colonies,sh85056632,http://id.loc.go
 True,Humanities--Study and teaching,Humanities--Study and teaching,sh86001448,http://id.loc.gov/authorities/sh86001448,Good Uses of the Humanities in Bad Times,2011-11-17,4,False,
 True,Technology,Technology,sh85133147,http://id.loc.gov/authorities/sh85133147,Good Uses of the Humanities in Bad Times,2011-11-17,4,False,
 False,Literary history,,14466712,http://id.loc.gov/authorities/14466712,Good Uses of the Humanities in Bad Times,2011-11-17,4,False,
-True,"Meinwald, Jerrold","Meinwald, Jerrold, 1927-2018",n95039335,http://id.loc.gov/authorities/n95039335,Chemical Studies of Violence and Sex In and Beyond the World of Insects,2011-11-17,5,True,Jerrold Meinwald
-True,"Meinwald, Jerrold","Meinwald, Jerrold, 1927-2018",n95039335,http://id.loc.gov/authorities/n95039335,Looking Backwards: A Half-Century Collaboration with Thomas Eisner,2014-04-25,4,True,Jerrold Meinwald
 True,Chemistry--History,Chemistry--History,sh85022997,http://id.loc.gov/authorities/sh85022997,Chemical Studies of Violence and Sex In and Beyond the World of Insects,2011-11-17,5,False,
 False,Quinine--History--20th century,,,,Chemical Studies of Violence and Sex In and Beyond the World of Insects,2011-11-17,5,False,
 True,Purple foxglove,Purple foxglove,sh85037989,http://id.loc.gov/authorities/sh85037989,Chemical Studies of Violence and Sex In and Beyond the World of Insects,2011-11-17,5,False,
@@ -1519,7 +1527,6 @@ True,"Rudenstine, Neil L.","Rudenstine, Neil L.",n91094768,http://id.loc.gov/aut
 True,Endowments,Endowments,sh85043107,http://id.loc.gov/authorities/sh85043107,Albert Barnes and His Foundation: Three Paradoxes,2012-11-08,3,False,
 True,Trusts and trustees,Trusts and trustees,sh85138271,http://id.loc.gov/authorities/sh85138271,Albert Barnes and His Foundation: Three Paradoxes,2012-11-08,3,False,
 True,Art dealers,Art dealers,sh85007993,http://id.loc.gov/authorities/sh85007993,Albert Barnes and His Foundation: Three Paradoxes,2012-11-08,3,False,
-False,"Thomson, Keith S.",,,,Admission of New Members,2012-11-09,1,True,Keith S. Thomson
 True,"Clegg, Michael T., 1941-","Clegg, Michael T., 1941-",n88189008,http://id.loc.gov/authorities/n88189008,Admission of New Members,2012-11-09,1,False,
 True,"Knuth, Donald Ervin, 1938-","Knuth, Donald Ervin, 1938-",n79135509,http://id.loc.gov/authorities/n79135509,Admission of New Members,2012-11-09,1,False,
 True,"Perloff, Marjorie","Perloff, Marjorie",n79042133,http://id.loc.gov/authorities/n79042133,Admission of New Members,2012-11-09,1,False,
@@ -1534,7 +1541,7 @@ True,"Emanuel, Ezekiel J., 1957-","Emanuel, Ezekiel J., 1957-",n89222624,http://
 True,"Roberts, John G., Jr., 1955-","Roberts, John G., Jr., 1955-",no99020426,http://id.loc.gov/authorities/no99020426,The Roberts Court and the Constitution,2012-11-09,3,False,
 True,"Naddeo, Barbara Ann","Naddeo, Barbara Ann",no2010135174,http://id.loc.gov/authorities/no2010135174,Presentation of Society Awards and Prizes,2012-11-09,4,False,
 True,"Xie, Xiaoliang Sunney","Xie, Xiaoliang Sunney",no2011143449,http://id.loc.gov/authorities/no2011143449,Life at the Single Molecule Level,2012-11-09,5,True,X. Sunney Xie
-False,Life at the Single Molecule Level,,,,Life at the Single Molecule Level,2012-11-09,5,False,
+True,Molecular biology,Molecular biology,n42029299,http://id.loc.gov/authorities/n42029299,Life at the Single Molecule Level,2012-11-09,5,False,
 True,Chemical reactions,Chemical reactions,sh85022952,http://id.loc.gov/authorities/sh85022952,Life at the Single Molecule Level,2012-11-09,5,False,
 True,"Adzick, N. Scott","Adzick, N. Scott",n88211170,http://id.loc.gov/authorities/n88211170,Fetal Surgery for Spina Bifida: Trials and Tribulations,2012-11-09,6,True,N. Scott Adzick
 True,Spina bifida,Spina bifida,sh85126658,http://id.loc.gov/authorities/sh85126658,Fetal Surgery for Spina Bifida: Trials and Tribulations,2012-11-09,6,False,
@@ -1566,7 +1573,7 @@ True,"Gage, F. (Fred), 1950-","Gage, F. (Fred), 1950-",n88220975,http://id.loc.g
 True,"McCarthy, Cormac, 1933-","McCarthy, Cormac, 1933-2023",n82028392,http://id.loc.gov/authorities/n82028392,Admission of New Members,2013-4-25,1,False,
 True,"Raaijmakers, J. G. W.","Raaijmakers, J. G. W.",n84080650,http://id.loc.gov/authorities/n84080650,Admission of New Members,2013-4-25,1,False,
 True,"Miller, Robert J.","Miller, Robert J.",n77010446,http://id.loc.gov/authorities/n77010446,American Indian Constitutions and Their Influence on the United States Constitution,2013-4-25,2,True,Robert James Miller
-True,Indians of North America--Politics and government,Indians of North America--Politics and government,sh85065402,http://id.loc.gov/authorities/sh85065402,American Indian Constitutions and Their Influence on the United States Constitution,2013-4-25,2,False,
+False,Indigenous peoples of North America--Politics and government,,,,American Indian Constitutions and Their Influence on the United States Constitution,2013-4-25,2,False,
 True,Tribal government--United States,Tribal government--United States,sh2010117106,http://id.loc.gov/authorities/sh2010117106,American Indian Constitutions and Their Influence on the United States Constitution,2013-4-25,2,False,
 False,United States. Constitution--History,,,,American Indian Constitutions and Their Influence on the United States Constitution,2013-4-25,2,False,
 True,"Darnell, Regna","Darnell, Regna",n86039286,http://id.loc.gov/authorities/n86039286,Franz Boas’ Legacy of “Useful Knowledge”: The APS Archives and the Future of Americanist Anthropology,2013-4-25,3,True,Regna Darnell
@@ -1611,8 +1618,6 @@ True,"Jamieson, Kathleen Hall","Jamieson, Kathleen Hall",n82100963,http://id.loc
 True,"Jamieson, Kathleen Hall","Jamieson, Kathleen Hall",n82100963,http://id.loc.gov/authorities/n82100963,Symposium Panel,2018-04-27,7,True,Kathleen Hall Jamieson
 True,Political culture--United States,Political culture--United States,sh2008108984,http://id.loc.gov/authorities/sh2008108984,"Implications of the Attack on ""Fact"" in Contemporary Politics",2013-4-27,3,False,
 False,Political ethics--United States--History--21st century,,,,"Implications of the Attack on ""Fact"" in Contemporary Politics",2013-4-27,3,False,
-True,"Greenhouse, Linda","Greenhouse, Linda",n2004151552,http://id.loc.gov/authorities/n2004151552,Truth in Journalism,2013-4-27,4,True,Linda Greenhouse
-True,"Greenhouse, Linda","Greenhouse, Linda",n2004151552,http://id.loc.gov/authorities/n2004151552,Collaboration: Introduction,2014-04-25,2,True,Linda Greenhouse
 True,Journalism--United States,Journalism--United States,sh85070753,http://id.loc.gov/authorities/sh85070753,Truth in Journalism,2013-4-27,4,False,
 True,Ethics--United States,Ethics--United States,sh94005887,http://id.loc.gov/authorities/sh94005887,Truth in Journalism,2013-4-27,4,False,
 False,"Diaz, Roberro, 1961-",,,,Admission of New Members,2013-11-14,1,False,
@@ -1785,6 +1790,8 @@ True,Genomics,Genomics,sh2002000809,http://id.loc.gov/authorities/sh2002000809,L
 True,"Hildebrand, John G., 1942-","Hildebrand, John G., 1942-",n80038342,http://id.loc.gov/authorities/n80038342,Admission of New Members,2014-11-07,1,False,
 True,"McPherson, Michael S.","McPherson, Michael S.",n85330684,http://id.loc.gov/authorities/n85330684,Admission of New Members,2014-11-07,1,False,
 True,"McPherson, Michael S.","McPherson, Michael S.",n85330684,http://id.loc.gov/authorities/n85330684,Part Two,2017-11-10,2,True,Michael McPherson
+True,"McPherson, Michael S.","McPherson, Michael S.",n85330684,http://id.loc.gov/authorities/n85330684,Panel Interview and Discussion (Part One),2017-11-10,3,True,Michael McPherson
+True,"McPherson, Michael S.","McPherson, Michael S.",n85330684,http://id.loc.gov/authorities/n85330684,Panel Interview and Discussion (Part Two),2017-11-10,4,True,Michael McPherson
 True,"Pomeroy, Sarah B.","Pomeroy, Sarah B.",n82231685,http://id.loc.gov/authorities/n82231685,Admission of New Members,2014-11-07,1,False,
 True,"Sharon, Moshe, 1937-","Sharon, Moshe, 1937-",n83159487,http://id.loc.gov/authorities/n83159487,Admission of New Members,2014-11-07,1,False,
 True,"Freedman, Paul","Freedman, Paul",n2016035161,http://id.loc.gov/authorities/n2016035161,What’s on the Menu in Food Culture?: Introduction,2014-11-07,2,True,Paul Freedman
@@ -1835,7 +1842,6 @@ True,"Fleming, John V.","Fleming, John V.",n82066944,http://id.loc.gov/authoriti
 True,Diseases--Causes and theories of causation,Diseases--Causes and theories of causation,sh85038413,http://id.loc.gov/authorities/sh85038413,Sanative Contagion Among Cambridge Platonists,2014-11-08,6,False,
 False,Healing--Ireland--History--17th century,,,,Sanative Contagion Among Cambridge Platonists,2014-11-08,6,False,
 True,"Greatrakes, Valentine","Greatrakes, Valentine, 1629-1683",n82253602,http://id.loc.gov/authorities/n82253602,Sanative Contagion Among Cambridge Platonists,2014-11-08,6,False,
-True,"Silverstein, Michael, 1945-","Silverstein, Michael, 1945-2020",n82070180,http://id.loc.gov/authorities/n82070180,"Fabrication, Verification, Authentication: Introduction",2015-04-24,1,True,Michael Silverstein
 True,Forgery,Forgery,sh85050757,http://id.loc.gov/authorities/sh85050757,"Fabrication, Verification, Authentication: Introduction",2015-04-24,1,False,
 True,Forgery,Forgery,sh85050757,http://id.loc.gov/authorities/sh85050757,Can a Genuine Picasso Be a Fake?,2015-04-24,2,False,
 True,Forgery,Forgery,sh85050757,http://id.loc.gov/authorities/sh85050757,Forging the Moon,2015-04-24,5,False,
@@ -2014,7 +2020,6 @@ True,Philosophy in motion pictures,Philosophy in motion pictures,sh92003501,http
 True,"Hitchcock, Alfred","Hitchcock, Alfred, 1899-1980",n79027022,http://id.loc.gov/authorities/n79027022,The Philosophical Hitchcock,2016-11-11,2,False,
 True,"Gross, Charles G.","Gross, Charles G.",n86144479,http://id.loc.gov/authorities/n86144479,Presentations of Society Awards and Prizes,2016-11-11,4,False,
 True,"Thomas, Augusta Read","Thomas, Augusta Read",n91047504,http://id.loc.gov/authorities/n91047504,Inside the Composer's Studio: Of Being is a Bird (Emily Dickinson),2016-11-11,5,True,Augusta Read Thomas
-False,Students from the Curtis Institute of Music,,,,Inside the Composer's Studio: Of Being is a Bird (Emily Dickinson),2016-11-11,5,True,Students from the Curtis Institute of Music
 True,Music,Music,sh85088762,http://id.loc.gov/authorities/sh85088762,Inside the Composer's Studio: Of Being is a Bird (Emily Dickinson),2016-11-11,5,False,
 True,"Dickinson, Emily","Dickinson, Emily, 1830-1886",n79054166,http://id.loc.gov/authorities/n79054166,Inside the Composer's Studio: Of Being is a Bird (Emily Dickinson),2016-11-11,5,False,
 True,"Ellman, Lisa","Ellman, Lisa Michelle",no2004114910,http://id.loc.gov/authorities/no2004114910,Policy in the Age of Drone Fever,2016-11-12,1,True,Lisa Ellman
@@ -2126,7 +2131,9 @@ True,Liver,Liver,sh85077748,http://id.loc.gov/authorities/sh85077748,The Starzl 
 False,"Hanford, Emily",,,,Part One,2017-11-10,1,True,Emily Hanford
 False,"Hanford, Emily",,,,Panel Interview and Discussion (Part One),2017-11-10,3,True,Emily Hanford
 False,"Hanford, Emily",,,,Panel Interview and Discussion (Part Two),2017-11-10,4,True,Emily Hanford
-False,Pam Grossman,"Grossman, Pamela L. (Pamela Lynn), 1953-",n90656038,http://id.loc.gov/authorities/n90656038,Part One,2017-11-10,1,True,"Dean and George and Diane Weiss Professor, Graduate School of Education"
+True,"Grossman, Pam","Grossman, Pam",no2017059099,http://id.loc.gov/authorities/no2017059099,Part One,2017-11-10,1,True,Pam Grossman
+True,"Grossman, Pam","Grossman, Pam",no2017059099,http://id.loc.gov/authorities/no2017059099,Panel Interview and Discussion (Part One),2017-11-10,3,True,Pam Grossman
+True,"Grossman, Pam","Grossman, Pam",no2017059099,http://id.loc.gov/authorities/no2017059099,Panel Interview and Discussion (Part Two),2017-11-10,4,True,Pam Grossman
 True,Teaching,Teaching,sh85133052,http://id.loc.gov/authorities/sh85133052,Part One,2017-11-10,1,False,
 True,Teaching,Teaching,sh85133052,http://id.loc.gov/authorities/sh85133052,Part One,2017-11-10,1,False,
 True,Teaching,Teaching,sh85133052,http://id.loc.gov/authorities/sh85133052,Part One,2017-11-10,1,False,
@@ -2146,10 +2153,6 @@ True,"Isbell, Charles, Jr.","Isbell, Charles",n2020067850,http://id.loc.gov/auth
 False,Gail O. Mellow,"Mellow, Gail O'Connor",n86833121,http://id.loc.gov/authorities/n86833121,Part One,2017-11-10,1,True,"Mellow, Gail O'Connor"
 False,Gail O. Mellow,"Mellow, Gail O'Connor",n86833121,http://id.loc.gov/authorities/n86833121,Panel Interview and Discussion (Part One),2017-11-10,3,True,"Mellow, Gail O'Connor"
 False,Gail O. Mellow,"Mellow, Gail O'Connor",n86833121,http://id.loc.gov/authorities/n86833121,Panel Interview and Discussion (Part Two),2017-11-10,4,True,"Mellow, Gail O'Connor"
-True,"Grossman, Pam","Grossman, Pam",no2017059099,http://id.loc.gov/authorities/no2017059099,Panel Interview and Discussion (Part One),2017-11-10,3,True,Pam Grossman
-True,"Grossman, Pam","Grossman, Pam",no2017059099,http://id.loc.gov/authorities/no2017059099,Panel Interview and Discussion (Part Two),2017-11-10,4,True,Pam Grossman
-False,Michael McPherson,"McPherson, Mic, 1953-",n93097336,http://id.loc.gov/authorities/n93097336,Panel Interview and Discussion (Part One),2017-11-10,3,True,President Emeritus
-False,Michael McPherson,"McPherson, Mic, 1953-",n93097336,http://id.loc.gov/authorities/n93097336,Panel Interview and Discussion (Part Two),2017-11-10,4,True,President Emeritus
 True,"Weaver, Harold A., 1953-","Weaver, Harold A., 1953-",n85829307,http://id.loc.gov/authorities/n85829307,The Exploration of Pluto and the Kuiper Belt by NASA’s New Horizons Mission,2017-11-10,6,True,Hal Weaver
 True,Kuiper Belt,Kuiper Belt,sh00004935,http://id.loc.gov/authorities/sh00004935,The Exploration of Pluto and the Kuiper Belt by NASA’s New Horizons Mission,2017-11-10,6,False,
 True,Space flight to Pluto,Space flight to Pluto,sh2017005189,http://id.loc.gov/authorities/sh2017005189,The Exploration of Pluto and the Kuiper Belt by NASA’s New Horizons Mission,2017-11-10,6,False,
@@ -2193,8 +2196,6 @@ False,Architecture--Modern--21st century,"Architecture, Modern--21st century--Ex
 True,Philadelphia (Pa.),Philadelphia (Pa.),n78095520,http://id.loc.gov/authorities/n78095520,Legacy and Authenticity: The Barnes Foundation,2018-04-26,4,False,
 True,Barnes Foundation,Barnes Foundation,n81124896,http://id.loc.gov/authorities/n81124896,Legacy and Authenticity: The Barnes Foundation,2018-04-26,4,False,
 True,Tod Williams Billie Tsien and Associates,Tod Williams Billie Tsien and Associates,n92120116,http://id.loc.gov/authorities/n92120116,Legacy and Authenticity: The Barnes Foundation,2018-04-26,4,False,
-True,"Rakove, Jack N.","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,"Introduction to Democracy Today: Ancient Lessons, Modern Challenges",2018-04-27,1,True,Jack N. Rakove
-True,"Rakove, Jack N.","Rakove, Jack N., 1947-",n79019958,http://id.loc.gov/authorities/n79019958,Symposium Panel,2018-04-27,7,True,Jack N. Rakove
 True,"Bejan, Teresa M.","Bejan, Teresa M., 1984-",no2016067891,http://id.loc.gov/authorities/no2016067891,Two Concepts of Freedom (of Speech),2018-04-27,2,True,Teresa M. Bejan
 True,"Bejan, Teresa M.","Bejan, Teresa M., 1984-",no2016067891,http://id.loc.gov/authorities/no2016067891,Symposium Panel,2018-04-27,7,True,Teresa M. Bejan
 True,Freedom of speech,Freedom of speech,sh85051707,http://id.loc.gov/authorities/sh85051707,Two Concepts of Freedom (of Speech),2018-04-27,2,False,
@@ -2323,7 +2324,6 @@ True,"Abramson, Jill","Abramson, Jill, 1954-",n85073593,http://id.loc.gov/author
 True,Journalism,Journalism,sh85070736,http://id.loc.gov/authorities/sh85070736,Merchants of Truth: The Business of News and the Fight for Facts,2019-04-25,4,False,
 True,Press--United States--History--20th century,Press--United States--History--20th century,sh2010108159,http://id.loc.gov/authorities/sh2010108159,Merchants of Truth: The Business of News and the Fight for Facts,2019-04-25,4,False,
 True,Press--United States--History--21st century,Press--United States--History,sh2010108139,http://id.loc.gov/authorities/sh2010108139,Merchants of Truth: The Business of News and the Fight for Facts,2019-04-25,4,False,
-True,"Tatel, David S.","Tatel, David S.",n90704664,http://id.loc.gov/authorities/n90704664,Separation of Powers and Statutory Interpretation: A Battle Hidden in Plain Sight,2019-04-25,5,True,David S. Tatel
 True,Administrative regulation drafting--United States,Administrative regulation drafting--United States,sh2009113608,http://id.loc.gov/authorities/sh2009113608,Separation of Powers and Statutory Interpretation: A Battle Hidden in Plain Sight,2019-04-25,5,False,
 True,Statutes--United States,Statutes--United States,sh2010114687,http://id.loc.gov/authorities/sh2010114687,Separation of Powers and Statutory Interpretation: A Battle Hidden in Plain Sight,2019-04-25,5,False,
 True,"Mancall, Peter C.","Mancall, Peter C.",n90716980,http://id.loc.gov/authorities/n90716980,Landscape and History in the Early Modern Atlantic Basin,2019-04-26,1,True,Peter C. Mancall
