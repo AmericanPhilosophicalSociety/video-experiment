@@ -16,17 +16,21 @@ def upload_lcsh():
                 
                 if row["headings_match"] == "True":
                     heading = row["aLabel"]
-                    loc_id = row["loc_id"]
                     authority = "LOC"
+                    lcsh, created = LCSH.objects.get_or_create(
+                        heading=heading,
+                        uri=row["loc_id"],
+                        authority=authority,
+                    )
                 else:
                     heading = row["orig_heading"]
-                    loc_id = None
                     authority = "LOCAL"
-                lcsh, created = LCSH.objects.get_or_create(
-                    heading=heading,
-                    uri=loc_id,
-                    authority=authority,
-                )
+                    lcsh, created = LCSH.objects.get_or_create(
+                        heading=heading,
+                        authority=authority,
+                        category = row["category"]
+                    )
+                
                 if created:
                     print(f"LCSH created: {heading}, authority: {authority}")
 
