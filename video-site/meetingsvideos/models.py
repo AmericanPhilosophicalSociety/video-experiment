@@ -178,13 +178,12 @@ class Speaker(models.Model):
             self.label = self.lcsh.heading
         super().save(**kwargs)
 
-    def get_most_recent_affiliation(self):
-        # TODO: change logic so this returns multiple affiliations if multiple
-        # affiliations are used in most recent video?
-        if len(self.affiliation_set.all()) > 0:
-            return self.affiliation_set.all().order_by("-meeting")[0]
-        else:
-            return ""
+    #TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
+    # def get_most_recent_affiliation(self):
+    #     if len(self.affiliation_set.all()) > 0:
+    #         return self.affiliation_set.all().order_by("-meeting")[0]
+    #     else:
+    #         return ""
 
     class Meta:
         ordering = ["display_name"]
@@ -192,7 +191,7 @@ class Speaker(models.Model):
 
 class Affiliation(models.Model):
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
-    meeting = models.ForeignKey("Meeting", on_delete=models.CASCADE)
+    meetings = models.ManyToManyField("Meeting", blank=True, null=True)
     position = models.CharField(max_length=255, blank=True)
     institution = models.CharField(max_length=255, blank=True)
 

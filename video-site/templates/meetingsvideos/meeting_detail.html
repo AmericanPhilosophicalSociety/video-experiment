@@ -3,6 +3,7 @@
 {% block main %}
 <div class="container" id="video-container">
   <h1>{{ meeting.display_date }}</h1>
+  {% if videos|length > 0 %}
   <ul class="nav nav-tabs" hx-target
   hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
                             console.log(currentTab)
@@ -28,5 +29,9 @@
   <div class="meetings-videos">
   {% include "meetingsvideos/meeting-video-list.html" %}
   </div>
+{% else %}
+<p>No videos are available for this meeting.</p>
+<p>{{ meeting.display_notes }}</p>
+{% endif %}
 </div>
 {% endblock %}
