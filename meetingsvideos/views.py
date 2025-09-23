@@ -3,6 +3,7 @@ from .forms import AdvancedSearchForm
 from django.views.generic import ListView, DetailView
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
+from django.db.models import Count
 
 from random import sample
 from string import ascii_uppercase
@@ -123,7 +124,59 @@ class IndexView(HTMXMixin, ListView):
 
     def get_queryset(self):
         queryset = Video.objects.exclude_inductions()
+        # Not very DRY - would be better to abstract logic out to FilterView
+        subjects = self.request.GET.getlist('lcsh')
+        disciplines = self.request.GET.getlist('discipline')
+        time_range = self.request.GET.getlist('date')
+        for subject in subjects:
+            queryset = queryset.filter(lcsh__heading=subject)
+        for discipline in disciplines:
+            queryset = queryset.filter(academic_disciplines__name=discipline)
+        if time_range:
+            start = datetime.date(int(time_range[0]), 1, 1)
+            end = datetime.date(int(time_range[1]), 12, 31)
+            queryset = queryset.filter(date__range=(start, end))
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        sub_counts_raw = {}
+        discipline_counts_raw = {}
+
+        for sub, count in LCSH.objects.filter(
+            video__in=self.object_list
+        ).annotate(
+            n=Count('heading')
+        ).values_list('heading', 'n'):
+            sub_counts_raw[sub] = sub_counts_raw.get(sub, 0) + count
+    
+        for disc, count in AcademicDiscipline.objects.filter(
+            video__in=self.object_list
+        ).annotate(
+            n=Count('name')
+        ).values_list('name', 'n'):
+            discipline_counts_raw[disc] = discipline_counts_raw.get(disc, 0) + count
+        
+        sub_counts = sorted(
+            [
+                {'subject': subject, 'n': value}
+                for subject, value in sub_counts_raw.items()
+            ],
+            key=lambda t: t['n'], reverse=True
+        )[:20]
+
+        discipline_counts = sorted(
+            [
+                {'discipline': disc, 'n': value}
+                for disc, value in discipline_counts_raw.items()
+            ],
+            key=lambda t: t['n'], reverse=True
+        )
+
+        context["subjects"] = sub_counts
+        context['disciplines'] = discipline_counts
+        return context
 
 
 class VideoDetail(DetailView):

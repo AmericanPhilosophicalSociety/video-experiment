@@ -32,3 +32,14 @@ htmx.onLoad(function(content) {
       newTab.classList.add('active')
   }
 })
+
+function dropdownSelect() {
+  console.log("My dropdown was selected!")
+}
+
+window.addEventListener("DOMContentLoaded", (evt) => {
+  const subjects = document.getElementsByClassName("subjectSelect");
+  Array.from(subjects).forEach((s) => s.addEventListener("change", dropdownSelect));
+  const disciplines = document.getElementsByClassName("disciplineSelect");
+  Array.from(disciplines).forEach((d) => d.addEventListener("change", dropdownSelect));
+})

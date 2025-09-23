@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AlphaManager(models.Manager):
     """Custom manager to include first letter of LCSH heading, for use
     in creating faceted lists"""
@@ -175,7 +176,7 @@ class Speaker(models.Model):
             self.label = self.lcsh.heading
         super().save(**kwargs)
 
-    #TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
+    # TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
     # def get_most_recent_affiliation(self):
     #     if len(self.affiliation_set.all()) > 0:
     #         return self.affiliation_set.all().order_by("-meeting")[0]

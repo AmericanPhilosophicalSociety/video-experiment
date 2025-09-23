@@ -68,7 +68,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
   
 
 // Sidebar
-.sidebar .offcanvas-md {
+.sidebar #sidebarMenu {
     right: 0;
 }
 
@@ -78,7 +78,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 }
 
 @media (min-width: 768px) {
-    .sidebar .offcanvas-md {
+    .sidebar > div {
         position: -webkit-sticky;
         position: sticky;
         top: 48px;
@@ -90,7 +90,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 }
 
 @media (min-width: 1400px) {
-    .sidebar .offcanvas-md {
+    .sidebar > div {
         margin: 0 1.5em;
     }
 }
