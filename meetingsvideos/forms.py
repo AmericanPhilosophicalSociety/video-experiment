@@ -16,14 +16,21 @@ class AdvancedSearchForm(forms.Form):
         label="APS department", queryset=APSDepartment.objects.all(), required=False
     )
 
+    # ADMIN_CATEGORY_CHOICES = {
+    #     "ARCHIVES": "APS Archives",
+    #     "INDUCTION": "Member Induction",
+    #     "AWARDS": "Presentation of Awards",
+    #     "CONCERT": "Concert",
+    #     "LECTURE": "Lecture",
+    #     "CONVERSATION": "In Conversation",
+    #     "PANEL": "Panel Discussion",
+    #     "OTHER": "Other",
+    # }
     ADMIN_CATEGORY_CHOICES = {
-        "ARCHIVES": "APS Archives",
-        "INDUCTION": "Member Induction",
+        "LECTURE": "Lectures and Panels",
+        "CONCERT": "Concerts",
+        "INDUCTION": "Member Inductions",
         "AWARDS": "Presentation of Awards",
-        "CONCERT": "Concert",
-        "LECTURE": "Lecture",
-        "CONVERSATION": "In Conversation",
-        "PANEL": "Panel Discussion",
         "OTHER": "Other",
     }
     category = forms.MultipleChoiceField(

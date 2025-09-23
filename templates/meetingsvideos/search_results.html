@@ -55,40 +55,6 @@
 
 {% endif %}
 
-<hr>
-
-
-<h3>Academic Disciplines</h3>
-
-{% if disciplines %}
-
-{% for discipline in disciplines %}
-    <p><a href="{% url 'discipline_detail' discipline.slug %}">{{ discipline.name }}</a></p>
-{% endfor %}
-
-{% else %}
-
-<p>No academic disciplines found.</p>
-
-{% endif %}
-
-<hr>
-
-
-<h3>APS Departments</h3>
-
-{% if departments %}
-
-{% for department in departments %}
-    <p><a href="{% url 'department_detail' department.slug %}">{{ department.name }}</a></p>
-{% endfor %}
-
-{% else %}
-
-<p>No APS departments found.</p>
-
-{% endif %}
-
 
 </div>
 {% endblock %}
