@@ -184,12 +184,12 @@ class Speaker(models.Model):
     #         return ""
 
     class Meta:
-        ordering = ["display_name"]
+        ordering = ["label"]
 
 
 class Affiliation(models.Model):
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
-    meetings = models.ManyToManyField("Meeting", blank=True, null=True)
+    meetings = models.ManyToManyField("Meeting", blank=True)
     position = models.CharField(max_length=255, blank=True)
     institution = models.CharField(max_length=255, blank=True)
 
@@ -263,15 +263,15 @@ class ProgramInfo(WithNotes):
 
 class Symposium(ProgramInfo):
     moderators = models.ManyToManyField(Speaker, blank=True)
+    date = models.DateField()
 
     def videos_by_time(self):
         return self.video_set.all().order_by("date", "order_in_day")
+    
 
     class Meta:
         verbose_name_plural = "Symposia"
-        # for now, naively order by PK - perhaps add explicit date field in
-        # future for ordering
-        # ordering = ["title"]
+        ordering = ["-date"]
 
 
 class Video(ProgramInfo):
@@ -348,4 +348,4 @@ class Video(ProgramInfo):
 
     class Meta:
         # ordering = ["title"]
-        ordering = ["date", "order_in_day"]
+        ordering = ["-date", "-order_in_day"]

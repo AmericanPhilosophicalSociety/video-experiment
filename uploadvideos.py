@@ -72,9 +72,9 @@ def process_affiliation(position, institution, meeting, speaker):
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
 def add_speaker_to_video(
-    video, display_name, position_1, institution_1, position_2, institution_2, meeting
+    video, display_name, position_1, institution_1, position_2, institution_2, meeting, label
 ):
-    speaker, created = Speaker.objects.get_or_create(display_name=display_name)
+    speaker, created = Speaker.objects.get_or_create(display_name=display_name, label=label)
 
     if created:
         try:
@@ -95,9 +95,9 @@ def add_speaker_to_video(
         process_affiliation(position_2, institution_2, meeting, speaker)
 
 
-def process_symposium(str, meeting):
+def process_symposium(str, meeting, date):
     if str:
-        symposium, created = Symposium.objects.get_or_create(title=str, meeting=meeting)
+        symposium, created = Symposium.objects.get_or_create(title=str, meeting=meeting, date=date)
         if created:
             try:
                 symposium.full_clean()
@@ -118,12 +118,13 @@ def process_video(row):
 
     # find correct meeting - search by name
     meeting = Meeting.objects.get(display_date=row["meeting"])
-
-    # find or create symposium
-    symposium = process_symposium(row["symposium"], meeting)
     
     # create date object
     date=process_date(row["date"])
+
+    # find or create symposium
+    symposium = process_symposium(row["symposium"], meeting, date)
+    
 
     # TODO: let this update video object if not all data matches? which fields should ID it?
     video, created = Video.objects.get_or_create(
@@ -181,6 +182,7 @@ def process_video(row):
             row["speaker_position_2"],
             row["speaker_institution_2"],
             meeting,
+            row["speaker_lcsh"],
         )
 
     if row["speaker_2_lcsh"]:
@@ -192,6 +194,7 @@ def process_video(row):
             row["speaker_2_position_2"],
             row["speaker_2_institution_2"],
             meeting,
+            row["speaker_2_lcsh"],
         )
 
 
