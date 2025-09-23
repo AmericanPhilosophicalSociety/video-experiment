@@ -252,7 +252,7 @@ def search(request):
 def search_results(request):
     if request.method == "POST":
         query = request.POST["q"]
-        videos, speakers, subjects, disciplines, departments = basic_search(query)
+        videos, speakers, subjects = basic_search(query)
         return render(
             request,
             "meetingsvideos/search_results.html",
@@ -261,8 +261,6 @@ def search_results(request):
                 "videos": videos,
                 "speakers": speakers,
                 "subjects": subjects,
-                "disciplines": disciplines,
-                "departments": departments,
             },
         )
     else:
