@@ -233,10 +233,10 @@ class DisciplineDetail(DetailView):
 #     content_template = "meetingsvideos/department-content.html"
 
 
-class DepartmentDetail(DetailView):
-    model = APSDepartment
-    template_name = "meetingsvideos/department_detail.html"
-    context_object_name = "department"
+# class DepartmentDetail(DetailView):
+#     model = APSDepartment
+#     template_name = "meetingsvideos/department_detail.html"
+#     context_object_name = "department"
 
 
 def search(request):
