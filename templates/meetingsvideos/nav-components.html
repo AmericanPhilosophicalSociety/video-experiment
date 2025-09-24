@@ -18,9 +18,6 @@
     <a hx-get="{% url 'disciplines' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Disciplines</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'departments' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Departments</a>
-  </li>
-  <li class="nav-item main-nav-item">
     <a hx-get="{% url 'search' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Search</a>
   </li>
 </ul>

@@ -67,6 +67,7 @@
     <td>Category</td>
     <td>{{ video.get_admin_category_display }}</td>
   </tr>
+  {% if video.academic_disciplines.all %}
   <tr>
     <td><p>Academic Discipline</p></td>
     <td>
@@ -75,6 +76,7 @@
       {% endfor %}
     </td>
   </tr>
+  {% endif %}
   <tr>
     <td><p>Subjects</p></td>
     <td>
@@ -83,7 +85,7 @@
       {% endfor %}
     </td>
   </tr>
-    {% if video.aps_departments.all %}
+    <!-- {% if video.aps_departments.all %}
   <tr>
     <td>APS Department</td>
     <td>
@@ -91,7 +93,7 @@
         <p><a href="{% url 'department_detail' department.slug %}">{{ department }}</a></p>
       {% endfor %}</td>
   </tr>
-  {% endif %}
+  {% endif %} -->
 </table>
 {% if video.symposium %}
   <table class="table table-borderless">

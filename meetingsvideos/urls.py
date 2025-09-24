@@ -22,7 +22,7 @@ urlpatterns = [
         views.DisciplineDetail.as_view(),
         name="discipline_detail",
     ),
-    path("departments/", views.DepartmentList.as_view(), name="departments"),
+    # path("departments/", views.DepartmentList.as_view(), name="departments"),
     path(
         "departments/<slug:slug>/",
         views.DepartmentDetail.as_view(),
