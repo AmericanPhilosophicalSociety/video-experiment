@@ -12,9 +12,11 @@ from meetingsvideos.models import (
     Affiliation,
 )
 
-logging.basicConfig(filename="videoupload.log",
-                    format='%(asctime)s - %(message)s - %(levelname)s',
-                    filemode='w')
+logging.basicConfig(
+    filename="videoupload.log",
+    format="%(asctime)s - %(message)s - %(levelname)s",
+    filemode="w",
+)
 
 
 # converts EDTF date to datetime object
@@ -27,7 +29,6 @@ def process_date(string):
     day = int(ymd[2])
 
     return datetime.datetime(year, month, day, tzinfo=ZoneInfo("America/New_York"))
-
 
 
 def process_diglib_url(string):
@@ -62,7 +63,9 @@ def process_affiliation(position, institution, meeting, speaker):
             affiliation.save()
             print("Affiliation created for speaker: " + speaker.display_name)
         except:
-            logging.exception(f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}")
+            logging.exception(
+                f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}"
+            )
             affiliation.delete()
     # add meeting
     affiliation.meetings.add(meeting)
@@ -72,22 +75,33 @@ def process_affiliation(position, institution, meeting, speaker):
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
 def add_speaker_to_video(
-    video, display_name, position_1, institution_1, position_2, institution_2, meeting, label
+    video,
+    display_name,
+    position_1,
+    institution_1,
+    position_2,
+    institution_2,
+    meeting,
+    label,
 ):
-    speaker, created = Speaker.objects.get_or_create(display_name=display_name, label=label)
+    speaker, created = Speaker.objects.get_or_create(
+        display_name=display_name, label=label
+    )
 
     if created:
         try:
             speaker.full_clean()
             speaker.save()
         except:
-            logging.exception(f"Speaker {speaker} for video {video} in meeting {meeting}")
+            logging.exception(
+                f"Speaker {speaker} for video {video} in meeting {meeting}"
+            )
             speaker.delete()
             return
-            
+
     video.speakers.add(speaker)
     print("Speaker added: " + speaker.display_name)
-    
+
     # if affiliation, create new affiliation
     if position_1 or institution_1:
         process_affiliation(position_1, institution_1, meeting, speaker)
@@ -97,7 +111,9 @@ def add_speaker_to_video(
 
 def process_symposium(str, meeting, date):
     if str:
-        symposium, created = Symposium.objects.get_or_create(title=str, meeting=meeting, date=date)
+        symposium, created = Symposium.objects.get_or_create(
+            title=str, meeting=meeting, date=date
+        )
         if created:
             try:
                 symposium.full_clean()
@@ -118,13 +134,12 @@ def process_video(row):
 
     # find correct meeting - search by name
     meeting = Meeting.objects.get(display_date=row["meeting"])
-    
+
     # create date object
-    date=process_date(row["date"])
+    date = process_date(row["date"])
 
     # find or create symposium
     symposium = process_symposium(row["symposium"], meeting, date)
-    
 
     # TODO: let this update video object if not all data matches? which fields should ID it?
     video, created = Video.objects.get_or_create(
@@ -154,7 +169,9 @@ def process_video(row):
             video.save()
             print("Video created: " + video.title)
         except:
-            logging.exception(f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}")
+            logging.exception(
+                f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}"
+            )
             video.delete()
             return
 
@@ -170,7 +187,7 @@ def process_video(row):
         if disciplines:
             for discipline in disciplines:
                 video.academic_disciplines.add(discipline)
-        
+
     # add speaker info
     # this will run regardless of whether a new video has been created or not, in order to allow adding more than two speakers to a video by creating an additional row for that video
     if row["speaker_lcsh"]:
@@ -206,4 +223,4 @@ def upload_videos():
             try:
                 process_video(row)
             except:
-                logging.exception(f"Video {row["title"]} in meeting {row["meeting"]}")
+                logging.exception(f"Video {row['title']} in meeting {row['meeting']}")

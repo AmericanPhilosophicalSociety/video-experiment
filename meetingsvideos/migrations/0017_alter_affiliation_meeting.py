@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0016_alter_academicdiscipline_slug_and_more"),
     ]
