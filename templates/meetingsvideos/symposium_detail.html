@@ -1,5 +1,9 @@
 {% extends "meetingsvideos/base.html" %}
 
+{% block title %}
+APS Meetings Videos - {{ symposium.title }}
+{% endblock %}
+
 {% block main %}
 <div class="container" id="video-container">
   <h1>{{ symposium.title }}</h1>

@@ -1,6 +1,10 @@
 {% extends "meetingsvideos/base.html" %}
 {% load static %}
 
+{% block title %}
+  APS Meetings Videos - {{ video.title }}
+{% endblock %}
+
 {% block main %}
 <link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet" />
 
