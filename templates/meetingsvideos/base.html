@@ -48,31 +48,15 @@
               </div>
             </div>
             <div class="sidebar col-lg-2 p-0 d-none d-md-block d-lg-none">
-              <div class="facets">
-                {% include "meetingsvideos/faceting.html" with breakpoint="sm" %}
-              </div>
+              {% block md_sidebar %}{% endblock %}
             </div>
-            <div class="modal fade d-md-none" id="facetsModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalLabel">Filter results</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    {% include "meetingsvideos/faceting.html" with breakpoint="med" %}
-                  </div>
-                </div>
-              </div>
-            </div>
+            {% block sm_sidebar %}{% endblock %}
           </nav>
           <main class="col md-9 col-lg-8 px-md-4">
             {% block main %}{% endblock %}
           </main>
           <div class="sidebar col-lg-2 p-0 d-none d-lg-block">
-            <div class="facets">
-              {% include "meetingsvideos/faceting.html" with breakpoint="lg" %}
-            </div>
+            {% block large_sidebar %}{% endblock %}
           </div>
         </div>
       </div>

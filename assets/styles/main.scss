@@ -173,8 +173,8 @@ main {
 // buttons
 
 .btn-primary {
-    background-color: $medium-gray;
-    border-color: $medium-gray;
+    background-color: $aps-red;
+    border-color: $aps-red;
 }
 
 .btn-primary:focus, .btn-primary:hover {
@@ -183,7 +183,7 @@ main {
 }
 
 .btn:active, .btn.active, .btn-primary:active {
-    background-color: $aps-red !important;
+    background-color: $medium-gray !important;
     border-color: $medium-gray !important;
 }
 // cards
@@ -319,4 +319,18 @@ main {
 .accordion-button:not(.collapsed) {
     color: $aps-white;
     background-color: $aps-red;
+}
+
+// filter panel
+@media (max-width: 1200px) {
+    // only show fullsized text on largest breakpoints
+    .sidebar .facets select {
+        font-size: 0.875rem;
+    }
+    .sidebar .facets .input-group > input {
+        font-size: 0.875rem;
+    }
+    .sidebar .facets .input-group-text {
+        font-size: 0.6rem;
+    }
 }

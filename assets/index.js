@@ -15,7 +15,7 @@ window.onload = function() {
       newTab.setAttribute('aria-current', 'page')
       newTab.classList.add('active')
   }
-}
+};
 
 htmx.onLoad(function(content) {
     const navTabs = content.querySelectorAll(".nav-tab-link")
@@ -31,15 +31,27 @@ htmx.onLoad(function(content) {
       newTab.setAttribute('aria-selected', true);
       newTab.classList.add('active')
   }
-})
+});
 
-function dropdownSelect() {
-  console.log("My dropdown was selected!")
-}
+function facetSubmit(event, element) {
+  console.log(element)
+  event.preventDefault();
+  const form = document.getElementById(element);
+  const formData = new FormData(form);
+  let search = new URLSearchParams(formData);
+  const badKeys = [];
+  for (const [key, value] of search) {
+    if (value == '') {
+      badKeys.push(key);
+    }
+  };
+  badKeys.forEach((key) => search.delete(key));
+  let query = search.toString()
+  console.log(query)
+  document.location.search = query;
+};
 
 window.addEventListener("DOMContentLoaded", (evt) => {
-  const subjects = document.getElementsByClassName("subjectSelect");
-  Array.from(subjects).forEach((s) => s.addEventListener("change", dropdownSelect));
-  const disciplines = document.getElementsByClassName("disciplineSelect");
-  Array.from(disciplines).forEach((d) => d.addEventListener("change", dropdownSelect));
-})
+  const submit = document.querySelectorAll(".facet-filter-panel")
+  submit.forEach(d => d.addEventListener("submit", () => facetSubmit(event, d.id)));
+});

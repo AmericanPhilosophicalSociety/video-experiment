@@ -1,7 +1,8 @@
 {% for video in videos %}
     {% if page_obj.has_next and forloop.last %}
+    {% querystring request.GET page=page_obj.next_page_number as params %}
         <span
-            hx-get="{% url 'index' %}?page={{ page_obj.next_page_number }}"
+            hx-get="{{ request.path }}{{ params }}"
             hx-swap="afterend"
             hx-trigger="revealed"
         >
