@@ -2,7 +2,23 @@
 
 {% block main %}
   <div class="container" id="video-container">
-    {% include "meetingsvideos/heading-content.html" %}
-
-</div>
+    <h1>Subject Headings</h1>
+    <ul class="nav nav-tabs">
+      <li class="nav-item nav-tab-link">
+        <a class="nav-link active" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</a>
+      </li>
+      <li class="nav-item nav-tab-link">
+        <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=TOPIC&q=COMPLEX_SUBJECT" hx-target="#headings-list" hx-push-url="true">Topics</a>
+      </li>
+      <li class="nav-item nav-tab-link">
+        <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=PERSONAL_NAME&q=CORPORATE_NAME" hx-target="#headings-list" hx-push-url="true">Names</a>
+      </li>
+      <li class="nav-item nav-tab-link">
+        <a class="nav-link" aria-selected="false" hx-get="{% url 'headings' %}?q=GEOGRAPHIC" hx-target="#headings-list" hx-push-url="true">Geographic</a>
+      </li>
+    </ul>
+    <div id="headings-list">
+      {% include "meetingsvideos/item-list.html" with topics=topics %}
+    </div>
+  </div>
 {% endblock %}
