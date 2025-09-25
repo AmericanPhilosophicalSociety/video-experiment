@@ -1,26 +1,26 @@
   <ul class="nav flex-column">
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'index' %}" class="nav-link active" aria-current="page" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Videos</a>
+    <a href="{% url 'index' %}" class="nav-link active">Videos</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'speakers' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Speakers</a>
+    <a href="{% url 'speakers' %}" class="nav-link">Speakers</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'meetings' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Meetings</a>
+    <a href="{% url 'meetings' %}" class="nav-link">Meetings</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'symposia' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Symposia</a>
+    <a href="{% url 'symposia' %}" class="nav-link">Symposia</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'headings' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Subject Headings</a>
+    <a href="{% url 'headings' %}" class="nav-link">Subject Headings</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'disciplines' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Disciplines</a>
+    <a href="{% url 'disciplines' %}" class="nav-link">Disciplines</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'departments' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Departments</a>
+    <a href="{% url 'departments' %}" class="nav-link">Departments</a>
   </li>
   <li class="nav-item main-nav-item">
-    <a hx-get="{% url 'search' %}" class="nav-link" hx-target="#video-container" hx-push-url="true" hx-on::after-request="window.scrollTo({top: 0, behavior: 'smooth'});">Search</a>
+    <a href="{% url 'search' %}" class="nav-link">Search</a>
   </li>
 </ul>
