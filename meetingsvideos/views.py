@@ -267,10 +267,7 @@ class DepartmentDetail(DetailView):
 def search(request):
     context = {}
     context["advanced_search"] = AdvancedSearchForm()
-    if request.htmx:
-        template_name = "meetingsvideos/search-content.html"
-    else:
-        template_name = "meetingsvideos/search.html"
+    template_name = "meetingsvideos/search.html"
     return render(request, template_name, context)
 
 
