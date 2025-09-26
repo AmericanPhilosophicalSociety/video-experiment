@@ -1,5 +1,8 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
+// import { addBackToTop } from 'vanilla-back-to-top';
+
+// addBackToTop();
 
 window.htmx = htmx;
 
@@ -42,7 +45,39 @@ function facetSubmit(event, element) {
   document.location.search = query;
 };
 
+
 window.addEventListener("DOMContentLoaded", (evt) => {
   const submit = document.querySelectorAll(".facet-filter-panel")
   submit.forEach(d => d.addEventListener("submit", () => facetSubmit(event, d.id)));
 });
+
+window.addEventListener("DOMContentLoaded", (evt) => {
+  const scrollBtn = document.querySelector('.return-to-top-btn');
+
+  const btnVisibility = () => {
+    if (window.scrollY > 400) {
+      scrollBtn.style.transition = "visibility 200ms linear, opacity 200ms linear";
+      scrollBtn.style.visibility = "visible";
+      scrollBtn.style.opacity = 1;
+    }
+    else {
+      scrollBtn.style.transition = "visibility 200ms linear, opacity 200ms linear";
+      scrollBtn.style.visibility = "hidden";
+      scrollBtn.style.opacity = 0;
+    }
+  };
+
+  window.addEventListener("scroll", () => {
+    btnVisibility();
+  });
+
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+  
+})
+
+

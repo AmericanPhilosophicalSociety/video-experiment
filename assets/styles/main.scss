@@ -14,6 +14,7 @@ $accent-font: Gelasio, serif;
 
 html {
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -333,4 +334,35 @@ main {
     .sidebar .facets .input-group-text {
         font-size: 0.6rem;
     }
+}
+
+// return to top button
+.scroll-to-top {
+    position: relative;
+    opacity: 0.8;
+}
+
+.return-to-top-btn {
+    position: fixed;
+    bottom: 40px;
+    right: 25px;
+    z-index: 20;
+    background-color: $aps-red;
+    border: 2px solid $dark-gray;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    color: $aps-white;
+    cursor: pointer;
+    animation: movebtn 3s ease-in-out infinite;
+    transition: all 0.5s ease-in-out;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+.return-to-top-btn:hover {
+    border: 2px solid $dark-gray;
 }
