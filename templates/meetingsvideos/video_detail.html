@@ -1,5 +1,6 @@
 {% extends "meetingsvideos/base.html" %}
 {% load static %}
+{% load meetingsvideos_extras %} 
 
 {% block main %}
 <link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet" />
@@ -15,7 +16,7 @@
   {% for speaker in video.speakers.all %}
   <li class="list-group-item">
   <h3><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h3>
-    {% for affiliation in speaker.affiliation_set.all %}
+    {% for affiliation in speaker.affiliation_set|filter_affiliations:video.meeting %}
     {{ affiliation|linebreaks }}
     {% endfor %}
   </li>
