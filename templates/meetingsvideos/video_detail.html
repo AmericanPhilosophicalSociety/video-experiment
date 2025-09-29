@@ -119,5 +119,10 @@
 <!-- TODO: these links don't work -->
 <!-- <p><a href="https://diglib.amphilsoc.org/islandora/object/video:{{ video.diglib_pid }}">View in APS Digital Library</a></p> -->
 
+{% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("videoNav");
+</script>
 <script src="https://vjs.zencdn.net/8.23.3/video.min.js"></script>
 {% endblock %}

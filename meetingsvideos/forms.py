@@ -1,5 +1,6 @@
 from django import forms
-from .models import APSDepartment, AcademicDiscipline
+from .models import APSDepartment, AcademicDiscipline, LCSH
+from django.db.models import Count
 
 
 class AdvancedSearchForm(forms.Form):
@@ -53,3 +54,62 @@ class AdvancedSearchForm(forms.Form):
         input_formats=["%Y-%m-%d"],
         required=False,
     )
+
+
+class SubjectModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj[0] + " ({})".format(obj[1])
+
+    def prepare_value(self, value):
+        if value is not None:
+            return value[0]
+        return super().prepare_value(value)
+
+
+class FacetForm(forms.Form):
+    template_name = "meetingsvideos/facet-form.html"
+    lcsh = SubjectModelChoiceField(
+        queryset=None,
+        required=False,
+        label="Subject",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        empty_label="Choose...",
+    )
+    discipline = SubjectModelChoiceField(
+        queryset=None,
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select"}),
+        empty_label="Choose...",
+    )
+    start = forms.IntegerField(
+        min_value=2003,
+        max_value=2025,
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-select"}),
+    )
+    end = forms.IntegerField(
+        min_value=2003,
+        max_value=2025,
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-select"}),
+    )
+
+    def __init__(self, object_list, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        sub_query = (
+            LCSH.objects.filter(video__in=object_list)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:20]
+        )
+
+        discipline_query = (
+            AcademicDiscipline.objects.filter(video__in=object_list)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        self.fields["lcsh"].queryset = sub_query
+        self.fields["discipline"].queryset = discipline_query

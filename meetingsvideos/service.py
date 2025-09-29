@@ -74,7 +74,7 @@ def advanced_search(form):
     subject_q = form.cleaned_data["subject"]
     disciplines = form.cleaned_data["discipline"]
     departments = form.cleaned_data["department"]
-    
+
     categories = form.cleaned_data["category"]
     # a few categories are combined in display to make form more easily readable - separate them back out here
     if categories:

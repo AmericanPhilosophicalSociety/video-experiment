@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import AdvancedSearchForm
+from .forms import AdvancedSearchForm, FacetForm
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import FormMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
 
@@ -23,12 +24,9 @@ from .service import basic_search, advanced_search
 
 class HTMXMixin:
     partial_template = None
-    content_template = None
 
     def get_template_names(self, *args, **kwargs):
-        if self.request.htmx.target == "video-container":
-            return self.content_template
-        elif self.request.htmx and not self.request.htmx.history_restore_request:
+        if self.request.htmx and not self.request.htmx.history_restore_request:
             return self.partial_template
         else:
             return self.template_name
@@ -113,17 +111,50 @@ class Landing(ListView):
         return queryset
 
 
-class IndexView(HTMXMixin, ListView):
+class IndexView(HTMXMixin, FormMixin, ListView):
     # model = Video
     template_name = "meetingsvideos/index.html"
     context_object_name = "videos"
     paginate_by = 10
     partial_template = "meetingsvideos/video-list.html"
-    content_template = "meetingsvideos/index-content.html"
+    form_class = FacetForm
 
     def get_queryset(self):
         queryset = Video.objects.exclude_inductions()
+        # Not very DRY - would be better to abstract logic out to FilterView
+        subjects = self.request.GET.getlist("lcsh")
+        disciplines = self.request.GET.getlist("discipline")
+        start, end = [self.request.GET.get("start"), self.request.GET.get("end")]
+        for subject in subjects:
+            queryset = queryset.filter(lcsh__heading=subject)
+        for discipline in disciplines:
+            queryset = queryset.filter(academic_disciplines__name=discipline)
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            queryset = queryset.filter(date__range=(start, end))
         return queryset
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["object_list"] = self.object_list
+        return kwargs
+
+    def get_initial(self):
+        initial = super().get_initial()
+        params = self.request.GET.dict()
+        for k, v in params.items():
+            if k in ["start", "end"]:
+                params[k] = int(v)
+            else:
+                params.update({k: [v]})
+        initial.update(params)
+        return initial
 
 
 class VideoDetail(DetailView):
@@ -137,7 +168,6 @@ class HeadingsView(AlphaFilterView):
     queryset_method = LCSH.objects.only_topics_with_first_letter
     template_name = "meetingsvideos/headings.html"
     link_template = "heading_detail"
-    content_template = "meetingsvideos/heading-content.html"
 
 
 class HeadingDetail(DetailView):
@@ -157,7 +187,6 @@ class SpeakersView(AlphaFilterView):
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
     link_template = "speaker_detail"
-    content_template = "meetingsvideos/speaker-content.html"
 
 
 class SpeakerDetail(DetailView):
@@ -172,7 +201,6 @@ class MeetingsList(HTMXMixin, ListView):
     context_object_name = "meetings"
     paginate_by = 10
     partial_template = "meetingsvideos/meetings-list.html"
-    content_template = "meetingsvideos/meeting-content.html"
 
 
 class MeetingDetail(HTMXMixin, DetailView):
@@ -204,7 +232,6 @@ class SymposiumList(HTMXMixin, ListView):
     context_object_name = "symposia"
     paginate_by = 10
     partial_template = "meetingsvideos/symposium-list.html"
-    content_template = "meetingsvideos/symposium-content.html"
 
 
 class SymposiumDetail(DetailView):
@@ -217,7 +244,6 @@ class DisciplineList(TopicView):
     model = AcademicDiscipline
     template_name = "meetingsvideos/disciplines.html"
     link_template = "discipline_detail"
-    content_template = "meetingsvideos/discipline-content.html"
 
 
 class DisciplineDetail(DetailView):
@@ -230,7 +256,6 @@ class DepartmentList(TopicView):
     model = APSDepartment
     template_name = "meetingsvideos/departments.html"
     link_template = "department_detail"
-    content_template = "meetingsvideos/department-content.html"
 
 
 class DepartmentDetail(DetailView):
