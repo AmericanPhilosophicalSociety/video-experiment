@@ -9,7 +9,7 @@
         {% endcomment %}
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
         <script src="{% static 'index-bundle.js' %}"></script>
-        {% block title %}{% endblock %}
+        <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
         {% block body %}{% endblock %}

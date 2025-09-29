@@ -252,16 +252,17 @@ class DisciplineDetail(DetailView):
     context_object_name = "discipline"
 
 
-class DepartmentList(TopicView):
-    model = APSDepartment
-    template_name = "meetingsvideos/departments.html"
-    link_template = "department_detail"
+# class DepartmentList(TopicView):
+#     model = APSDepartment
+#     template_name = "meetingsvideos/departments.html"
+#     link_template = "department_detail"
+#     content_template = "meetingsvideos/department-content.html"
 
 
-class DepartmentDetail(DetailView):
-    model = APSDepartment
-    template_name = "meetingsvideos/department_detail.html"
-    context_object_name = "department"
+# class DepartmentDetail(DetailView):
+#     model = APSDepartment
+#     template_name = "meetingsvideos/department_detail.html"
+#     context_object_name = "department"
 
 
 def search(request):

@@ -1,6 +1,10 @@
 {% extends "meetingsvideos/base.html" %}
 {% load static %}
 
+{% block title %}
+  APS Meetings Videos - {{ video.title }}
+{% endblock %}
+
 {% block main %}
 <link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet" />
 
@@ -67,6 +71,7 @@
     <td>Category</td>
     <td>{{ video.get_admin_category_display }}</td>
   </tr>
+  {% if video.academic_disciplines.all %}
   <tr>
     <td><p>Academic Discipline</p></td>
     <td>
@@ -75,6 +80,7 @@
       {% endfor %}
     </td>
   </tr>
+  {% endif %}
   <tr>
     <td><p>Subjects</p></td>
     <td>
@@ -83,7 +89,8 @@
       {% endfor %}
     </td>
   </tr>
-    {% if video.aps_departments.all %}
+  {% comment %}
+ {% if video.aps_departments.all %}
   <tr>
     <td>APS Department</td>
     <td>
@@ -92,6 +99,7 @@
       {% endfor %}</td>
   </tr>
   {% endif %}
+  {% endcomment %}
 </table>
 {% if video.symposium %}
   <table class="table table-borderless">
