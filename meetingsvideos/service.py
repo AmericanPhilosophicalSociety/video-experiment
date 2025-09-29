@@ -34,7 +34,6 @@ def basic_search(query):
         "lcsh__heading",
         "meeting__display_date",
         "academic_disciplines__name",
-        "aps_departments__name",
     ]
     speaker_fields_to_search = [
         "display_name",
@@ -85,8 +84,8 @@ def advanced_search(form):
     speaker_q = form.cleaned_data["speaker"]
     subject_q = form.cleaned_data["subject"]
     disciplines = form.cleaned_data["discipline"]
-    departments = form.cleaned_data["department"]
-
+    # departments = form.cleaned_data["department"]
+    
     categories = form.cleaned_data["category"]
     # a few categories are combined in display to make form more easily
     # readable - separate them back out here
@@ -113,7 +112,7 @@ def advanced_search(form):
     subject_search = build_q_object(subject_q, subject_fields_to_search)
 
     discipline_search = Q(academic_disciplines__in=disciplines)
-    department_search = Q(aps_departments__in=departments)
+    # department_search = Q(aps_departments__in=departments)
 
     category_search = Q(admin_category__in=categories)
 
@@ -131,8 +130,8 @@ def advanced_search(form):
         q_objects &= subject_search
     if disciplines:
         q_objects &= discipline_search
-    if departments:
-        q_objects &= department_search
+    # if departments:
+    #     q_objects &= department_search
     if start_date:
         q_objects &= start_date_search
     if end_date:
