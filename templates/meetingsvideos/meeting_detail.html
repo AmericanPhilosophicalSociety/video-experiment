@@ -39,3 +39,8 @@ APS Meetings Videos - {{ meeting.display_date }}
 {% endif %}
 </div>
 {% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("meetingsNav");
+</script>
+{% endblock %}

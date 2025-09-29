@@ -1,14 +1,4 @@
 <h1>Subject Headings</h1>
-{% comment %}
-<ul class="nav nav-tabs" hx-target
-hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
-                          currentTab.setAttribute('aria-selected', 'false')
-                          currentTab.classList.remove('active')
-                          currentTab.removeAttribute('aria-current')
-                          let newTab = event.target
-                          newTab.setAttribute('aria-selected', 'true')
-                          newTab.classList.add('active')">
-{% endcomment %}
 <ul class="nav nav-tabs">
   <li class="nav-item nav-tab-link">
     <a class="nav-link active" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</a>

@@ -8,6 +8,7 @@ APS Meetings Videos - Search Results
 
 <!-- TODO: printing query here for troubleshooting purposes, but it should eventually be removed -->
 <!-- <h1>Search Results For: {{ query }}</h1> -->
+<div class="container" id="video-container">
 <h1>Search Results</h1>
 
 <hr>
@@ -26,4 +27,10 @@ APS Meetings Videos - Search Results
 
 {% endif %}
 
+{% endblock %}
+</div>
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("searchNav");
+</script>
 {% endblock %}

@@ -33,3 +33,8 @@ APS Meetings Videos - {{ speaker.display_name }}
     {% endif %}
 </div>
 {% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("speakerNav");
+</script>
+{% endblock %}

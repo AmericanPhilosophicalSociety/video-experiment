@@ -13,3 +13,8 @@ APS Meetings Videos - {{ symposium.title }}
   {% endfor %}
 </div>
 {% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("symposiaNav");
+</script>
+{% endblock %}

@@ -7,6 +7,11 @@ APS Meetings Videos - All Meetings
 {% block main %}
 
 <div class="container" id="video-container">
-{% include "meetingsvideos/meeting-content.html" %}
+  {% include "meetingsvideos/meetings-list.html" %}
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("meetingsNav");
+</script>
 {% endblock %}

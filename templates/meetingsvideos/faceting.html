@@ -1,0 +1,32 @@
+<form class='facet-filter-panel' id="facetSubmit{{ breakpoint }}" method="GET">
+  {{ form }}
+  <button type="submit" class="btn btn-primary">Filter results</button>
+</form>
+{% comment %}
+<form method="GET">
+  <div class="form-floating">
+    <select class="form-select subjectSelect" id="subjectSelect{{ breakpoint }}" name="lcsh" aria-label="Select a subject">
+      <option selected>Choose...</option>
+      {% for subject in subjects %}
+      <option value="{{ subject.subject }}">{{ subject.subject }} ({{ subject.n }})</option>
+      {% endfor %}
+    </select>
+    <label for="subjectSelect{{ breakpoint }}">Select a subject</label>
+  </div>
+  <div class="form-floating">
+    <select class="form-select disciplineSelect" id="disciplineSelect{{ breakpoint }}" name="disipline" aria-label="Select a discipline">
+      <option selected>Choose...</option>
+      {% for discipline in disciplines %}
+      <option value="{{ discipline.discipline}}">{{ discipline.discipline }} ({{ discipline.n }})</option>
+      {% endfor %}
+    </select>
+    <label for="disciplineSelect{{ breakpoint }}">Select a discipline</label>
+  </div>
+  <div class="input-group">
+    <input type="number" min="2003" max="2025" class="form-control" aria-label="Start year" name="start" placeholder="Start">
+    <span class="input-group-text">→</span>
+    <input type="number" min="2003" max="2025" class="form-control" aria-label="End year" name="end" placeholder="End">
+  </div>
+  <button type="submit" class="btn btn-primary">Filter results</button>
+</form>
+{% endcomment %}

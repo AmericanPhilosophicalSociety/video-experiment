@@ -13,3 +13,8 @@ APS Meetings Videos - {{ department.name }}
 {% endfor %}
 </div>
 {% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("departmentsNav");
+</script>
+{% endblock %}
