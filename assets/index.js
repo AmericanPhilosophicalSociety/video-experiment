@@ -13,7 +13,7 @@ export function makeActive(ele) {
 }
 
 htmx.onLoad(function(content) {
-    const navTabs = content.querySelectorAll(".nav-tab-link")
+    const navTabs = content.querySelectorAll(".htmx-tab")
     navTabs.forEach(d => d.addEventListener('click', selectTab))
 
     function selectTab(evt) {
@@ -27,8 +27,21 @@ htmx.onLoad(function(content) {
   }
 });
 
+function searchTabClick(event) {
+  const activeTabs = [document.querySelector('.nav-tab-link .active'), document.querySelector('.tab-pane.active')];
+  activeTabs.forEach(d => d.classList.remove('active'));
+  const newTab = event.target;
+  newTab.classList.add('active')
+  const target = newTab.href.split('#')[1]
+  document.getElementById(target).classList.add('active');
+}
+
+export function makeSearchTabs() {
+  const tabs = document.getElementById('nav-tabs');
+  tabs.addEventListener('click', searchTabClick);
+}
+
 function facetSubmit(event, element) {
-  console.log(element)
   event.preventDefault();
   const form = document.getElementById(element);
   const formData = new FormData(form);

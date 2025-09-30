@@ -366,3 +366,12 @@ main {
 .return-to-top-btn:hover {
     border: 2px solid $dark-gray;
 }
+
+// tab panes for search results
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}

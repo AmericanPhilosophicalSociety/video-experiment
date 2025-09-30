@@ -6,11 +6,51 @@ APS Meetings Videos - Search Results
 
 {% block main %}
 <div class="container" id="video-container">
-<h1>Search Results For: {{ query }}</h1>
-
-<hr>
-
-
+  <h1>Search Results For: {{ query }}</h1>
+  <ul class="nav nav-tabs" id="nav-tabs">
+    <li class="nav-item nav-tab-link">
+      <a class="nav-link active" href="#videos">Videos</a>
+    </li>
+    <li class="nav-item nav-tab-link">
+      <a class="nav-link" href="#speakers">Speakers</a>
+    </li>
+    <li class="nav-item nav-tab-link">
+      <a class="nav-link" href="#subjects">Subjects</a>
+    </li>
+    </ul>
+  <div class="search-content">
+    <div class="tab-pane active" id="videos">
+      <h3>Videos</h3>
+      {% if videos %}
+        {% for video in videos %}
+          {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+        {% endfor %}
+      {% else %}
+        <p>No videos found.</p>
+      {% endif %}
+    </div>
+    <div class="tab-pane" id="speakers">
+      <h3>Speakers</h3>
+      {% if speakers %}
+        {% for speaker in speakers %}
+          <p><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></p>
+        {% endfor %}
+      {% else %}
+        <p>No speakers found.</p>
+      {% endif %}
+    </div>
+    <div class="tab-pane" id="subjects">
+      <h3>Subjects</h3>
+      {% if subjects %}
+        {% for subject in subjects %}
+          <p><a href="{% url 'heading_detail' subject.slug %}">{{ subject.heading }}</a></p>
+        {% endfor %}
+      {% else %}
+        <p>No subjects found.</p>
+      {% endif %}
+    </div>
+  </div>
+{% comment %}
 <h3>Videos</h3>
 
 {% if videos %}
@@ -61,9 +101,11 @@ APS Meetings Videos - Search Results
 
 
 </div>
+{% endcomment %}
 {% endblock %}
 {% block extra_js %}
 <script>
   jsFunctions.makeActive("searchNav");
+  jsFunctions.makeSearchTabs();
 </script>
 {% endblock %}
