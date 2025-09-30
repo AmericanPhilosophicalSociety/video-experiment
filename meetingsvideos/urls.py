@@ -22,12 +22,12 @@ urlpatterns = [
         views.DisciplineDetail.as_view(),
         name="discipline_detail",
     ),
-    # path("departments/", views.DepartmentList.as_view(), name="departments"),
-    # path(
-    #     "departments/<slug:slug>/",
-    #     views.DepartmentDetail.as_view(),
-    #     name="department_detail",
-    # ),
+    path("departments/", views.DepartmentList.as_view(), name="departments"),
+    path(
+        "departments/<slug:slug>/",
+        views.DepartmentDetail.as_view(),
+        name="department_detail",
+    ),
     path("speakers/", views.SpeakersView.as_view(), name="speakers"),
     path("speakers/<slug:slug>/", views.SpeakerDetail.as_view(), name="speaker_detail"),
     path("search/", views.search, name="search"),

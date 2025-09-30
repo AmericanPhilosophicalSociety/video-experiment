@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from random import sample
 from string import ascii_uppercase
@@ -252,17 +253,17 @@ class DisciplineDetail(DetailView):
     context_object_name = "discipline"
 
 
-# class DepartmentList(TopicView):
-#     model = APSDepartment
-#     template_name = "meetingsvideos/departments.html"
-#     link_template = "department_detail"
-#     content_template = "meetingsvideos/department-content.html"
+class DepartmentList(LoginRequiredMixin, TopicView):
+    model = APSDepartment
+    template_name = "meetingsvideos/departments.html"
+    link_template = "department_detail"
+    content_template = "meetingsvideos/department-content.html"
 
 
-# class DepartmentDetail(DetailView):
-#     model = APSDepartment
-#     template_name = "meetingsvideos/department_detail.html"
-#     context_object_name = "department"
+class DepartmentDetail(LoginRequiredMixin, DetailView):
+    model = APSDepartment
+    template_name = "meetingsvideos/department_detail.html"
+    context_object_name = "department"
 
 
 def search(request):
