@@ -1,9 +1,11 @@
 from django.db.models import Q
-from django.contrib.postgres.search import SearchVector
-from .models import Video, Speaker, LCSH, AcademicDiscipline
+
+# from django.contrib.postgres.search import SearchVector
+from .models import Video, Speaker, LCSH
 
 
-# takes a query and list of fields to search and returns a list of Q objects, chained with the "or" operator, performing both regular search and icontains search
+# takes a query and list of fields to search and returns a list of Q objects,
+# chained with the "or" operator, performing both regular search and icontains search
 def build_q_object(query, fields_to_search):
     search = Q()
 
@@ -20,7 +22,8 @@ def build_q_object(query, fields_to_search):
 
 # execute basic search
 # searches title, abstract, speaker, and lcsh for search term
-# TODO: fix this - using SearchVector gives a ton of duplicate results that aren't removed by duplicate(), issue seems to be searching on many-to-many field
+# TODO: fix this - using SearchVector gives a ton of duplicate results that
+# aren't removed by duplicate(), issue seems to be searching on many-to-many field
 def basic_search(query):
     query_lst = query.split()
     # query = SearchQuery(q)
@@ -39,8 +42,9 @@ def basic_search(query):
         "affiliation__institution",
     ]
     subject_fields_to_search = ["heading"]
-    # TODO: do we want to return symposium results? should this include ones where one video matches the search terms (so duplicating results from video search)?
-    symposium_fields_to_search = ["title", "meeting__display_date"]
+    # TODO: do we want to return symposium results? should this include ones where one video
+    # matches the search terms (so duplicating results from video search)?
+    # symposium_fields_to_search = ["title", "meeting__display_date"]
 
     video_search = Q()
     speaker_search = Q()
@@ -56,12 +60,20 @@ def basic_search(query):
     # videos = Video.objects.annotate(search=video_vector).filter(search=query).distinct()
 
     speakers = Speaker.objects.filter(speaker_search).distinct()
-    # speaker_vector = SearchVector('display_name', weight='A') + SearchVector('lcsh__heading', weight='B') + SearchVector('affiliation__position', 'affiliation__institution', weight='C')
+    # speaker_vector = (
+    #     SearchVector("display_name", weight="A")
+    #     + SearchVector("lcsh__heading", weight="B")
+    #     + SearchVector("affiliation__position", "affiliation__institution", weight="C")
+    # )
 
     # search LCSH, excluding any associated only with speakers
     subjects = LCSH.objects.filter(subject_search).exclude(video=None)
     # subject_vector = SearchVector('heading')
-    # subjects = LCSH.objects.annotate(search=subject_vector).filter(search=query).exclude(video=None)
+    # subjects = (
+    #     LCSH.objects.annotate(search=subject_vector)
+    #    .filter(search=query)
+    #    .exclude(video=None)
+    # )
 
     return videos, speakers, subjects
 
@@ -73,9 +85,10 @@ def advanced_search(form):
     subject_q = form.cleaned_data["subject"]
     disciplines = form.cleaned_data["discipline"]
     # departments = form.cleaned_data["department"]
-    
+
     categories = form.cleaned_data["category"]
-    # a few categories are combined in display to make form more easily readable - separate them back out here
+    # a few categories are combined in display to make form more easily
+    # readable - separate them back out here
     if categories:
         if "LECTURE" in categories:
             categories.append("PANEL")

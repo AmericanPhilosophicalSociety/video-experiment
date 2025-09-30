@@ -1,5 +1,6 @@
 {% extends "meetingsvideos/base.html" %}
 {% load static %}
+{% load meetingsvideos_extras %} 
 
 {% block title %}
   APS Meetings Videos - {{ video.title }}
@@ -19,7 +20,7 @@
   {% for speaker in video.speakers.all %}
   <li class="list-group-item">
   <h3><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h3>
-    {% for affiliation in speaker.affiliation_set.all %}
+    {% for affiliation in speaker.affiliation_set|filter_affiliations:video.meeting %}
     {{ affiliation|linebreaks }}
     {% endfor %}
   </li>

@@ -22,3 +22,8 @@ def pagination_offset(value):
         return 0
     else:
         return int(value) * 10
+
+
+@register.filter
+def filter_affiliations(value, meeting):
+    return value.filter(meetings=meeting)
