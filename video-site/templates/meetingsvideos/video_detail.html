@@ -1,5 +1,10 @@
 {% extends "meetingsvideos/base.html" %}
 {% load static %}
+{% load meetingsvideos_extras %} 
+
+{% block title %}
+  APS Meetings Videos - {{ video.title }}
+{% endblock %}
 
 {% block main %}
 <link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet" />
@@ -15,7 +20,7 @@
   {% for speaker in video.speakers.all %}
   <li class="list-group-item">
   <h3><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h3>
-    {% for affiliation in speaker.affiliation_set.all %}
+    {% for affiliation in speaker.affiliation_set|filter_affiliations:video.meeting %}
     {{ affiliation|linebreaks }}
     {% endfor %}
   </li>
@@ -67,6 +72,7 @@
     <td>Category</td>
     <td>{{ video.get_admin_category_display }}</td>
   </tr>
+  {% if video.academic_disciplines.all %}
   <tr>
     <td><p>Academic Discipline</p></td>
     <td>
@@ -75,6 +81,7 @@
       {% endfor %}
     </td>
   </tr>
+  {% endif %}
   <tr>
     <td><p>Subjects</p></td>
     <td>
@@ -83,7 +90,8 @@
       {% endfor %}
     </td>
   </tr>
-    {% if video.aps_departments.all %}
+  {% comment %}
+ {% if video.aps_departments.all %}
   <tr>
     <td>APS Department</td>
     <td>
@@ -92,6 +100,7 @@
       {% endfor %}</td>
   </tr>
   {% endif %}
+  {% endcomment %}
 </table>
 {% if video.symposium %}
   <table class="table table-borderless">
@@ -119,5 +128,10 @@
 <!-- TODO: these links don't work -->
 <!-- <p><a href="https://diglib.amphilsoc.org/islandora/object/video:{{ video.diglib_pid }}">View in APS Digital Library</a></p> -->
 
+{% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("videoNav");
+</script>
 <script src="https://vjs.zencdn.net/8.23.3/video.min.js"></script>
 {% endblock %}

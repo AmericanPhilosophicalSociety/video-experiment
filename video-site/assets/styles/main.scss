@@ -14,6 +14,7 @@ $accent-font: Gelasio, serif;
 
 html {
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -68,7 +69,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
   
 
 // Sidebar
-.sidebar .offcanvas-md {
+.sidebar #sidebarMenu {
     right: 0;
 }
 
@@ -78,7 +79,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 }
 
 @media (min-width: 768px) {
-    .sidebar .offcanvas-md {
+    .sidebar > div {
         position: -webkit-sticky;
         position: sticky;
         top: 48px;
@@ -90,7 +91,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 }
 
 @media (min-width: 1400px) {
-    .sidebar .offcanvas-md {
+    .sidebar > div {
         margin: 0 1.5em;
     }
 }
@@ -173,8 +174,8 @@ main {
 // buttons
 
 .btn-primary {
-    background-color: $medium-gray;
-    border-color: $medium-gray;
+    background-color: $aps-red;
+    border-color: $aps-red;
 }
 
 .btn-primary:focus, .btn-primary:hover {
@@ -183,7 +184,7 @@ main {
 }
 
 .btn:active, .btn.active, .btn-primary:active {
-    background-color: $aps-red !important;
+    background-color: $medium-gray !important;
     border-color: $medium-gray !important;
 }
 // cards
@@ -319,4 +320,58 @@ main {
 .accordion-button:not(.collapsed) {
     color: $aps-white;
     background-color: $aps-red;
+}
+
+// filter panel
+@media (max-width: 1200px) {
+    // only show fullsized text on largest breakpoints
+    .sidebar .facets select {
+        font-size: 0.875rem;
+    }
+    .sidebar .facets .input-group > input {
+        font-size: 0.875rem;
+    }
+    .sidebar .facets .input-group-text {
+        font-size: 0.6rem;
+    }
+}
+
+// return to top button
+.scroll-to-top {
+    position: relative;
+    opacity: 0.8;
+}
+
+.return-to-top-btn {
+    position: fixed;
+    bottom: 40px;
+    right: 25px;
+    z-index: 20;
+    background-color: $aps-red;
+    border: 2px solid $dark-gray;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    color: $aps-white;
+    cursor: pointer;
+    animation: movebtn 3s ease-in-out infinite;
+    transition: all 0.5s ease-in-out;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+.return-to-top-btn:hover {
+    border: 2px solid $dark-gray;
+}
+
+// tab panes for search results
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
 }

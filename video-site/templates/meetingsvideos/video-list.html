@@ -1,11 +1,17 @@
-{% for video in videos %}
+{% if videos %}
+  {% for video in videos %}
     {% if page_obj.has_next and forloop.last %}
-        <span
-            hx-get="{% url 'index' %}?page={{ page_obj.next_page_number }}"
-            hx-swap="afterend"
-            hx-trigger="revealed"
-        >
-        </span>
+    {% querystring request.GET page=page_obj.next_page_number as params %}
+      <span
+        hx-get="{{ request.path }}{{ params }}"
+        hx-swap="afterend"
+        hx-trigger="revealed"
+      >
+      </span>
     {% endif %}
-  {% include "meetingsvideos/video_preview.html" with show_dates=True %}
-{% endfor %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+  {% endfor %}
+{% else %}
+<p>No results found.</p>
+<a href="{% url 'index' %}" class="btn btn-primary">Return to index.</a>
+{% endif %}

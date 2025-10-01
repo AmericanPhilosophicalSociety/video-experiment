@@ -134,16 +134,19 @@ def split_headings(string):
 
 
 # process list of headings and save info about matches to dictionary
-def process_headings(headings, is_name, row, all_headings, category, is_speaker=False, display_name=None):
+def process_headings(
+    headings, is_name, row, all_headings, category, is_speaker=False, display_name=None
+):
     for heading in headings:
         is_match = False
-        video_dict = {"talk_title": row["title"],
-                    "talk_date": row["date"],
-                    "order_in_day": row["order_in_day"],
-                    "is_speaker": is_speaker,
-                    "display_name": display_name,
-                }
-        
+        video_dict = {
+            "talk_title": row["title"],
+            "talk_date": row["date"],
+            "order_in_day": row["order_in_day"],
+            "is_speaker": is_speaker,
+            "display_name": display_name,
+        }
+
         # if heading hasn't already been searched, run search
         if heading not in all_headings:
             loc_id = query_api(heading)
@@ -151,7 +154,7 @@ def process_headings(headings, is_name, row, all_headings, category, is_speaker=
                 is_match = True
             if not loc_id:
                 loc_id, is_match = handle_no_results(heading, is_name)
-                
+
             # if valid LOC found, record some additional info to verify that this heading matches what's in the spreadsheet
             if loc_id:
                 if loc_id.startswith("n"):
@@ -169,21 +172,25 @@ def process_headings(headings, is_name, row, all_headings, category, is_speaker=
                         print(f"Error while processing heading {heading}: {e}")
 
                 # add match to dictionary
-                all_headings[heading] = {"loc_id": loc_id,
-                                         "url": f'http://id.loc.gov/authorities/{loc_id}',
-                                         "aLabel": aLabel,
-                                         "headings_match": is_match,
-                                         "category": category,
-                                        "videos": [video_dict]}
+                all_headings[heading] = {
+                    "loc_id": loc_id,
+                    "url": f"http://id.loc.gov/authorities/{loc_id}",
+                    "aLabel": aLabel,
+                    "headings_match": is_match,
+                    "category": category,
+                    "videos": [video_dict],
+                }
             # if no valid LOC found, add to dictionary with loc_id value of None
             # include category from spreadsheet, which will be used to sort only local headings into approximate categories
             else:
-                all_headings[heading] = {"loc_id": loc_id,
-                                         "url": None,
-                                         "aLabel": None,
-                                         "headings_match": False,
-                                         "category": category,
-                                        "videos": [video_dict]}
+                all_headings[heading] = {
+                    "loc_id": loc_id,
+                    "url": None,
+                    "aLabel": None,
+                    "headings_match": False,
+                    "category": category,
+                    "videos": [video_dict],
+                }
         # if heading has been searched already, add another video to the dictionary for that heading
         else:
             all_headings[heading]["videos"].append(video_dict)
@@ -197,27 +204,43 @@ def process_videos():
         reader = csv.DictReader(csvfile)
 
         for row in reader:
-            #TODO: this assumes that all speakers are personal names, but a few are organizations (e.g. Curtis Institute for Music). shouldn't be an issue if these match a valid LCSH, however
+            # TODO: this assumes that all speakers are personal names, but a few are organizations (e.g. Curtis Institute for Music). shouldn't be an issue if these match a valid LCSH, however
             if row["speaker_lcsh"]:
-                process_headings([row["speaker_lcsh"]], True, row, all_headings, "PERSONAL_NAME", is_speaker=True, display_name=row["speaker_display_name"])
+                process_headings(
+                    [row["speaker_lcsh"]],
+                    True,
+                    row,
+                    all_headings,
+                    "PERSONAL_NAME",
+                    is_speaker=True,
+                    display_name=row["speaker_display_name"],
+                )
             if row["speaker_2_lcsh"]:
-                process_headings([row["speaker_2_lcsh"]], True, row, all_headings, "PERSONAL_NAME", is_speaker=True, display_name=row["speaker_2_display_name"])
-            
+                process_headings(
+                    [row["speaker_2_lcsh"]],
+                    True,
+                    row,
+                    all_headings,
+                    "PERSONAL_NAME",
+                    is_speaker=True,
+                    display_name=row["speaker_2_display_name"],
+                )
+
             topics = split_headings(row["lcsh_topic"])
             process_headings(topics, False, row, all_headings, "TOPIC")
-            
+
             geographic = split_headings(row["lcsh_geographic"])
             process_headings(geographic, False, row, all_headings, "GEOGRAPHIC")
-            
+
             temporal = split_headings(row["lcsh_temporal"])
             process_headings(temporal, False, row, all_headings, "OTHER")
-            
+
             corporate = split_headings(row["lcsh_name_corporate"])
             process_headings(corporate, True, row, all_headings, "CORPORATE_NAME")
-            
+
             personal_name = split_headings(row["lcsh_name_personal"])
             process_headings(personal_name, True, row, all_headings, "PERSONAL_NAME")
-                    
+
     return all_headings
 
 
@@ -237,17 +260,30 @@ def process_spreadsheet():
             video["aLabel"] = value["aLabel"]
             video["headings_match"] = value["headings_match"]
             videos.append(video)
-    
-    with open('lcsh.csv', 'w', newline='', encoding='utf8') as csvfile:
-        fieldnames = ["headings_match", "orig_heading", "aLabel", "loc_id", "category", "url", "talk_title", "talk_date", "order_in_day", "is_speaker", "display_name"]
+
+    with open("lcsh.csv", "w", newline="", encoding="utf8") as csvfile:
+        fieldnames = [
+            "headings_match",
+            "orig_heading",
+            "aLabel",
+            "loc_id",
+            "category",
+            "url",
+            "talk_title",
+            "talk_date",
+            "order_in_day",
+            "is_speaker",
+            "display_name",
+        ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for video in videos:
             try:
                 writer.writerow(video)
             except:
-                print(f"failed to write row for: {video["orig_heading"]}")
-                
+                print(f"failed to write row for: {video['orig_heading']}")
+
+
 def run_script():
     with keep.running():
         process_spreadsheet()

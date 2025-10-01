@@ -1,6 +1,19 @@
 {% extends "meetingsvideos/base.html" %}
 
+{% block title %}
+APS Meetings Videos - Academic Disciplines
+{% endblock %}
+
 {% block main %}
 <div class="container" id="video-container">
-  {% include "meetingsvideos/discipline-content.html" %}
+  <h1>Academic Disciplines</h1>
+  <div id="headings-list">
+    {% include "meetingsvideos/item-list.html" with topics=topics %}
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.makeActive("disciplinesNav");
+</script>
 {% endblock %}

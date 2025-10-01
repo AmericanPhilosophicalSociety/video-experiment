@@ -1,4 +1,5 @@
 {% load static %}
+{% load meetingsvideos_extras %} 
 <div class="card teaser video-teaser">
     <div class="video-placeholder" role="image">
         <a href="{% url 'video_detail' video.slug %}">
@@ -14,7 +15,7 @@
             {% for speaker in video.speakers.all %}
             <li class="list-group-item">
             <h4><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h4>
-              {% for affiliation in speaker.affiliation_set.all %}
+              {% for affiliation in speaker.affiliation_set|filter_affiliations:video.meeting %}
               {{ affiliation|linebreaks }}
               {% endfor %}
             </li>
