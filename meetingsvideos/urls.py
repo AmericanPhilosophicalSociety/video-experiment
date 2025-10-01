@@ -8,6 +8,7 @@ urlpatterns = [
     path("meetings/", views.MeetingsList.as_view(), name="meetings"),
     path("meetings/<slug:slug>/", views.MeetingDetail.as_view(), name="meeting_detail"),
     path("videos/<slug:slug>/", views.VideoDetail.as_view(), name="video_detail"),
+    path("videos/<slug:slug>/edit/", views.VideoUpdateView.as_view(), name="video_edit"),
     path("headings", views.HeadingsView.as_view(), name="headings"),
     path("headings/<slug:slug>/", views.HeadingDetail.as_view(), name="heading_detail"),
     path("symposia/", views.SymposiumList.as_view(), name="symposia"),

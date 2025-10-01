@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import AdvancedSearchForm, FacetForm
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -162,6 +162,26 @@ class VideoDetail(DetailView):
     model = Video
     context_object_name = "video"
     template_name = "meetingsvideos/video_detail.html"
+
+
+class VideoUpdateView(UpdateView):
+    model = Video
+    fields = [
+        "display_notes",
+        "admin_notes",
+        "title",
+        "lecture_additional_info",
+        "date",
+        "order_in_day",
+        "speakers",
+        "abstract",
+        "lcsh",
+        "doi",
+        "diglib_pid",
+        "service_file",
+        "aps_departments",
+        "academic_disciplines",
+    ]
 
 
 class HeadingsView(AlphaFilterView):

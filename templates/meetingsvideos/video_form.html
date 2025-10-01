@@ -1,0 +1,11 @@
+{% extends "meetingsvideos/base.html" %}
+{% block title%}APS Meetings Videos - {{ video.title }}{% endblock %}
+{% block main %}
+<div class="container" id="video-container">
+  <form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+{% endblock %}

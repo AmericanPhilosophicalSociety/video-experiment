@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.functions import Substr
+from django.urls import reverse
 from autoslug import AutoSlugField
 
 from locpy.api import LocEntity, NameEntity, SubjectEntity
@@ -314,6 +315,9 @@ class Video(ProgramInfo):
     academic_disciplines = models.ManyToManyField(AcademicDiscipline)
 
     objects = VideoManager()
+
+    def get_absolute_url(self):
+        return reverse("video_detail", kwargs={"slug": self.slug})
 
     def first_in_symposium(self):
         # videos = Symposium.objects.get(pk=self.symposium.pk)

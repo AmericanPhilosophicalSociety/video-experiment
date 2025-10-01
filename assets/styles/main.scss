@@ -375,3 +375,9 @@ main {
 .tab-pane.active {
     display: block;
 }
+
+// auth
+.error-message {
+    color: $aps-red;
+    padding-bottom: 1em;
+}
