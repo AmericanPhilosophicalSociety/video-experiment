@@ -197,7 +197,8 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         speaker_form = context["speakers"]
-        print(speaker_form)
+        # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
+        # parent object in this implementation
         with transaction.atomic():
             self.object = form.save()
 
