@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.db import transaction
 from .forms import AdvancedSearchForm, FacetForm
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView
@@ -21,6 +22,7 @@ from .models import (
 )
 
 from .service import basic_search, advanced_search
+from .forms import SpeakerFormSet
 
 
 class HTMXMixin:
@@ -164,7 +166,7 @@ class VideoDetail(DetailView):
     template_name = "meetingsvideos/video_detail.html"
 
 
-class VideoUpdateView(UpdateView):
+class VideoUpdateView(LoginRequiredMixin, UpdateView):
     model = Video
     fields = [
         "display_notes",
@@ -173,7 +175,6 @@ class VideoUpdateView(UpdateView):
         "lecture_additional_info",
         "date",
         "order_in_day",
-        "speakers",
         "abstract",
         "lcsh",
         "doi",
@@ -182,6 +183,29 @@ class VideoUpdateView(UpdateView):
         "aps_departments",
         "academic_disciplines",
     ]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context["speakers"] = SpeakerFormSet(self.request.POST, prefix="speaker")
+        else:
+            context["speakers"] = SpeakerFormSet(
+                queryset=self.object.speakers.all(), prefix="speaker"
+            )
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        speaker_form = context["speakers"]
+        print(speaker_form)
+        with transaction.atomic():
+            self.object = form.save()
+
+            if speaker_form.is_valid():
+                speaker_form.instance = self.object
+                speaker_form.save()
+
+        return super().form_valid(form)
 
 
 class HeadingsView(AlphaFilterView):
@@ -214,6 +238,11 @@ class SpeakerDetail(DetailView):
     model = Speaker
     template_name = "meetingsvideos/speaker_detail.html"
     context_object_name = "speaker"
+
+
+class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Speaker
+    fields = "__all__"
 
 
 class MeetingsList(HTMXMixin, ListView):

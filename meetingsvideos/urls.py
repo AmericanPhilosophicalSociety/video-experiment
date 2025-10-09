@@ -8,7 +8,9 @@ urlpatterns = [
     path("meetings/", views.MeetingsList.as_view(), name="meetings"),
     path("meetings/<slug:slug>/", views.MeetingDetail.as_view(), name="meeting_detail"),
     path("videos/<slug:slug>/", views.VideoDetail.as_view(), name="video_detail"),
-    path("videos/<slug:slug>/edit/", views.VideoUpdateView.as_view(), name="video_edit"),
+    path(
+        "videos/<slug:slug>/edit/", views.VideoUpdateView.as_view(), name="video_edit"
+    ),
     path("headings", views.HeadingsView.as_view(), name="headings"),
     path("headings/<slug:slug>/", views.HeadingDetail.as_view(), name="heading_detail"),
     path("symposia/", views.SymposiumList.as_view(), name="symposia"),
@@ -31,6 +33,11 @@ urlpatterns = [
     ),
     path("speakers/", views.SpeakersView.as_view(), name="speakers"),
     path("speakers/<slug:slug>/", views.SpeakerDetail.as_view(), name="speaker_detail"),
+    path(
+        "speakers/<slug:slug>/edit",
+        views.SpeakerUpdateView.as_view(),
+        name="speaker_edit",
+    ),
     path("search/", views.search, name="search"),
     path("search_results/", views.search_results, name="search_results"),
     path(
