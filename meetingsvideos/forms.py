@@ -2,6 +2,8 @@ from django import forms
 from .models import APSDepartment, AcademicDiscipline, LCSH
 from django.db.models import Count
 
+from .models import Speaker
+
 
 class AdvancedSearchForm(forms.Form):
     title = forms.CharField(max_length=100, label="Title", required=False)
@@ -113,3 +115,8 @@ class FacetForm(forms.Form):
 
         self.fields["lcsh"].queryset = sub_query
         self.fields["discipline"].queryset = discipline_query
+
+
+SpeakerFormSet = forms.modelformset_factory(
+    Speaker, fields=["display_name", "lcsh", "label"], extra=0
+)

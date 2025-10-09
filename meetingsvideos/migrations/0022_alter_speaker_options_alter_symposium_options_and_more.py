@@ -4,22 +4,21 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0021_alter_symposium_date'),
+        ("meetingsvideos", "0021_alter_symposium_date"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='speaker',
-            options={'ordering': ['label']},
+            name="speaker",
+            options={"ordering": ["label"]},
         ),
         migrations.AlterModelOptions(
-            name='symposium',
-            options={'ordering': ['-date'], 'verbose_name_plural': 'Symposia'},
+            name="symposium",
+            options={"ordering": ["-date"], "verbose_name_plural": "Symposia"},
         ),
         migrations.AlterModelOptions(
-            name='video',
-            options={'ordering': ['-date', '-order_in_day']},
+            name="video",
+            options={"ordering": ["-date", "-order_in_day"]},
         ),
     ]
