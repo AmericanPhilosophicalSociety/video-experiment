@@ -29,7 +29,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
       - 8443:8443
-      - 81:81
+      - 80:80
     depends_on:
       - web
   acme-companion:
