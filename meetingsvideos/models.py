@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.functions import Substr
 from autoslug import AutoSlugField
 
-from locpy.api import LocEntity, NameEntity, SubjectEntity
+from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
 import logging
 
 logger = logging.getLogger(__name__)
