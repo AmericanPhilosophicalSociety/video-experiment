@@ -151,7 +151,7 @@ def process_video(row):
         youtube_url=row["youtube_url"],
         display_notes=row["display_notes"],
         admin_notes=row["admin_notes"],
-        diglib_pid=row["pid"].replace("video:", ""),
+        node=row["node"],
         admin_category=row["admin_category"],
         meeting=meeting,
         symposium=symposium,

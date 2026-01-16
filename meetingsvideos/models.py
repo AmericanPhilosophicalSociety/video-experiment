@@ -291,7 +291,7 @@ class Video(ProgramInfo):
     lcsh = models.ManyToManyField(LCSH, blank=True)
     # TODO: add validation for this
     doi = models.CharField(blank=True, max_length=255)
-    diglib_pid = models.IntegerField(blank=True, null=True, unique=True)
+    node = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
 
@@ -344,8 +344,7 @@ class Video(ProgramInfo):
             return None
 
     def get_diglib_url(self):
-        num = self.pid.split(":")[-1]
-        return f"https://diglib.amphilsoc.org/islandora/object/video{num}obj"
+        return f"https://diglib.amphilsoc.org/node/{self.node}"
 
     class Meta:
         # ordering = ["title"]
