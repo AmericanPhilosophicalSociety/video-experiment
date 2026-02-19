@@ -90,6 +90,14 @@
       {% endfor %}
     </td>
   </tr>
+  {% if video.doi and video.proceedings_title %}
+  <tr>
+    <td><p>Further reading</p></td>
+    <td>
+        <p>This talk was published in the <i>Proceedings of the American Philosophical Society</i> as <a href="{{ video.doi }}" target="_blank">"{{ video.proceedings_title }}."</a></p>
+    </td>
+  </tr>
+  {% endif %}
   {% comment %}
  {% if video.aps_departments.all %}
   <tr>
