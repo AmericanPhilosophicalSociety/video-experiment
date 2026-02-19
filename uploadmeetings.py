@@ -29,7 +29,10 @@ def upload_meetings():
                 url=row["url"],
                 display_notes=row["display_notes"],
                 admin_notes=row["admin_notes"],
-                program_node = row["program_node"]
             )
+            
+            if row["program_node"]:
+                meeting.program_node = row["program_node"]
+            meeting.save()
             # print(row['display_date'])
             # print(process_date(row['start_date']))
