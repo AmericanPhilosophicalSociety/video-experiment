@@ -291,6 +291,7 @@ class Video(ProgramInfo):
     lcsh = models.ManyToManyField(LCSH, blank=True)
     # TODO: add validation for this
     doi = models.CharField(blank=True, max_length=255)
+    proceedings_title = models.CharField(blank=True, max_length=255)
     node = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
