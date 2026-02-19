@@ -232,6 +232,7 @@ class Meeting(WithNotes):
         help_text="If this meeting has a page on the APS website, link it here",
         blank=True,
     )
+    program_node = models.IntegerField(blank=True, null=True, unique=True)
     slug = AutoSlugField(populate_from="display_date", unique=True)
 
     def videos_by_time(self):

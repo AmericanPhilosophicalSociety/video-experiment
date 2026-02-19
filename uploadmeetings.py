@@ -18,6 +18,10 @@ def upload_meetings():
         reader = csv.DictReader(csvfile)
 
         for row in reader:
+            # meetings.csv now contains records with program nodes but no videos or other data - skip these for now
+            if not row["start_date"]:
+                continue
+            
             meeting, created = Meeting.objects.get_or_create(
                 display_date=row["display_date"],
                 start_date=process_date(row["start_date"]),
@@ -25,6 +29,7 @@ def upload_meetings():
                 url=row["url"],
                 display_notes=row["display_notes"],
                 admin_notes=row["admin_notes"],
+                program_node = row["program_node"]
             )
             # print(row['display_date'])
             # print(process_date(row['start_date']))
