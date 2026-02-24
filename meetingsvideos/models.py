@@ -232,6 +232,7 @@ class Meeting(WithNotes):
         help_text="If this meeting has a page on the APS website, link it here",
         blank=True,
     )
+    program_node = models.IntegerField(blank=True, null=True, unique=True)
     slug = AutoSlugField(populate_from="display_date", unique=True)
 
     def videos_by_time(self):
@@ -239,6 +240,12 @@ class Meeting(WithNotes):
 
     def videos_by_date(self, query_date):
         return self.video_set.filter(date=query_date).order_by("order_in_day")
+    
+    def get_program_url(self):
+        return f"https://diglib.amphilsoc.org/node/{self.program_node}"
+    
+    def get_program_manifest(self):
+        return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
 
     def __str__(self):
         return self.display_date
@@ -291,6 +298,7 @@ class Video(ProgramInfo):
     lcsh = models.ManyToManyField(LCSH, blank=True)
     # TODO: add validation for this
     doi = models.CharField(blank=True, max_length=255)
+    proceedings_title = models.CharField(blank=True, max_length=255)
     node = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
