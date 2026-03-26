@@ -1,5 +1,5 @@
 import csv, time, re
-from locpy.api import LocAPI, NameEntity, SubjectEntity, LocEntity
+from loc_authorities.api import LocAPI, NameEntity, SubjectEntity, LocEntity
 from wakepy import keep
 
 """
