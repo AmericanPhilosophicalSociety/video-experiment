@@ -92,14 +92,8 @@ class LCSH(models.Model):
     def save(self, **kwargs):
         # setting category as proxy for create vs update
         # make LOC subjects require lookup - change?
-        loc = LocAPI()
-        uri = loc.retrieve_label(self.heading)
-        if uri:
-            self.uri = uri
+        if self.authority == "LOC" and not self.category:
             self.set_loc_data()
-        else:
-            self.category = "OTHER"
-        time.sleep(1)
         super().save(**kwargs)
         # set components after save to avoid calling save method twice
         if self.category == "COMPLEX_SUBJECT" and not self.components.exists():

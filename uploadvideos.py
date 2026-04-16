@@ -1,4 +1,5 @@
 import csv
+import time
 import datetime
 import logging
 from zoneinfo import ZoneInfo
@@ -12,6 +13,7 @@ from meetingsvideos.models import (
     Affiliation,
     LCSH
 )
+from loc_authorities.api import LocAPI
 
 logging.basicConfig(
     filename="videoupload.log",
@@ -74,14 +76,49 @@ def process_affiliation(position, institution, meeting, speaker):
 
 # create LCSH and add to associated object
 # can be used to associate LCSH with a video or a speaker
-def create_lcsh(cell, object):
+def create_lcsh(cell, object, field):
     # if field is empty, no LCSH need to be created
     if not cell:
         return
     
+    lcsh_fields_name = ["lcsh_geographic", "lcsh_name_personal", "lcsh_name_corporate", "speaker_lcsh"]
+    lcsh_fields_subject = ["lcsh_topic", "lcsh_temporal"]
+
+    if field in lcsh_fields_name:
+        authority = "names"
+    elif field in lcsh_fields_subject:
+        authority = "subjects"
+
+    match field:
+        case "lcsh_geographic":
+            category = "GEOGRAPHIC"
+        case "lcsh_name_personal":
+            category = "PERSONAL_NAME"
+        case "lcsh_name_corporate":
+            category = "CORPORATE_NAME"
+        case "speaker_lcsh":
+            category = "PERSONAL_NAME"
+        case "lcsh_topic":
+            category = "TOPIC"
+        #TODO: is this right? should it be topic?
+        case "lcsh_temporal":
+            category = "OTHER"
+        case _:
+            category = "OTHER"
+    
+    loc = LocAPI()
+
     lcsh_list = cell.split("|")
     for lcsh_str in lcsh_list:
-        lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip())
+        uri = loc.retrieve_label(lcsh_str.strip(), authority=authority)
+        time.sleep(1)
+        if uri:
+            lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), uri=uri, authority="LOC")
+        #special case for handling complex subject headings that can't be validated through LOC API
+        # elif "--" in lcsh_str:
+        #     lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="LOC", category="COMPLEX_SUBJECT")
+        else:
+            lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="OTHER", category=category)
 
         if created:
             print(f"LCSH created: {lcsh_str}")
@@ -123,7 +160,7 @@ def add_speaker_to_video(
             speaker.full_clean()
             speaker.save()
 
-            create_lcsh(label, speaker)
+            create_lcsh(label, speaker, "speaker_lcsh")
         except:
             logging.exception(
                 f"Speaker {speaker} for video {video} in meeting {meeting}"
@@ -225,9 +262,10 @@ def process_video(row):
         # do for lcsh_topic, lcsh_geographic, lcsh_temporal, lcsh_name_personal
         # need to split for all of these
         # print to log if not valid
-        lcsh_fields = [row["lcsh_topic"], row["lcsh_geographic"], row["lcsh_temporal"], row["lcsh_name_personal"]]
+        lcsh_fields = ["lcsh_geographic", "lcsh_name_personal", "lcsh_name_corporate", "lcsh_topic", "lcsh_temporal"]
+
         for field in lcsh_fields:
-            create_lcsh(field, video)
+            create_lcsh(row[field], video, field)
 
     # add speaker info
     # this will run regardless of whether a new video has been created or not, in order to allow adding more than two speakers to a video by creating an additional row for that video
@@ -258,7 +296,7 @@ def process_video(row):
 
 # loop through spreadsheet, adding a video for each row
 def upload_videos():
-    with open("videos.csv", newline="", encoding="utf8") as csvfile:
+    with open("videos-new.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             try:
