@@ -54,6 +54,7 @@ def add_category_to_video(string, ModelName, separator):
             categories.append(itemObj)
         except:
             logging.exception(f"Category {string} not found in table {ModelName}")
+            raise
     return categories
 
 
@@ -66,11 +67,12 @@ def process_affiliation(position, institution, meeting, speaker):
             affiliation.full_clean()
             affiliation.save()
             print("Affiliation created for speaker: " + speaker.display_name)
-        except:
+        except Exception as e:
             logging.exception(
-                f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}"
+                f"Error processing affiliation {affiliation} for speaker {speaker} in meeting {meeting}: {e}"
             )
             affiliation.delete()
+            raise
     # add meeting
     affiliation.meetings.add(meeting)
     return
@@ -163,12 +165,12 @@ def add_speaker_to_video(
             speaker.save()
 
             create_lcsh(label, speaker, "speaker_lcsh")
-        except:
+        except Exception as e:
             logging.exception(
-                f"Speaker {speaker} for video {video} in meeting {meeting}"
+                f"Error saving speaker {speaker} for video {video} in meeting {meeting}: {e}"
             )
             speaker.delete()
-            return
+            raise
 
     video.speakers.add(speaker)
     print("Speaker added: " + speaker.display_name)
@@ -190,10 +192,10 @@ def process_symposium(title, meeting, date):
                 symposium.full_clean()
                 symposium.save()
                 print("Symposium added: " + symposium.title)
-            except:
-                logging.exception(f"Symposium {symposium} for meeting {meeting}")
+            except Exception as e:
+                logging.exception(f"Error saving symposium {symposium} for meeting {meeting}: {e}")
                 symposium.delete()
-                return None
+                raise
         return symposium
 
     return None
@@ -240,12 +242,12 @@ def process_video(row):
             video.full_clean()
             video.save()
             print("Video created: " + video.title)
-        except:
+        except Exception as e:
             logging.exception(
                 f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}"
             )
             video.delete()
-            return
+            raise
 
         # add department and discipline
         departments = add_category_to_video(row["aps_departments"], APSDepartment, ",")
@@ -301,8 +303,8 @@ def upload_videos():
     with open("videos-new.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            with transaction.atomic():
-                try:
+            try:
+                with transaction.atomic():
                     process_video(row)
-                except:
-                    logging.exception(f"Video {row['title']} in meeting {row['meeting']}")
+            except Exception as e:
+                logging.exception(f"Error saving video {row['title']} in meeting {row['meeting']}: {e}")
