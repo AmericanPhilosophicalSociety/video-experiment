@@ -10,6 +10,7 @@ from meetingsvideos.models import (
     Symposium,
     Speaker,
     Affiliation,
+    LCSH
 )
 
 logging.basicConfig(
@@ -71,6 +72,32 @@ def process_affiliation(position, institution, meeting, speaker):
     affiliation.meetings.add(meeting)
     return
 
+# create LCSH and add to associated object
+# can be used to associate LCSH with a video or a speaker
+def create_lcsh(cell, object):
+    # if field is empty, no LCSH need to be created
+    if not cell:
+        return
+    
+    lcsh_list = cell.split("|")
+    for lcsh_str in lcsh_list:
+        lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip())
+
+        if created:
+            print(f"LCSH created: {lcsh_str}")
+
+        # add to video
+        if isinstance(object, Video):
+            object.lcsh.add(lcsh_obj)
+            object.save()
+        elif isinstance(object, Speaker):
+            object.lcsh = lcsh_obj
+            object.label = lcsh_obj.heading
+            object.save()
+        else:
+            print("Object passed to create_lcsh was not a speaker or video. Did you associate your LCSH with the correct thing?")
+            #TODO: is this necessary? change to logging?
+        
 
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
@@ -82,8 +109,11 @@ def add_speaker_to_video(
     position_2,
     institution_2,
     meeting,
-    label,
+    label
 ):
+    # CREATE SPEAKER LCSH FIRST
+    # pass LCSH as a list
+
     speaker, created = Speaker.objects.get_or_create(
         display_name=display_name, label=label
     )
@@ -92,6 +122,8 @@ def add_speaker_to_video(
         try:
             speaker.full_clean()
             speaker.save()
+
+            create_lcsh(label, speaker)
         except:
             logging.exception(
                 f"Speaker {speaker} for video {video} in meeting {meeting}"
@@ -188,6 +220,14 @@ def process_video(row):
         if disciplines:
             for discipline in disciplines:
                 video.academic_disciplines.add(discipline)
+
+        # add lcsh
+        # do for lcsh_topic, lcsh_geographic, lcsh_temporal, lcsh_name_personal
+        # need to split for all of these
+        # print to log if not valid
+        lcsh_fields = [row["lcsh_topic"], row["lcsh_geographic"], row["lcsh_temporal"], row["lcsh_name_personal"]]
+        for field in lcsh_fields:
+            create_lcsh(field, video)
 
     # add speaker info
     # this will run regardless of whether a new video has been created or not, in order to allow adding more than two speakers to a video by creating an additional row for that video

@@ -22,4 +22,4 @@ def upload_data():
 
     uploadvideos.upload_videos()
 
-    uploadlcsh.upload_lcsh()
+    # uploadlcsh.upload_lcsh()

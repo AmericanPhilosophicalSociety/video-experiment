@@ -124,7 +124,7 @@ def split_headings(string):
     if not string:
         return []
     else:
-        lst = string.split(";")
+        lst = string.split("|")
         final_list = []
         for heading in lst:
             if heading.strip() != "":
@@ -200,7 +200,7 @@ def process_headings(
 def process_videos():
     all_headings = {}
 
-    with open("videos.csv", encoding="utf8") as csvfile:
+    with open("videos-new.csv", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
 
         for row in reader:

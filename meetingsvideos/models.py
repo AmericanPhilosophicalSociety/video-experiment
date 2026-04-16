@@ -1,8 +1,9 @@
 from django.db import models
 from django.db.models.functions import Substr
 from autoslug import AutoSlugField
+import time
 
-from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
+from loc_authorities.api import LocEntity, NameEntity, SubjectEntity, LocAPI
 import logging
 
 logger = logging.getLogger(__name__)
@@ -91,8 +92,14 @@ class LCSH(models.Model):
     def save(self, **kwargs):
         # setting category as proxy for create vs update
         # make LOC subjects require lookup - change?
-        if self.authority == "LOC" and not self.category:
+        loc = LocAPI()
+        uri = loc.retrieve_label(self.heading)
+        if uri:
+            self.uri = uri
             self.set_loc_data()
+        else:
+            self.category = "OTHER"
+        time.sleep(1)
         super().save(**kwargs)
         # set components after save to avoid calling save method twice
         if self.category == "COMPLEX_SUBJECT" and not self.components.exists():
