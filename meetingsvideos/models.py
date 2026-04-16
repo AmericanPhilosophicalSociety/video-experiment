@@ -1,9 +1,8 @@
 from django.db import models
 from django.db.models.functions import Substr
 from autoslug import AutoSlugField
-import time
 
-from loc_authorities.api import LocEntity, NameEntity, SubjectEntity, LocAPI
+from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
 import logging
 
 logger = logging.getLogger(__name__)

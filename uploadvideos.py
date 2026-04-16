@@ -14,6 +14,7 @@ from meetingsvideos.models import (
     LCSH
 )
 from loc_authorities.api import LocAPI
+from django.db import transaction, IntegrityError
 
 logging.basicConfig(
     filename="videoupload.log",
@@ -25,7 +26,7 @@ logging.basicConfig(
 # converts EDTF date to datetime object
 def process_date(string):
     # process year, month, and day
-    ymd = string.split("-")
+    ymd = string.strip().split("-")
 
     year = int(ymd[0])
     month = int(ymd[1])
@@ -35,7 +36,7 @@ def process_date(string):
 
 
 def process_diglib_url(string):
-    lst = string.split(":")
+    lst = string.strip().split(":")
     return lst[-1]
 
 
@@ -44,7 +45,7 @@ def process_diglib_url(string):
 def add_category_to_video(string, ModelName, separator):
     if not string:
         return
-    lst = string.split(separator)
+    lst = string.strip().split(separator)
     categories = []
     for item in lst:
         item_cleaned = item.strip()
@@ -58,7 +59,7 @@ def add_category_to_video(string, ModelName, separator):
 
 def process_affiliation(position, institution, meeting, speaker):
     affiliation, created = Affiliation.objects.get_or_create(
-        position=position, institution=institution, speaker=speaker
+        position=position.strip(), institution=institution.strip(), speaker=speaker
     )
     if created:
         try:
@@ -108,7 +109,7 @@ def create_lcsh(cell, object, field):
     
     loc = LocAPI()
 
-    lcsh_list = cell.split("|")
+    lcsh_list = cell.strip().split("|")
     for lcsh_str in lcsh_list:
         uri = loc.retrieve_label(lcsh_str.strip(), authority=authority)
         time.sleep(1)
@@ -119,6 +120,7 @@ def create_lcsh(cell, object, field):
         #     lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="LOC", category="COMPLEX_SUBJECT")
         else:
             lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="OTHER", category=category)
+            logging.exception(f"No URI found for LCSH: {lcsh_str}")
 
         if created:
             print(f"LCSH created: {lcsh_str}")
@@ -152,7 +154,7 @@ def add_speaker_to_video(
     # pass LCSH as a list
 
     speaker, created = Speaker.objects.get_or_create(
-        display_name=display_name, label=label
+        display_name=display_name.strip(), label=label.strip()
     )
 
     if created:
@@ -178,10 +180,10 @@ def add_speaker_to_video(
         process_affiliation(position_2, institution_2, meeting, speaker)
 
 
-def process_symposium(str, meeting, date):
-    if str:
+def process_symposium(title, meeting, date):
+    if title:
         symposium, created = Symposium.objects.get_or_create(
-            title=str, meeting=meeting, date=date
+            title=title.strip(), meeting=meeting, date=date
         )
         if created:
             try:
@@ -212,21 +214,21 @@ def process_video(row):
 
     # TODO: let this update video object if not all data matches? which fields should ID it?
     video, created = Video.objects.get_or_create(
-        title=row["title"],
-        lecture_additional_info=row["lecture_additional_info"],
-        abstract=row["abstract"],
-        doi=row["proceedings_url"],
-        proceedings_title=row["proceedings_title"],
-        service_file=row["service_file"],
-        youtube_url=row["youtube_url"],
-        display_notes=row["display_notes"],
-        admin_notes=row["admin_notes"],
-        node=row["node"],
-        admin_category=row["admin_category"],
+        title=row["title"].strip(),
+        lecture_additional_info=row["lecture_additional_info"].strip(),
+        abstract=row["abstract"].strip(),
+        doi=row["proceedings_url"].strip(),
+        proceedings_title=row["proceedings_title"].strip(),
+        service_file=row["service_file"].strip(),
+        youtube_url=row["youtube_url"].strip(),
+        display_notes=row["display_notes"].strip(),
+        admin_notes=row["admin_notes"].strip(),
+        node=row["node"].strip(),
+        admin_category=row["admin_category"].strip(),
         meeting=meeting,
         symposium=symposium,
         date=date,
-        order_in_day=row["order_in_day"],
+        order_in_day=row["order_in_day"].strip(),
     )
 
     # if record for this video already exists, alert user
@@ -299,7 +301,8 @@ def upload_videos():
     with open("videos-new.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            try:
-                process_video(row)
-            except:
-                logging.exception(f"Video {row['title']} in meeting {row['meeting']}")
+            with transaction.atomic():
+                try:
+                    process_video(row)
+                except:
+                    logging.exception(f"Video {row['title']} in meeting {row['meeting']}")
