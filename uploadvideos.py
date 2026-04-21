@@ -16,11 +16,17 @@ from meetingsvideos.models import (
 from loc_authorities.api import LocAPI
 from django.db import transaction, IntegrityError
 
-logging.basicConfig(
-    filename="videoupload.log",
-    format="%(asctime)s - %(message)s - %(levelname)s",
-    filemode="w",
-)
+# logging.basicConfig(
+#     filename="videoupload.log",
+#     level=logging.INFO,
+#     format="%(asctime)s - %(message)s - %(levelname)s",
+#     filemode="w",
+#     force=True
+# )
+
+logging.getLogger(__name__)
+objects_created = []
+rows_skipped = []
 
 
 # converts EDTF date to datetime object
@@ -66,10 +72,11 @@ def process_affiliation(position, institution, meeting, speaker):
         try:
             affiliation.full_clean()
             affiliation.save()
-            print("Affiliation created for speaker: " + speaker.display_name)
+            objects_created.append({"model": "Affiliation", "pk": affiliation.pk})
+            # print("Affiliation created for speaker: " + speaker.display_name)
         except Exception as e:
             logging.exception(
-                f"Error processing affiliation {affiliation} for speaker {speaker} in meeting {meeting}: {e}"
+                f"Error processing affiliation {affiliation} for speaker {speaker} in meeting {meeting}"
             )
             affiliation.delete()
             raise
@@ -113,19 +120,37 @@ def create_lcsh(cell, object, field):
 
     lcsh_list = cell.strip().split("|")
     for lcsh_str in lcsh_list:
-        uri = loc.retrieve_label(lcsh_str.strip(), authority=authority)
-        time.sleep(1)
-        if uri:
-            lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), uri=uri, authority="LOC")
-        #special case for handling complex subject headings that can't be validated through LOC API
-        # elif "--" in lcsh_str:
-        #     lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="LOC", category="COMPLEX_SUBJECT")
+        #if LCSH already in database, retrieve and use that without querying LOC
+        lcsh_from_db = LCSH.objects.filter(heading=lcsh_str.strip())
+        if lcsh_from_db:
+            lcsh_obj = lcsh_from_db[0]
+            if len(lcsh_from_db) > 1:
+                logging.exception(f"WARNING: more than one match found for LCSH {lcsh_str}. Make sure your video was associated with the correct one")
         else:
-            lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="OTHER", category=category)
-            logging.exception(f"No URI found for LCSH: {lcsh_str}")
+            uri = loc.retrieve_label(lcsh_str.strip(), authority=authority)
+            time.sleep(1)
+            if uri:
+                #TODO: this seems to cause issues when alabel doesn't match what's in the spreadsheet?
+                try:
+                    lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), uri=uri, authority="LOC")
+                # handle race conditions created by combination of atomic transactions and get_or_create
+                except IntegrityError:
+                    lcsh_obj = LCSH.objects.get(uri=uri)
+                    created = False
+            #special case for handling complex subject headings that can't be validated through LOC API
+            # elif "--" in lcsh_str:
+            #     lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="LOC", category="COMPLEX_SUBJECT")
+            else:
+                try:
+                    lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="OTHER", category=category)
+                    logging.exception(f"No URI found for LCSH: {lcsh_str}")
+                except IntegrityError:
+                    lcsh_obj = LCSH.objects.get(uri=uri)
+                    created = False
 
-        if created:
-            print(f"LCSH created: {lcsh_str}")
+            if created:
+                print(f"LCSH created: {lcsh_str}")
+                objects_created.append({"model": "LCSH", "pk": lcsh_obj.pk})
 
         # add to video
         if isinstance(object, Video):
@@ -136,8 +161,8 @@ def create_lcsh(cell, object, field):
             object.label = lcsh_obj.heading
             object.save()
         else:
-            print("Object passed to create_lcsh was not a speaker or video. Did you associate your LCSH with the correct thing?")
-            #TODO: is this necessary? change to logging?
+            logging.exception("Object passed to create_lcsh was not a speaker or video. Did you associate your LCSH with the correct object?")
+            #TODO: is this necessary?
         
 
 # create speaker object and add to video
@@ -165,9 +190,11 @@ def add_speaker_to_video(
             speaker.save()
 
             create_lcsh(label, speaker, "speaker_lcsh")
+
+            objects_created.append({"model": "Speaker", "pk": speaker.pk})
         except Exception as e:
             logging.exception(
-                f"Error saving speaker {speaker} for video {video} in meeting {meeting}: {e}"
+                f"Error saving speaker {speaker} for video {video} in meeting {meeting}"
             )
             speaker.delete()
             raise
@@ -192,8 +219,10 @@ def process_symposium(title, meeting, date):
                 symposium.full_clean()
                 symposium.save()
                 print("Symposium added: " + symposium.title)
+
+                objects_created.append({"model": "Symposium", "pk": symposium.pk})
             except Exception as e:
-                logging.exception(f"Error saving symposium {symposium} for meeting {meeting}: {e}")
+                logging.exception(f"Error saving symposium {symposium} for meeting {meeting}")
                 symposium.delete()
                 raise
         return symposium
@@ -242,6 +271,8 @@ def process_video(row):
             video.full_clean()
             video.save()
             print("Video created: " + video.title)
+
+            objects_created.append({"model": "Video", "pk": video.pk})
         except Exception as e:
             logging.exception(
                 f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}"
@@ -300,11 +331,16 @@ def process_video(row):
 
 # loop through spreadsheet, adding a video for each row
 def upload_videos():
-    with open("videos-new.csv", newline="", encoding="utf8") as csvfile:
+    with open("videos.csv", newline="", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             try:
+                # either the video and related objects can be created with no errors, or all the transactions are rolled back
                 with transaction.atomic():
                     process_video(row)
             except Exception as e:
-                logging.exception(f"Error saving video {row['title']} in meeting {row['meeting']}: {e}")
+                logging.exception(f"Error saving video {row['title']} in meeting {row['meeting']}")
+                rows_skipped.append(row['row'])
+
+    print(objects_created)
+    print(rows_skipped)
