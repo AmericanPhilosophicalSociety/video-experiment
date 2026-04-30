@@ -87,7 +87,7 @@ def process_affiliation(position, institution, meeting, speaker):
 # create LCSH and add to associated object
 # can be used to associate LCSH with a video or a speaker
 def create_lcsh(cell, object, field):
-    # if field is empty, no LCSH need to be created
+    # if spreadsheet cell is empty, no LCSH need to be created
     if not cell:
         return
     
@@ -153,16 +153,16 @@ def create_lcsh(cell, object, field):
                 objects_created.append({"model": "LCSH", "pk": lcsh_obj.pk})
 
         # add to video
+        # if None was passed, this is a speaker LCSH and needs to be added to the speaker after the LCSH has been created
         if isinstance(object, Video):
             object.lcsh.add(lcsh_obj)
             object.save()
-        elif isinstance(object, Speaker):
-            object.lcsh = lcsh_obj
-            object.label = lcsh_obj.heading
-            object.save()
         else:
-            logging.exception("Object passed to create_lcsh was not a speaker or video. Did you associate your LCSH with the correct object?")
-            #TODO: is this necessary?
+            return lcsh_obj
+        # elif isinstance(object, Speaker):
+        #     object.lcsh = lcsh_obj
+        #     object.label = lcsh_obj.heading
+        #     object.save()
         
 
 # create speaker object and add to video
@@ -178,21 +178,27 @@ def add_speaker_to_video(
     label
 ):
     # CREATE SPEAKER LCSH FIRST
-    # pass LCSH as a list
+    # or do as a get or create?
+    lcsh_obj = create_lcsh(label, None, "speaker_lcsh")
+    # lcsh_obj, created = LCSH.objects.get_or_create(
+    #     heading=label,
+    # )
 
-    speaker, created = Speaker.objects.get_or_create(
-        display_name=display_name.strip(), label=label.strip()
-    )
+    try:
+        speaker, created = Speaker.objects.get_or_create(
+            display_name=display_name.strip(),
+            lcsh=lcsh_obj
+        )
+    except IntegrityError:
+        speaker = Speaker.objects.get(display_name=display_name.strip(),
+            lcsh=lcsh_obj)
+        created = False
 
     if created:
         try:
-            speaker.full_clean()
-            speaker.save()
-
-            create_lcsh(label, speaker, "speaker_lcsh")
-
             objects_created.append({"model": "Speaker", "pk": speaker.pk})
         except Exception as e:
+            
             logging.exception(
                 f"Error saving speaker {speaker} for video {video} in meeting {meeting}"
             )

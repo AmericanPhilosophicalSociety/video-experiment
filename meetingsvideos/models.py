@@ -34,7 +34,7 @@ class LCSHManager(AlphaManager):
 
 
 class SpeakerManager(AlphaManager):
-    order_field = "label"
+    order_field = "lcsh__heading"
 
 
 class VideoManager(models.Manager):
@@ -164,11 +164,16 @@ class Speaker(models.Model):
         max_length=200,
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
-    lcsh = models.OneToOneField(LCSH)
+    # prevent deletion of LCSH if still associated with a speaker
+    lcsh = models.OneToOneField(LCSH, on_delete=models.PROTECT)
     objects = SpeakerManager()
     #TODO: is this redundant with LCSH?
-    label = models.CharField(max_length=200)
+    # label = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from="display_name", unique=True)
+
+    @property
+    def label(self):
+        return self.lcsh.heading
 
     def __str__(self):
         # return self.label
@@ -176,7 +181,7 @@ class Speaker(models.Model):
 
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
-        self.label = self.lcsh.heading
+        # self.label = self.lcsh.heading
         super().save(**kwargs)
 
     # TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
