@@ -2,7 +2,7 @@ from django import forms
 from .models import APSDepartment, AcademicDiscipline, LCSH
 from django.db.models import Count
 
-from .models import Speaker
+from .models import Speaker, Video
 
 
 class AdvancedSearchForm(forms.Form):
@@ -117,6 +117,52 @@ class FacetForm(forms.Form):
         self.fields["discipline"].queryset = discipline_query
 
 
+class VideoForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = [
+            "display_notes",
+            "admin_notes",
+            "title",
+            "lecture_additional_info",
+            "date",
+            "order_in_day",
+            "abstract",
+            "doi",
+            "proceedings_title",
+            "node",
+            "service_file",
+            "admin_category",
+            # "lcsh",
+            # "aps_departments",
+            # "academic_disciplines",
+        ]
+        widgets = {
+            "display_notes": forms.Textarea(attrs={"class": "form-control"}),
+            "admin_notes": forms.Textarea(attrs={"class": "form-control"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "lecture_additional_info": forms.TextInput(attrs={"class": "form-control"}),
+            "date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "order_in_day": forms.NumberInput(attrs={"class": "form-control"}),
+            "abstract": forms.Textarea(attrs={"class": "form-control"}),
+            "doi": forms.URLInput(attrs={"class": "form-control"}),
+            "proceedings_title": forms.TextInput(attrs={"class": "form-control"}),
+            "node": forms.NumberInput(attrs={"class": "form-control"}),
+            "service_file": forms.URLInput(attrs={"class": "form-control"}),
+            "admin_category": forms.Select(attrs={"class": "form-select"}),
+            # "lcsh": ,
+            # "aps_departments",
+            # "academic_disciplines",
+        }
+
+
 SpeakerFormSet = forms.modelformset_factory(
-    Speaker, fields=["display_name", "lcsh", "label"], extra=0
+    Speaker,
+    fields=["display_name", "lcsh", "label"],
+    extra=0,
+    widgets={
+        "display_name": forms.TextInput(attrs={"class": "form-control"}),
+        "lcsh": forms.Select(attrs={"class": "form-select"}),
+        "label": forms.TextInput(attrs={"class": "form-control"}),
+    }
 )

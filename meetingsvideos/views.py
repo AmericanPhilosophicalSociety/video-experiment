@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
-from .forms import AdvancedSearchForm, FacetForm
+from .forms import AdvancedSearchForm, FacetForm, VideoForm
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
@@ -168,21 +168,7 @@ class VideoDetail(DetailView):
 
 class VideoUpdateView(LoginRequiredMixin, UpdateView):
     model = Video
-    fields = [
-        "display_notes",
-        "admin_notes",
-        "title",
-        "lecture_additional_info",
-        "date",
-        "order_in_day",
-        "abstract",
-        "lcsh",
-        "doi",
-        "diglib_pid",
-        "service_file",
-        "aps_departments",
-        "academic_disciplines",
-    ]
+    form_class = VideoForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
