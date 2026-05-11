@@ -178,6 +178,7 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
             context["speakers"] = SpeakerFormSet(
                 queryset=self.object.speakers.all(), prefix="speaker"
             )
+        print(context['speakers'])
         return context
 
     def form_valid(self, form):
@@ -246,14 +247,12 @@ class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         affiliation_form = context["affiliations"]
-        print(affiliation_form)
         # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
         # parent object in this implementation
         with transaction.atomic():
             self.object = form.save()
 
             if affiliation_form.is_valid():
-                print("yay my form is valid.")
                 affiliation_form.instance = self.object
                 affiliation_form.save()
 

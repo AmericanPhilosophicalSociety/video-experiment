@@ -12,6 +12,9 @@
         {{ field }}
         {{ field.errors }}
       {% endfor %}
+      <div id="formset-container">
+      <h4>Video Speakers</h4>
+      {{ speakers.management_form }}
       {% for speaker_form in speakers %}
         {% for field in speaker_form.visible_fields %}
           {% form_label field css_class='form-label' %}
@@ -19,7 +22,11 @@
           {{ field.errors }}
           {{ speaker_form.errors }}
         {% endfor %}
+        {% for field in speaker_form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
       {% endfor %}
+      </div>
       {{ form.errors }}
     <button type="submit" class="btn btn-primary">Save</button>
   </form>

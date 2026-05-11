@@ -132,7 +132,6 @@ AffiliationFormSet = forms.inlineformset_factory(
     Speaker, Affiliation, form=AffiliationForm, can_delete=False, extra=0
 )
 
-
 class SpeakerForm(forms.ModelForm):
     class Meta:
         model = Speaker
