@@ -13,12 +13,14 @@
         {{ field.errors }}
       {% endfor %}
       {% for speaker_form in speakers %}
-        {% for field in speaker_form %}
+        {% for field in speaker_form.visible_fields %}
           {% form_label field css_class='form-label' %}
           {{ field }}
           {{ field.errors }}
+          {{ speaker_form.errors }}
         {% endfor %}
       {% endfor %}
+      {{ form.errors }}
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
 </div>

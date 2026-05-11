@@ -34,7 +34,7 @@ urlpatterns = [
     path("speakers/", views.SpeakersView.as_view(), name="speakers"),
     path("speakers/<slug:slug>/", views.SpeakerDetail.as_view(), name="speaker_detail"),
     path(
-        "speakers/<slug:slug>/edit",
+        "speakers/<slug:slug>/edit/",
         views.SpeakerUpdateView.as_view(),
         name="speaker_edit",
     ),

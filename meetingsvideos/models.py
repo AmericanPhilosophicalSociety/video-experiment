@@ -179,6 +179,9 @@ class Speaker(models.Model):
             self.label = self.lcsh.heading
         super().save(**kwargs)
 
+    def get_absolute_url(self):
+        return reverse("speaker_detail", kwargs={"slug": self.slug})
+
     # TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
     # def get_most_recent_affiliation(self):
     #     if len(self.affiliation_set.all()) > 0:

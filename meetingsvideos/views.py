@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
-from .forms import AdvancedSearchForm, FacetForm, VideoForm
+from .forms import AdvancedSearchForm, FacetForm, VideoForm, SpeakerForm, AffiliationFormSet, SpeakerFormSet
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
@@ -19,10 +19,10 @@ from .models import (
     AcademicDiscipline,
     APSDepartment,
     Speaker,
+    Affiliation
 )
 
 from .service import basic_search, advanced_search
-from .forms import SpeakerFormSet
 
 
 class HTMXMixin:
@@ -216,6 +216,7 @@ class HeadingDetail(DetailView):
 
 class SpeakersView(AlphaFilterView):
     model = Speaker
+    form_class = SpeakerForm
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
     link_template = "speaker_detail"
@@ -229,7 +230,34 @@ class SpeakerDetail(DetailView):
 
 class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
     model = Speaker
-    fields = "__all__"
+    form_class = SpeakerForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            print(self.request.POST)
+            context["affiliations"] = AffiliationFormSet(self.request.POST, instance=self.object, prefix="affiliation")
+        else:
+            context["affiliations"] = AffiliationFormSet(
+                instance=self.object, prefix="affiliation"
+            )
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        affiliation_form = context["affiliations"]
+        print(affiliation_form)
+        # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
+        # parent object in this implementation
+        with transaction.atomic():
+            self.object = form.save()
+
+            if affiliation_form.is_valid():
+                print("yay my form is valid.")
+                affiliation_form.instance = self.object
+                affiliation_form.save()
+
+        return super().form_valid(form)
 
 
 class MeetingsList(HTMXMixin, ListView):

@@ -2,7 +2,7 @@ from django import forms
 from .models import APSDepartment, AcademicDiscipline, LCSH
 from django.db.models import Count
 
-from .models import Speaker, Video
+from .models import Speaker, Video, Affiliation
 
 
 class AdvancedSearchForm(forms.Form):
@@ -115,6 +115,38 @@ class FacetForm(forms.Form):
 
         self.fields["lcsh"].queryset = sub_query
         self.fields["discipline"].queryset = discipline_query
+
+
+class AffiliationForm(forms.ModelForm):
+    class Meta:
+        model = Affiliation
+        fields = ["meetings", "position", "institution"]
+        widgets = {
+            "meetings": forms.SelectMultiple(attrs={"class": "form-select"}),
+            "position": forms.TextInput(attrs={"class": "form-control"}),
+            "institution": forms.TextInput(attrs={"class": "form-control"}),
+        }
+
+
+AffiliationFormSet = forms.inlineformset_factory(
+    Speaker, Affiliation, form=AffiliationForm, can_delete=False, extra=0
+)
+
+
+class SpeakerForm(forms.ModelForm):
+    class Meta:
+        model = Speaker
+        fields = [
+            'display_name',
+            'label',
+            'lcsh',
+        ]
+
+        widgets = {
+            "display_name": forms.TextInput(attrs={"class": "form-control"}),
+            "label": forms.TextInput(attrs={"class": "form-control"}),
+            "lcsh": forms.Select(attrs={"class": "form-select"}),
+        }
 
 
 class VideoForm(forms.ModelForm):
