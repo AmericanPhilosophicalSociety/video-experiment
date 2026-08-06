@@ -37,6 +37,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "meetingsvideos.apps.MeetingsvideosConfig",
     "import_export",
+    "dal",
+    "dal_alight",
+    "loc_authorities",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

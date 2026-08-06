@@ -23,4 +23,5 @@ urlpatterns = [
     path("", include("meetingsvideos.urls")),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
+    path(r"loc-authorities/", include("loc_authorities.urls", namespace="loc-authorities"))
 ] + debug_toolbar_urls()
