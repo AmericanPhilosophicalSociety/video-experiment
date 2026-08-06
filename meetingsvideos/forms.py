@@ -1,8 +1,7 @@
 from django import forms
-from .models import APSDepartment, AcademicDiscipline, LCSH
+from .models import APSDepartment, AcademicDiscipline, LCSH, Speaker, Video, Affiliation
 from django.db.models import Count
-
-from .models import Speaker, Video, Affiliation
+from loc_authorities.forms import LocField, LocWidget
 
 
 class AdvancedSearchForm(forms.Form):
@@ -132,6 +131,7 @@ AffiliationFormSet = forms.inlineformset_factory(
     Speaker, Affiliation, form=AffiliationForm, can_delete=False, extra=0
 )
 
+
 class SpeakerForm(forms.ModelForm):
     class Meta:
         model = Speaker
@@ -197,3 +197,20 @@ SpeakerFormSet = forms.modelformset_factory(
         "label": forms.TextInput(attrs={"class": "form-control"}),
     }
 )
+
+
+class LCSHSubjectForm(forms.ModelForm):
+    uri = LocField(
+        widget=LocWidget(attrs={"class": "form-control", "placeholder": "Search authorities..."}, url="loc-authorities:subject-suggest"),
+    )
+
+    class Meta:
+        model = LCSH
+        fields = ["heading", "uri", "authority"]
+        widgets = {
+            "heading": forms.TextInput(attrs={"class": "form-control"}),
+            "authority": forms.Select(attrs={"class": "form-select"}),
+        }
+
+
+LCSHSubjectFormSet = forms.modelformset_factory(LCSH, form=LCSHSubjectForm, extra=1)

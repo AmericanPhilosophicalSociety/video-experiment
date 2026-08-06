@@ -27,8 +27,24 @@
         {% endfor %}
       {% endfor %}
       </div>
+      <div id="formset-container">
+        <h4>Video Subjects</h4>
+        {{ lcsh.management_form }}
+        {% for lcsh_form in lcsh %}
+          {% for field in lcsh_form.visible_fields %}
+            {% form_label field css_class='form-label' %}
+            {{ field }}
+            {{ field.errors }}
+            {{ lcsh_form.errors }}
+          {% endfor %}
+          {% for field in lcsh_form.hidden_fields %}
+            {{ field }}
+          {% endfor %}
+        {% endfor %}
+        </div>
       {{ form.errors }}
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
 </div>
+{{ lcsh.media }}
 {% endblock %}

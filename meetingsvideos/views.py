@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
-from .forms import AdvancedSearchForm, FacetForm, VideoForm, SpeakerForm, AffiliationFormSet, SpeakerFormSet
+from .forms import AdvancedSearchForm, FacetForm, VideoForm, SpeakerForm, AffiliationFormSet, SpeakerFormSet, LCSHSubjectFormSet
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
@@ -174,16 +174,21 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             context["speakers"] = SpeakerFormSet(self.request.POST, prefix="speaker")
+            context["lcsh"] = LCSHSubjectFormSet(self.request.POST, prefix="lcsh")
         else:
             context["speakers"] = SpeakerFormSet(
                 queryset=self.object.speakers.all(), prefix="speaker"
             )
-        print(context['speakers'])
+            context["lcsh"] = LCSHSubjectFormSet(
+                queryset=self.object.lcsh.all(), prefix="lcsh"
+            )
+            print(context["lcsh"])
         return context
 
     def form_valid(self, form):
         context = self.get_context_data()
         speaker_form = context["speakers"]
+        lcsh_form = context["lcsh"]
         # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
         # parent object in this implementation
         with transaction.atomic():
@@ -192,6 +197,10 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
             if speaker_form.is_valid():
                 speaker_form.instance = self.object
                 speaker_form.save()
+
+            if lcsh_form.is_valid():
+                lcsh_form.instance = self.object
+                lcsh_form.save()
 
         return super().form_valid(form)
 
