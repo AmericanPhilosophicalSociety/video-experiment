@@ -190,15 +190,15 @@ def add_speaker_to_video(
             lcsh=lcsh_obj
         )
     except IntegrityError:
-        speaker = Speaker.objects.get(display_name=display_name.strip(),
-            lcsh=lcsh_obj)
+        # handle race condition where speaker is created by another thread while get_or_create runs, AND condition where two different display names are given for the same speaker
+        speaker = Speaker.objects.get(lcsh=lcsh_obj)
         created = False
 
     if created:
         try:
             objects_created.append({"model": "Speaker", "pk": speaker.pk})
+            print("Speaker created: " + speaker.display_name)
         except Exception as e:
-            
             logging.exception(
                 f"Error saving speaker {speaker} for video {video} in meeting {meeting}"
             )
@@ -206,7 +206,6 @@ def add_speaker_to_video(
             raise
 
     video.speakers.add(speaker)
-    print("Speaker added: " + speaker.display_name)
 
     # if affiliation, create new affiliation
     if position_1 or institution_1:
@@ -350,3 +349,7 @@ def upload_videos():
 
     print(objects_created)
     print(rows_skipped)
+
+    # redefine these as blank lists so contents aren't retained when upload is run again
+    objects_created = []
+    rows_skipped = []
