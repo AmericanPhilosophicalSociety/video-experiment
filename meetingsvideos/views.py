@@ -1,6 +1,14 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
-from .forms import AdvancedSearchForm, FacetForm, VideoForm, SpeakerForm, AffiliationFormSet, SpeakerFormSet, LCSHSubjectFormSet
+from .forms import (
+    AdvancedSearchForm,
+    FacetForm,
+    VideoForm,
+    SpeakerForm,
+    AffiliationFormSet,
+    SpeakerFormSet,
+    LCSHSubjectFormSet,
+)
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
@@ -19,7 +27,7 @@ from .models import (
     AcademicDiscipline,
     APSDepartment,
     Speaker,
-    Affiliation
+    Affiliation,
 )
 
 from .service import basic_search, advanced_search
@@ -205,19 +213,25 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
                 new_subjects = [sub for sub in saved_lcsh if sub.pk is None]
 
                 # isolate and save existing subjects
-                existing_subjects = [sub for sub in saved_lcsh if sub not in new_subjects]
+                existing_subjects = [
+                    sub for sub in saved_lcsh if sub not in new_subjects
+                ]
                 for sub in existing_subjects:
                     sub.save()
 
                 # handle new subjects
                 for sub in new_subjects:
                     if sub.uri and sub.authority == "LOC":
-                        obj, _ = LCSH.objects.get_or_create(heading=sub.heading, uri=sub.uri, authority=sub.authority)
+                        obj, _ = LCSH.objects.get_or_create(
+                            heading=sub.heading, uri=sub.uri, authority=sub.authority
+                        )
                         added_subjects.append(obj)
                         obj.save()
                     else:
                         # local subject - check validity through heading
-                        obj, _ = LCSH.objects.get_or_create(heading=sub.heading, authority=sub.authority)
+                        obj, _ = LCSH.objects.get_or_create(
+                            heading=sub.heading, authority=sub.authority
+                        )
                         added_subjects.append(obj)
                         obj.save()
 
@@ -280,7 +294,9 @@ class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             print(self.request.POST)
-            context["affiliations"] = AffiliationFormSet(self.request.POST, instance=self.object, prefix="affiliation")
+            context["affiliations"] = AffiliationFormSet(
+                self.request.POST, instance=self.object, prefix="affiliation"
+            )
         else:
             context["affiliations"] = AffiliationFormSet(
                 instance=self.object, prefix="affiliation"

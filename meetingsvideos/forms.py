@@ -136,9 +136,9 @@ class SpeakerForm(forms.ModelForm):
     class Meta:
         model = Speaker
         fields = [
-            'display_name',
-            'label',
-            'lcsh',
+            "display_name",
+            "label",
+            "lcsh",
         ]
 
         widgets = {
@@ -195,7 +195,7 @@ SpeakerFormSet = forms.modelformset_factory(
         "display_name": forms.TextInput(attrs={"class": "form-control"}),
         "lcsh": forms.Select(attrs={"class": "form-select"}),
         "label": forms.TextInput(attrs={"class": "form-control"}),
-    }
+    },
 )
 
 
@@ -214,8 +214,5 @@ class LCSHSubjectForm(forms.ModelForm):
 
 
 LCSHSubjectFormSet = forms.modelformset_factory(
-    LCSH,
-    form=LCSHSubjectForm,
-    extra=1,
-    can_delete=True
+    LCSH, form=LCSHSubjectForm, extra=1, can_delete=True
 )

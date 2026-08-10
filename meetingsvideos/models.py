@@ -244,10 +244,10 @@ class Meeting(WithNotes):
 
     def videos_by_date(self, query_date):
         return self.video_set.filter(date=query_date).order_by("order_in_day")
-    
+
     def get_program_url(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}"
-    
+
     def get_program_manifest(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
 
