@@ -219,6 +219,14 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
                 for sub in existing_subjects:
                     sub.save()
 
+                # handle deletes
+                if lcsh_form.deleted_objects:
+                    for obj in lcsh_form.deleted_objects:
+                        self.object.lcsh.remove(obj)
+                        # check to see if this subject still has references or if it should be deleted
+                        if len(obj.video_set.all()) == 0:
+                            obj.delete()
+
                 # handle new subjects
                 for sub in new_subjects:
                     if sub.uri and sub.authority == "LOC":
@@ -243,12 +251,6 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
                     self.object.lcsh.add(sub)
                 self.object.save()
 
-            if lcsh_form.deleted_objects:
-                for obj in lcsh_form.deleted_objects:
-                    self.object.lcsh.remove(obj)
-                    # check to see if this subject still has references or if it should be deleted
-                    if len(obj.video_set.all()) == 0:
-                        obj.delete()
 
         return super().form_valid(form)
 
