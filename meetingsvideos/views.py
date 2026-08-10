@@ -182,7 +182,6 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
             context["lcsh"] = LCSHSubjectFormSet(
                 queryset=self.object.lcsh.all(), prefix="lcsh"
             )
-            print(context["lcsh"])
         return context
 
     def form_valid(self, form):
@@ -192,15 +191,50 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
         # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
         # parent object in this implementation
         with transaction.atomic():
-            self.object = form.save()
-
             if speaker_form.is_valid():
                 speaker_form.instance = self.object
                 speaker_form.save()
 
+            added_subjects = []
             if lcsh_form.is_valid():
                 lcsh_form.instance = self.object
-                lcsh_form.save()
+                # capture object instance without updating database
+                saved_lcsh = lcsh_form.save(commit=False)
+
+                # now handle saving/deleting etc...
+                new_subjects = [sub for sub in saved_lcsh if sub.pk is None]
+
+                # isolate and save existing subjects
+                existing_subjects = [sub for sub in saved_lcsh if sub not in new_subjects]
+                for sub in existing_subjects:
+                    sub.save()
+
+                # handle new subjects
+                for sub in new_subjects:
+                    if sub.uri and sub.authority == "LOC":
+                        obj, _ = LCSH.objects.get_or_create(heading=sub.heading, uri=sub.uri, authority=sub.authority)
+                        added_subjects.append(obj)
+                        obj.save()
+                    else:
+                        # local subject - check validity through heading
+                        obj, _ = LCSH.objects.get_or_create(heading=sub.heading, authority=sub.authority)
+                        added_subjects.append(obj)
+                        obj.save()
+
+            self.object = form.save()
+
+            # handle adding any created subjects
+            if len(added_subjects) > 0:
+                for sub in added_subjects:
+                    self.object.lcsh.add(sub)
+                self.object.save()
+
+            if lcsh_form.deleted_objects:
+                for obj in lcsh_form.deleted_objects:
+                    self.object.lcsh.remove(obj)
+                    # check to see if this subject still has references or if it should be deleted
+                    if len(obj.video_set.all()) == 0:
+                        obj.delete()
 
         return super().form_valid(form)
 

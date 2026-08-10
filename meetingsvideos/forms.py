@@ -201,7 +201,7 @@ SpeakerFormSet = forms.modelformset_factory(
 
 class LCSHSubjectForm(forms.ModelForm):
     uri = LocField(
-        widget=LocWidget(attrs={"class": "form-control", "placeholder": "Search authorities..."}, url="loc-authorities:subject-suggest"),
+        widget=LocWidget(url="loc-authorities:subject-suggest"),
     )
 
     class Meta:
@@ -213,4 +213,9 @@ class LCSHSubjectForm(forms.ModelForm):
         }
 
 
-LCSHSubjectFormSet = forms.modelformset_factory(LCSH, form=LCSHSubjectForm, extra=1)
+LCSHSubjectFormSet = forms.modelformset_factory(
+    LCSH,
+    form=LCSHSubjectForm,
+    extra=1,
+    can_delete=True
+)
