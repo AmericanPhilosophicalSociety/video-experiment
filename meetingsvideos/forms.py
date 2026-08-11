@@ -149,6 +149,8 @@ class SpeakerForm(forms.ModelForm):
 
 
 class VideoForm(forms.ModelForm):
+    error_css_class = "error-message"
+
     class Meta:
         model = Video
         fields = [

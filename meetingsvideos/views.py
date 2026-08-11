@@ -190,6 +190,7 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
             context["lcsh"] = LCSHSubjectFormSet(
                 queryset=self.object.lcsh.all(), prefix="lcsh"
             )
+        print(context)
         return context
 
     def form_valid(self, form):
@@ -199,12 +200,13 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
         # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
         # parent object in this implementation
         with transaction.atomic():
-            if speaker_form.is_valid():
+            added_subjects = []
+            # do not allow saves of any forms if the forms are invalid
+            if lcsh_form.is_valid() and speaker_form.is_valid():
+                print("Validity test satisfied!")
+                # handle speaker form
                 speaker_form.instance = self.object
                 speaker_form.save()
-
-            added_subjects = []
-            if lcsh_form.is_valid():
                 lcsh_form.instance = self.object
                 # capture object instance without updating database
                 saved_lcsh = lcsh_form.save(commit=False)
@@ -243,16 +245,24 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
                         added_subjects.append(obj)
                         obj.save()
 
-            self.object = form.save()
+                self.object = form.save()
 
-            # handle adding any created subjects
-            if len(added_subjects) > 0:
-                for sub in added_subjects:
-                    self.object.lcsh.add(sub)
-                self.object.save()
+                # handle adding any created subjects
+                if len(added_subjects) > 0:
+                    for sub in added_subjects:
+                        self.object.lcsh.add(sub)
+                    self.object.save()
+                
+                return super().form_valid(form)
+            else:
+                return self.form_invalid(form)
+                # we need to explicitly trigger form_invalid logic here
 
 
-        return super().form_valid(form)
+        def form_invalid(self, form):
+            print("form_invalid method triggered")
+            print(form.errors)
+            return super().form_invalid(form)
 
 
 class HeadingsView(AlphaFilterView):
