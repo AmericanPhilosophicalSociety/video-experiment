@@ -152,18 +152,18 @@ class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
         fields = [
-            "display_notes",
-            "admin_notes",
             "title",
             "lecture_additional_info",
             "date",
             "order_in_day",
             "abstract",
-            "doi",
-            "proceedings_title",
             "node",
             "service_file",
             "admin_category",
+            "display_notes",
+            "admin_notes",
+            "doi",
+            "proceedings_title",
             # "lcsh",
             # "aps_departments",
             # "academic_disciplines",
