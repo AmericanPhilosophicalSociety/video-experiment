@@ -160,13 +160,13 @@ class VideoForm(forms.ModelForm):
             "node",
             "service_file",
             "admin_category",
+            "academic_disciplines",
             "display_notes",
             "admin_notes",
             "doi",
             "proceedings_title",
             # "lcsh",
             # "aps_departments",
-            # "academic_disciplines",
         ]
         widgets = {
             "display_notes": forms.Textarea(attrs={"class": "form-control"}),
@@ -176,6 +176,7 @@ class VideoForm(forms.ModelForm):
             "date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "order_in_day": forms.NumberInput(attrs={"class": "form-control"}),
             "abstract": forms.Textarea(attrs={"class": "form-control"}),
+            "academic_disciplines": forms.SelectMultiple(attrs={"class": "form-select"}),
             "doi": forms.URLInput(attrs={"class": "form-control"}),
             "proceedings_title": forms.TextInput(attrs={"class": "form-control"}),
             "node": forms.NumberInput(attrs={"class": "form-control"}),
@@ -183,7 +184,6 @@ class VideoForm(forms.ModelForm):
             "admin_category": forms.Select(attrs={"class": "form-select"}),
             # "lcsh": ,
             # "aps_departments",
-            # "academic_disciplines",
         }
 
 
