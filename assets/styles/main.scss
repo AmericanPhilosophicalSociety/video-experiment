@@ -14,12 +14,13 @@ $accent-font: Gelasio, serif;
 
 html {
     scrollbar-gutter: stable;
-    scroll-behavior: smooth;
+    scroll-behavior: auto !important;
 }
 
 body {
     font: 100% $body-font;
     color: $aps-black;
+    scroll-behavior: smooth;
 }
 
 h1 {
