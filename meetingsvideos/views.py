@@ -250,12 +250,11 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
                     for sub in added_subjects:
                         self.object.lcsh.add(sub)
                     self.object.save()
-                
+
                 return super().form_valid(form)
             else:
                 return self.form_invalid(form)
                 # we need to explicitly trigger form_invalid logic here
-
 
         def form_invalid(self, form):
             return super().form_invalid(form)
@@ -333,13 +332,15 @@ class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
 
                 for a in new_affiliations:
                     obj, _ = Affiliation.objects.get_or_create(
-                            speaker=self.object, position=a.position, institution=a.institution
-                        )
+                        speaker=self.object,
+                        position=a.position,
+                        institution=a.institution,
+                    )
                     obj.save()
                     # need to grab meeting from the cleaned form. Probably not the most efficient implementation
                     for f in affiliation_form.cleaned_data:
-                        if f['position'] == obj.position:
-                            meetings = f['meetings']
+                        if f["position"] == obj.position:
+                            meetings = f["meetings"]
                             obj.meetings.add(*meetings)
 
                 self.object = form.save()

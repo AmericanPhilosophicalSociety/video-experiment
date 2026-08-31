@@ -178,7 +178,9 @@ class VideoForm(forms.ModelForm):
             "date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "order_in_day": forms.NumberInput(attrs={"class": "form-control"}),
             "abstract": forms.Textarea(attrs={"class": "form-control"}),
-            "academic_disciplines": forms.SelectMultiple(attrs={"class": "form-select"}),
+            "academic_disciplines": forms.SelectMultiple(
+                attrs={"class": "form-select"}
+            ),
             "doi": forms.URLInput(attrs={"class": "form-control"}),
             "proceedings_title": forms.TextInput(attrs={"class": "form-control"}),
             "node": forms.NumberInput(attrs={"class": "form-control"}),
