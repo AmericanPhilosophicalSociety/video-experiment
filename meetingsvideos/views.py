@@ -1,9 +1,19 @@
 from django.shortcuts import render, redirect
-from .forms import AdvancedSearchForm, FacetForm
+from django.db import transaction
+from .forms import (
+    AdvancedSearchForm,
+    FacetForm,
+    VideoForm,
+    SpeakerForm,
+    AffiliationFormSet,
+    SpeakerFormSet,
+    LCSHSubjectFormSet,
+)
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from random import sample
 from string import ascii_uppercase
@@ -17,6 +27,7 @@ from .models import (
     AcademicDiscipline,
     APSDepartment,
     Speaker,
+    Affiliation,
 )
 
 from .service import basic_search, advanced_search
@@ -163,6 +174,92 @@ class VideoDetail(DetailView):
     template_name = "meetingsvideos/video_detail.html"
 
 
+class VideoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Video
+    form_class = VideoForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context["speakers"] = SpeakerFormSet(self.request.POST, prefix="speaker")
+            context["lcsh"] = LCSHSubjectFormSet(self.request.POST, prefix="lcsh")
+        else:
+            context["speakers"] = SpeakerFormSet(
+                queryset=self.object.speakers.all(), prefix="speaker"
+            )
+            context["lcsh"] = LCSHSubjectFormSet(
+                queryset=self.object.lcsh.all(), prefix="lcsh"
+            )
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        speaker_form = context["speakers"]
+        lcsh_form = context["lcsh"]
+        # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
+        # parent object in this implementation
+        with transaction.atomic():
+            added_subjects = []
+            # do not allow saves of any forms if the forms are invalid
+            if lcsh_form.is_valid() and speaker_form.is_valid():
+                # handle speaker form
+                speaker_form.instance = self.object
+                speaker_form.save()
+                lcsh_form.instance = self.object
+                # capture object instance without updating database
+                saved_lcsh = lcsh_form.save(commit=False)
+
+                # now handle saving/deleting etc...
+                new_subjects = [sub for sub in saved_lcsh if sub.pk is None]
+
+                # isolate and save existing subjects
+                existing_subjects = [
+                    sub for sub in saved_lcsh if sub not in new_subjects
+                ]
+                for sub in existing_subjects:
+                    sub.save()
+
+                # handle deletes
+                if lcsh_form.deleted_objects:
+                    for obj in lcsh_form.deleted_objects:
+                        self.object.lcsh.remove(obj)
+                        # check to see if this subject still has references or if it should be deleted
+                        if len(obj.video_set.all()) == 0:
+                            obj.delete()
+
+                # handle new subjects
+                for sub in new_subjects:
+                    if sub.uri and sub.authority == "LOC":
+                        obj, _ = LCSH.objects.get_or_create(
+                            heading=sub.heading, uri=sub.uri, authority=sub.authority
+                        )
+                        added_subjects.append(obj)
+                        obj.save()
+                    else:
+                        # local subject - check validity through heading
+                        obj, _ = LCSH.objects.get_or_create(
+                            heading=sub.heading, authority=sub.authority
+                        )
+                        added_subjects.append(obj)
+                        obj.save()
+
+                self.object = form.save()
+
+                # handle adding any created subjects
+                if len(added_subjects) > 0:
+                    for sub in added_subjects:
+                        self.object.lcsh.add(sub)
+                    self.object.save()
+
+                return super().form_valid(form)
+            else:
+                return self.form_invalid(form)
+                # we need to explicitly trigger form_invalid logic here
+
+        def form_invalid(self, form):
+            return super().form_invalid(form)
+
+
 class HeadingsView(AlphaFilterView):
     model = LCSH
     queryset_method = LCSH.objects.only_topics_with_first_letter
@@ -184,6 +281,7 @@ class HeadingDetail(DetailView):
 
 class SpeakersView(AlphaFilterView):
     model = Speaker
+    form_class = SpeakerForm
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
     link_template = "speaker_detail"
@@ -193,6 +291,69 @@ class SpeakerDetail(DetailView):
     model = Speaker
     template_name = "meetingsvideos/speaker_detail.html"
     context_object_name = "speaker"
+
+
+class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Speaker
+    form_class = SpeakerForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context["affiliations"] = AffiliationFormSet(
+                self.request.POST, instance=self.object, prefix="affiliation"
+            )
+        else:
+            context["affiliations"] = AffiliationFormSet(
+                instance=self.object, prefix="affiliation"
+            )
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        affiliation_form = context["affiliations"]
+        # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
+        # parent object in this implementation
+        # added_affiliations = []
+        with transaction.atomic():
+            if affiliation_form.is_valid():
+                affiliation_form.instance = self.object
+                saved_affiliations = affiliation_form.save(commit=False)
+
+                # now handle saving/deleting etc...
+                new_affiliations = [a for a in saved_affiliations if a.pk is None]
+
+                # isolate and save existing subjects
+                existing_affiliations = [
+                    a for a in saved_affiliations if a not in new_affiliations
+                ]
+                for a in existing_affiliations:
+                    a.save()
+
+                for a in new_affiliations:
+                    obj, _ = Affiliation.objects.get_or_create(
+                        speaker=self.object,
+                        position=a.position,
+                        institution=a.institution,
+                    )
+                    obj.save()
+                    # need to grab meeting from the cleaned form. Probably not the most efficient implementation
+                    for f in affiliation_form.cleaned_data:
+                        if f["position"] == obj.position:
+                            meetings = f["meetings"]
+                            obj.meetings.add(*meetings)
+
+                self.object = form.save()
+
+                return super().form_valid(form)
+            else:
+                return self.form_invalid(form)
+
+                # TODO:
+                # Add new affiliations to parent
+                # handle invalidation
+
+        return super().form_valid(form)
 
 
 class MeetingsList(HTMXMixin, ListView):
@@ -252,17 +413,17 @@ class DisciplineDetail(DetailView):
     context_object_name = "discipline"
 
 
-# class DepartmentList(TopicView):
-#     model = APSDepartment
-#     template_name = "meetingsvideos/departments.html"
-#     link_template = "department_detail"
-#     content_template = "meetingsvideos/department-content.html"
+class DepartmentList(LoginRequiredMixin, TopicView):
+    model = APSDepartment
+    template_name = "meetingsvideos/departments.html"
+    link_template = "department_detail"
+    content_template = "meetingsvideos/department-content.html"
 
 
-# class DepartmentDetail(DetailView):
-#     model = APSDepartment
-#     template_name = "meetingsvideos/department_detail.html"
-#     context_object_name = "department"
+class DepartmentDetail(LoginRequiredMixin, DetailView):
+    model = APSDepartment
+    template_name = "meetingsvideos/department_detail.html"
+    context_object_name = "department"
 
 
 def search(request):

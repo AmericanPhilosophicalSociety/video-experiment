@@ -1,0 +1,25 @@
+{% extends "meetingsvideos/base.html" %}
+{% block main %}
+<div class="container" id="video-container">
+  <h1>Login</h1>
+  {% if next %}
+  <p>Please login to see this page.</p>
+  {% endif %}
+  {% if form.errors %}
+  <div class="error-message">The username and password you provided did not match our records. Please double-check and try again.</div>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+      <input type="username" name="username" class="form-control" id="{{ form.username.id_for_label }}">  
+    </div>
+    <div class="mb-3">
+        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="{{ form.password.id_for_label }}">
+    </div>
+    <input type="submit" value="Sign In" class="btn btn-primary">
+    <input type="hidden" name="next" value="{{ next }}">
+  </form>
+</div>
+{% endblock %}
