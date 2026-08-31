@@ -169,12 +169,12 @@ class Speaker(models.Model):
     lcsh = models.OneToOneField(LCSH, on_delete=models.PROTECT)
     objects = SpeakerManager()
     #TODO: is this redundant with LCSH?
-    # label = models.CharField(max_length=200)
+    label = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from="display_name", unique=True)
 
-    @property
-    def label(self):
-        return self.lcsh.heading
+    # @property
+    # def label(self):
+    #     return self.lcsh.heading
 
     def __str__(self):
         # return self.label
@@ -182,7 +182,7 @@ class Speaker(models.Model):
 
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
-        # self.label = self.lcsh.heading
+        self.label = self.lcsh.heading
         super().save(**kwargs)
 
     def get_absolute_url(self):
