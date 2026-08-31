@@ -25,9 +25,6 @@ from django.db import transaction, IntegrityError
 # )
 
 logging.getLogger(__name__)
-objects_created = []
-rows_skipped = []
-
 
 # converts EDTF date to datetime object
 def process_date(string):
@@ -72,7 +69,6 @@ def process_affiliation(position, institution, meeting, speaker):
         try:
             affiliation.full_clean()
             affiliation.save()
-            objects_created.append({"model": "Affiliation", "pk": affiliation.pk})
             # print("Affiliation created for speaker: " + speaker.display_name)
         except Exception as e:
             logging.exception(
@@ -150,7 +146,6 @@ def create_lcsh(cell, object, field):
 
             if created:
                 print(f"LCSH created: {lcsh_str}")
-                objects_created.append({"model": "LCSH", "pk": lcsh_obj.pk})
 
         # add to video
         # if None was passed, this is a speaker LCSH and needs to be added to the speaker after the LCSH has been created
@@ -196,7 +191,6 @@ def add_speaker_to_video(
 
     if created:
         try:
-            objects_created.append({"model": "Speaker", "pk": speaker.pk})
             print("Speaker created: " + speaker.display_name)
         except Exception as e:
             logging.exception(
@@ -224,8 +218,6 @@ def process_symposium(title, meeting, date):
                 symposium.full_clean()
                 symposium.save()
                 print("Symposium added: " + symposium.title)
-
-                objects_created.append({"model": "Symposium", "pk": symposium.pk})
             except Exception as e:
                 logging.exception(f"Error saving symposium {symposium} for meeting {meeting}")
                 symposium.delete()
@@ -276,8 +268,6 @@ def process_video(row):
             video.full_clean()
             video.save()
             print("Video created: " + video.title)
-
-            objects_created.append({"model": "Video", "pk": video.pk})
         except Exception as e:
             logging.exception(
                 f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}"
@@ -345,11 +335,3 @@ def upload_videos():
                     process_video(row)
             except Exception as e:
                 logging.exception(f"Error saving video {row['title']} in meeting {row['meeting']}")
-                rows_skipped.append(row['row'])
-
-    print(objects_created)
-    print(rows_skipped)
-
-    # redefine these as blank lists so contents aren't retained when upload is run again
-    objects_created = []
-    rows_skipped = []
