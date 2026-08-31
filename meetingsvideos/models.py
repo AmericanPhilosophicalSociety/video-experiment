@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.functions import Substr
+from django.urls import reverse
 from autoslug import AutoSlugField
 
 from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
@@ -184,6 +185,9 @@ class Speaker(models.Model):
         # self.label = self.lcsh.heading
         super().save(**kwargs)
 
+    def get_absolute_url(self):
+        return reverse("speaker_detail", kwargs={"slug": self.slug})
+
     # TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
     # def get_most_recent_affiliation(self):
     #     if len(self.affiliation_set.all()) > 0:
@@ -247,10 +251,10 @@ class Meeting(WithNotes):
 
     def videos_by_date(self, query_date):
         return self.video_set.filter(date=query_date).order_by("order_in_day")
-    
+
     def get_program_url(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}"
-    
+
     def get_program_manifest(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
 
@@ -329,6 +333,9 @@ class Video(ProgramInfo):
     academic_disciplines = models.ManyToManyField(AcademicDiscipline)
 
     objects = VideoManager()
+
+    def get_absolute_url(self):
+        return reverse("video_detail", kwargs={"slug": self.slug})
 
     def first_in_symposium(self):
         # videos = Symposium.objects.get(pk=self.symposium.pk)

@@ -90,6 +90,7 @@
       {% endfor %}
     </td>
   </tr>
+
   {% if video.doi and video.proceedings_title %}
   <tr>
     <td><p>Further reading</p></td>
@@ -98,17 +99,17 @@
     </td>
   </tr>
   {% endif %}
-  {% comment %}
- {% if video.aps_departments.all %}
-  <tr>
-    <td>APS Department</td>
-    <td>
-      {% for department in video.aps_departments.all %}
-        <p><a href="{% url 'department_detail' department.slug %}">{{ department }}</a></p>
-      {% endfor %}</td>
-  </tr>
+  {% if user.is_authenticated %}
+    {% if video.aps_departments.all %}
+    <tr>
+      <td>APS Department</td>
+      <td>
+        {% for department in video.aps_departments.all %}
+          <p><a href="{% url 'department_detail' department.slug %}">{{ department }}</a></p>
+        {% endfor %}</td>
+    </tr>
+    {% endif %}
   {% endif %}
-  {% endcomment %}
 </table>
 {% if video.symposium %}
   <table class="table table-borderless">

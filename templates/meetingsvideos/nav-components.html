@@ -17,11 +17,11 @@
   <li class="nav-item main-nav-item">
     <a href="{% url 'disciplines' %}" class="nav-link" id="disciplinesNav">Disciplines</a>
   </li>
-  {% comment %}
+  {% if user.is_authenticated %}
   <li class="nav-item main-nav-item">
     <a href="{% url 'departments' %}" class="nav-link" id="departmentsNav">Departments</a>
   </li>
-  {% endcomment %}
+  {% endif %}
   <li class="nav-item main-nav-item">
     <a href="{% url 'search' %}" class="nav-link" id="searchNav">Search</a>
   </li>
