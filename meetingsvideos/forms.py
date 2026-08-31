@@ -128,7 +128,7 @@ class AffiliationForm(forms.ModelForm):
 
 
 AffiliationFormSet = forms.inlineformset_factory(
-    Speaker, Affiliation, form=AffiliationForm, can_delete=False, extra=0
+    Speaker, Affiliation, form=AffiliationForm, can_delete=False, extra=1
 )
 
 

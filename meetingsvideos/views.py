@@ -190,7 +190,6 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
             context["lcsh"] = LCSHSubjectFormSet(
                 queryset=self.object.lcsh.all(), prefix="lcsh"
             )
-        print(context)
         return context
 
     def form_valid(self, form):
@@ -203,7 +202,6 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
             added_subjects = []
             # do not allow saves of any forms if the forms are invalid
             if lcsh_form.is_valid() and speaker_form.is_valid():
-                print("Validity test satisfied!")
                 # handle speaker form
                 speaker_form.instance = self.object
                 speaker_form.save()
@@ -260,8 +258,6 @@ class VideoUpdateView(LoginRequiredMixin, UpdateView):
 
 
         def form_invalid(self, form):
-            print("form_invalid method triggered")
-            print(form.errors)
             return super().form_invalid(form)
 
 
@@ -305,7 +301,6 @@ class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            print(self.request.POST)
             context["affiliations"] = AffiliationFormSet(
                 self.request.POST, instance=self.object, prefix="affiliation"
             )
@@ -320,12 +315,42 @@ class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
         affiliation_form = context["affiliations"]
         # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
         # parent object in this implementation
+        # added_affiliations = []
         with transaction.atomic():
-            self.object = form.save()
-
             if affiliation_form.is_valid():
                 affiliation_form.instance = self.object
-                affiliation_form.save()
+                saved_affiliations = affiliation_form.save(commit=False)
+
+                # now handle saving/deleting etc...
+                new_affiliations = [a for a in saved_affiliations if a.pk is None]
+
+                # isolate and save existing subjects
+                existing_affiliations = [
+                    a for a in saved_affiliations if a not in new_affiliations
+                ]
+                for a in existing_affiliations:
+                    a.save()
+
+                for a in new_affiliations:
+                    obj, _ = Affiliation.objects.get_or_create(
+                            speaker=self.object, position=a.position, institution=a.institution
+                        )
+                    obj.save()
+                    # need to grab meeting from the cleaned form. Probably not the most efficient implementation
+                    for f in affiliation_form.cleaned_data:
+                        if f['position'] == obj.position:
+                            meetings = f['meetings']
+                            obj.meetings.add(*meetings)
+
+                self.object = form.save()
+
+                return super().form_valid(form)
+            else:
+                return self.form_invalid(form)
+
+                # TODO:
+                # Add new affiliations to parent
+                # handle invalidation
 
         return super().form_valid(form)
 
