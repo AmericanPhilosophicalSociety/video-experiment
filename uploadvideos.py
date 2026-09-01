@@ -1,4 +1,5 @@
 import csv
+import time
 import datetime
 import logging
 from zoneinfo import ZoneInfo
@@ -10,19 +11,25 @@ from meetingsvideos.models import (
     Symposium,
     Speaker,
     Affiliation,
+    LCSH
 )
+from loc_authorities.api import LocAPI
+from django.db import transaction, IntegrityError
 
-logging.basicConfig(
-    filename="videoupload.log",
-    format="%(asctime)s - %(message)s - %(levelname)s",
-    filemode="w",
-)
+# logging.basicConfig(
+#     filename="videoupload.log",
+#     level=logging.INFO,
+#     format="%(asctime)s - %(message)s - %(levelname)s",
+#     filemode="w",
+#     force=True
+# )
 
+logging.getLogger(__name__)
 
 # converts EDTF date to datetime object
 def process_date(string):
     # process year, month, and day
-    ymd = string.split("-")
+    ymd = string.strip().split("-")
 
     year = int(ymd[0])
     month = int(ymd[1])
@@ -32,7 +39,7 @@ def process_date(string):
 
 
 def process_diglib_url(string):
-    lst = string.split(":")
+    lst = string.strip().split(":")
     return lst[-1]
 
 
@@ -41,7 +48,7 @@ def process_diglib_url(string):
 def add_category_to_video(string, ModelName, separator):
     if not string:
         return
-    lst = string.split(separator)
+    lst = string.strip().split(separator)
     categories = []
     for item in lst:
         item_cleaned = item.strip()
@@ -50,27 +57,108 @@ def add_category_to_video(string, ModelName, separator):
             categories.append(itemObj)
         except:
             logging.exception(f"Category {string} not found in table {ModelName}")
+            raise
     return categories
 
 
 def process_affiliation(position, institution, meeting, speaker):
     affiliation, created = Affiliation.objects.get_or_create(
-        position=position, institution=institution, speaker=speaker
+        position=position.strip(), institution=institution.strip(), speaker=speaker
     )
     if created:
         try:
             affiliation.full_clean()
             affiliation.save()
-            print("Affiliation created for speaker: " + speaker.display_name)
-        except:
+            # print("Affiliation created for speaker: " + speaker.display_name)
+        except Exception as e:
             logging.exception(
-                f"Affiliation {affiliation} for speaker {speaker} in meeting {meeting}"
+                f"Error processing affiliation {affiliation} for speaker {speaker} in meeting {meeting}"
             )
             affiliation.delete()
+            raise
     # add meeting
     affiliation.meetings.add(meeting)
     return
 
+# create LCSH and add to associated object
+# can be used to associate LCSH with a video or a speaker
+def create_lcsh(cell, object, field):
+    # if spreadsheet cell is empty, no LCSH need to be created
+    if not cell:
+        return
+    
+    lcsh_fields_name = ["lcsh_geographic", "lcsh_name_personal", "lcsh_name_corporate", "speaker_lcsh"]
+    lcsh_fields_subject = ["lcsh_topic", "lcsh_temporal"]
+
+    if field in lcsh_fields_name:
+        authority = "names"
+    elif field in lcsh_fields_subject:
+        authority = "subjects"
+
+    match field:
+        case "lcsh_geographic":
+            category = "GEOGRAPHIC"
+        case "lcsh_name_personal":
+            category = "PERSONAL_NAME"
+        case "lcsh_name_corporate":
+            category = "CORPORATE_NAME"
+        case "speaker_lcsh":
+            category = "PERSONAL_NAME"
+        case "lcsh_topic":
+            category = "TOPIC"
+        #TODO: is this right? should it be topic?
+        case "lcsh_temporal":
+            category = "OTHER"
+        case _:
+            category = "OTHER"
+    
+    loc = LocAPI()
+
+    lcsh_list = cell.strip().split("|")
+    for lcsh_str in lcsh_list:
+        #if LCSH already in database, retrieve and use that without querying LOC
+        lcsh_from_db = LCSH.objects.filter(heading=lcsh_str.strip())
+        if lcsh_from_db:
+            lcsh_obj = lcsh_from_db[0]
+            if len(lcsh_from_db) > 1:
+                logging.exception(f"WARNING: more than one match found for LCSH {lcsh_str}. Make sure your video was associated with the correct one")
+        else:
+            uri = loc.retrieve_label(lcsh_str.strip(), authority=authority)
+            time.sleep(1)
+            if uri:
+                #TODO: this seems to cause issues when alabel doesn't match what's in the spreadsheet?
+                try:
+                    lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), uri=uri, authority="LOC")
+                # handle race conditions created by combination of atomic transactions and get_or_create
+                except IntegrityError:
+                    lcsh_obj = LCSH.objects.get(uri=uri)
+                    created = False
+            #special case for handling complex subject headings that can't be validated through LOC API
+            # elif "--" in lcsh_str:
+            #     lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="LOC", category="COMPLEX_SUBJECT")
+            else:
+                try:
+                    lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="OTHER", category=category)
+                    logging.exception(f"No URI found for LCSH: {lcsh_str}")
+                except IntegrityError:
+                    lcsh_obj = LCSH.objects.get(uri=uri)
+                    created = False
+
+            if created:
+                print(f"LCSH created: {lcsh_str}")
+
+        # add to video
+        # if None was passed, this is a speaker LCSH and needs to be added to the speaker after the LCSH has been created
+        if isinstance(object, Video):
+            object.lcsh.add(lcsh_obj)
+            object.save()
+        else:
+            return lcsh_obj
+        # elif isinstance(object, Speaker):
+        #     object.lcsh = lcsh_obj
+        #     object.label = lcsh_obj.heading
+        #     object.save()
+        
 
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
@@ -82,25 +170,36 @@ def add_speaker_to_video(
     position_2,
     institution_2,
     meeting,
-    label,
+    label
 ):
-    speaker, created = Speaker.objects.get_or_create(
-        display_name=display_name, label=label
-    )
+    # CREATE SPEAKER LCSH FIRST
+    # or do as a get or create?
+    lcsh_obj = create_lcsh(label, None, "speaker_lcsh")
+    # lcsh_obj, created = LCSH.objects.get_or_create(
+    #     heading=label,
+    # )
+
+    try:
+        speaker, created = Speaker.objects.get_or_create(
+            display_name=display_name.strip(),
+            lcsh=lcsh_obj
+        )
+    except IntegrityError:
+        # handle race condition where speaker is created by another thread while get_or_create runs, AND condition where two different display names are given for the same speaker
+        speaker = Speaker.objects.get(lcsh=lcsh_obj)
+        created = False
 
     if created:
         try:
-            speaker.full_clean()
-            speaker.save()
-        except:
+            print("Speaker created: " + speaker.display_name)
+        except Exception as e:
             logging.exception(
-                f"Speaker {speaker} for video {video} in meeting {meeting}"
+                f"Error saving speaker {speaker} for video {video} in meeting {meeting}"
             )
             speaker.delete()
-            return
+            raise
 
     video.speakers.add(speaker)
-    print("Speaker added: " + speaker.display_name)
 
     # if affiliation, create new affiliation
     if position_1 or institution_1:
@@ -109,20 +208,20 @@ def add_speaker_to_video(
         process_affiliation(position_2, institution_2, meeting, speaker)
 
 
-def process_symposium(str, meeting, date):
-    if str:
+def process_symposium(title, meeting, date):
+    if title:
         symposium, created = Symposium.objects.get_or_create(
-            title=str, meeting=meeting, date=date
+            title=title.strip(), meeting=meeting, date=date
         )
         if created:
             try:
                 symposium.full_clean()
                 symposium.save()
                 print("Symposium added: " + symposium.title)
-            except:
-                logging.exception(f"Symposium {symposium} for meeting {meeting}")
+            except Exception as e:
+                logging.exception(f"Error saving symposium {symposium} for meeting {meeting}")
                 symposium.delete()
-                return None
+                raise
         return symposium
 
     return None
@@ -143,21 +242,21 @@ def process_video(row):
 
     # TODO: let this update video object if not all data matches? which fields should ID it?
     video, created = Video.objects.get_or_create(
-        title=row["title"],
-        lecture_additional_info=row["lecture_additional_info"],
-        abstract=row["abstract"],
-        doi=row["proceedings_url"],
-        proceedings_title=row["proceedings_title"],
-        service_file=row["service_file"],
-        youtube_url=row["youtube_url"],
-        display_notes=row["display_notes"],
-        admin_notes=row["admin_notes"],
-        node=row["node"],
-        admin_category=row["admin_category"],
+        title=row["title"].strip(),
+        lecture_additional_info=row["lecture_additional_info"].strip(),
+        abstract=row["abstract"].strip(),
+        doi=row["proceedings_url"].strip(),
+        proceedings_title=row["proceedings_title"].strip(),
+        service_file=row["service_file"].strip(),
+        youtube_url=row["youtube_url"].strip(),
+        display_notes=row["display_notes"].strip(),
+        admin_notes=row["admin_notes"].strip(),
+        node=row["node"].strip(),
+        admin_category=row["admin_category"].strip(),
         meeting=meeting,
         symposium=symposium,
         date=date,
-        order_in_day=row["order_in_day"],
+        order_in_day=row["order_in_day"].strip(),
     )
 
     # if record for this video already exists, alert user
@@ -169,12 +268,12 @@ def process_video(row):
             video.full_clean()
             video.save()
             print("Video created: " + video.title)
-        except:
+        except Exception as e:
             logging.exception(
                 f"Video {video} in meeting {meeting}: Exception occurred: {str(e)}"
             )
             video.delete()
-            return
+            raise
 
         # add department and discipline
         departments = add_category_to_video(row["aps_departments"], APSDepartment, ",")
@@ -188,6 +287,15 @@ def process_video(row):
         if disciplines:
             for discipline in disciplines:
                 video.academic_disciplines.add(discipline)
+
+        # add lcsh
+        # do for lcsh_topic, lcsh_geographic, lcsh_temporal, lcsh_name_personal
+        # need to split for all of these
+        # print to log if not valid
+        lcsh_fields = ["lcsh_geographic", "lcsh_name_personal", "lcsh_name_corporate", "lcsh_topic", "lcsh_temporal"]
+
+        for field in lcsh_fields:
+            create_lcsh(row[field], video, field)
 
     # add speaker info
     # this will run regardless of whether a new video has been created or not, in order to allow adding more than two speakers to a video by creating an additional row for that video
@@ -222,6 +330,8 @@ def upload_videos():
         reader = csv.DictReader(csvfile)
         for row in reader:
             try:
-                process_video(row)
-            except:
-                logging.exception(f"Video {row['title']} in meeting {row['meeting']}")
+                # either the video and related objects can be created with no errors, or all the transactions are rolled back
+                with transaction.atomic():
+                    process_video(row)
+            except Exception as e:
+                logging.exception(f"Error saving video {row['title']} in meeting {row['meeting']}")

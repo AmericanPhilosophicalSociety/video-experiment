@@ -35,7 +35,7 @@ class LCSHManager(AlphaManager):
 
 
 class SpeakerManager(AlphaManager):
-    order_field = "label"
+    order_field = "lcsh__heading"
 
 
 class VideoManager(models.Manager):
@@ -46,7 +46,7 @@ class VideoManager(models.Manager):
 
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
-    uri = models.CharField(max_length=200, blank=True, null=True)
+    uri = models.CharField(max_length=200, blank=True, null=True, unique=True)
     slug = AutoSlugField(populate_from="heading", unique=True)
 
     CATEGORY_CHOICES = {
@@ -165,18 +165,24 @@ class Speaker(models.Model):
         max_length=200,
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
-    lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
+    # prevent deletion of LCSH if still associated with a speaker
+    lcsh = models.OneToOneField(LCSH, on_delete=models.PROTECT)
     objects = SpeakerManager()
-    label = models.CharField(max_length=200, blank=True, null=True)
+    #TODO: is this redundant with LCSH?
+    label = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from="display_name", unique=True)
 
+    # @property
+    # def label(self):
+    #     return self.lcsh.heading
+
     def __str__(self):
-        return self.label
+        # return self.label
+        return self.lcsh.heading
 
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
-        if self.lcsh and not self.label:
-            self.label = self.lcsh.heading
+        self.label = self.lcsh.heading
         super().save(**kwargs)
 
     def get_absolute_url(self):
@@ -190,7 +196,8 @@ class Speaker(models.Model):
     #         return ""
 
     class Meta:
-        ordering = ["label"]
+        # ordering = ["label"]
+        ordering = ["lcsh__heading"]
 
 
 class Affiliation(models.Model):

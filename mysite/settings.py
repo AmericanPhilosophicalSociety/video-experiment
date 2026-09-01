@@ -157,6 +157,11 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
+        "upload_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "videoupload.log"),
+        },
         "console": {"class": "logging.StreamHandler"},
     },
     "root": {
@@ -164,6 +169,11 @@ LOGGING = {
         "level": "WARNING",
     },
     "loggers": {
+        "": {
+            "handlers": ["upload_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
         "django": {
             "handlers": ["console"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),

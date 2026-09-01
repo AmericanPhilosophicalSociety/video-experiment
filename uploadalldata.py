@@ -1,7 +1,6 @@
 import csv
 import uploadmeetings
 import uploadvideos
-import uploadlcsh
 from meetingsvideos.models import AcademicDiscipline, APSDepartment
 
 
@@ -21,5 +20,3 @@ def upload_data():
             discipline, created = APSDepartment.objects.get_or_create(name=row["name"])
 
     uploadvideos.upload_videos()
-
-    uploadlcsh.upload_lcsh()
