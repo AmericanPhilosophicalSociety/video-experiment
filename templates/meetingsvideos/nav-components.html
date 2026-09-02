@@ -1,28 +1,64 @@
-  <ul class="nav flex-column">
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'index' %}" class="nav-link" id="videoNav">Videos</a>
-  </li>
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'speakers' %}" class="nav-link" id="speakerNav">Speakers</a>
-  </li>
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'meetings' %}" class="nav-link" id="meetingsNav">Meetings</a>
-  </li>
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'symposia' %}" class="nav-link" id="symposiaNav">Symposia</a>
-  </li>
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'headings' %}" class="nav-link" id="headingsNav">Subject Headings</a>
-  </li>
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'disciplines' %}" class="nav-link" id="disciplinesNav">Disciplines</a>
-  </li>
-  {% if user.is_authenticated %}
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'departments' %}" class="nav-link" id="departmentsNav">Departments</a>
-  </li>
-  {% endif %}
-  <li class="nav-item main-nav-item">
-    <a href="{% url 'search' %}" class="nav-link" id="searchNav">Search</a>
-  </li>
-</ul>
+{% load static %}
+<nav class="navbar navbar-expand-lg"> 
+  <div class="container-fluid">
+    <div class="nav-wrapper">
+      <div class="container nav-container">
+        <a class="navbar-brand" href="/">
+          <img id="aps-logo-branding" src="{% static 'images/aps-logo.jpg' %}" alt="APS logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <button class="nav-link px-3" id="search-icon" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-search" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-content">
+          <ul class="navbar-nav mb-2 mb-lg-0 ms-auto pb-0">
+            <li class="nav-item main-nav-item">
+              <a href="{% url 'index' %}" class="nav-link" id="videoNav">All videos</a>
+            </li>
+            <div class="nav-separator" data-orientation="vertical" role="none" aria-hidden="true"></div>
+            <li class="nav-item main-nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="browseNav">Browse by</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'speakers' %}">Speaker</a></li>
+                <li><a class="dropdown-item" href="{% url 'headings' %}">Subject Headings</a></li>
+                <li><a class="dropdown-item" href="{% url 'disciplines' %}">Academic Discipline</a></li>
+                {% if user.is_authenticated %}
+                  <li><a class="dropdown-item" href="{% url 'departments' %}">APS Department</li>
+                {% endif %}
+              </ul>
+            </li>
+            <div class="nav-separator" data-orientation="vertical" role="none" aria-hidden="true"></div>
+            <li class="nav-item main-nav-item">
+              <a href="{% url 'meetings' %}" class="nav-link" id="meetingsNav">Meetings</a>
+            </li>
+            <div class="nav-separator" data-orientation="vertical" role="none" aria-hidden="true"></div>
+            <li class="nav-item main-nav-item">
+              <a href="{% url 'symposia' %}" class="nav-link" id="symposiaNav">Symposia</a>
+            </li>
+            <div class="nav-separator" data-orientation="vertical" role="none" aria-hidden="true"></div>
+            <li class="nav-item main-nav-item">
+              <a href="{% url 'search' %}" class="nav-link" id="searchNav">Search</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="searchbar">
+      <form id="navbarSearch" role="search" action="{% url 'search_results' %}" method="post" class="navbar-search collapse navbar-collapse container">
+        {% csrf_token %}
+        <div class="input-group searchbar-input">
+          <input type="text" class="form-control w-100 text-end" placeholder="Search..." aria-label="Search" aria-describedby="search-button" name="q">
+          <button class="btn btn-outline-secondary" type="button" id="search-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-search" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>

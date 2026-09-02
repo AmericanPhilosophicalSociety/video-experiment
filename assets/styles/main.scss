@@ -49,18 +49,128 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 
 // navigation styles
 
-@media (max-width: 768px) {
-    .navbar {
-        background-color: $aps-white;
-    }
+.header-container {
+    width: 100%;
+    margin: auto;
+}
+
+header .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.navbar > .container-fluid {
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.nav-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.nav-container {
+    display: flex;
+}
+
+.navbar-nav .nav-link.active {
+    border-bottom: solid 3px $aps-red;
 }
 
 .navbar-brand {
-    font: 100% $accent-font;
-    background-color: $aps-red;
-    color: $aps-white;
+    display: flex;
+    flex-grow: 2;
 }
 
+#aps-logo-branding {
+    height: 75px;
+}
+
+#navbar-content {
+    align-items: end;
+}
+
+.nav-separator {
+    height: 1.5rem;
+    width: 1px;
+    background-color: black;
+    margin: 2px;
+}
+
+.navbar-search {
+    width: 100%;
+    display: flex;
+}
+
+.searchbar {
+    width: 100%;
+}
+
+.searchbar-input {
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.searchbar-input > input {
+    border-radius: 4rem;
+}
+
+#search-button {
+    fill: $aps-white;
+    background-color: $aps-red;
+    border-radius: 0 4rem 4rem 0;
+    padding-left: 2rem;
+}
+
+// styles for phones only
+@media (min-width: 576) {
+    #aps-logo-branding {
+        height: 100px;
+    }
+}
+
+// styles for phones and tablets
+@media (max-width: 992px) {
+    .nav-separator {
+        display: none;
+    }
+    .navbar-nav .nav-link.active {
+        color: $aps-white;
+        background-color: $aps-red;
+    }
+    .nav-container {
+        flex-wrap: wrap;
+    }
+    .nav-container button {
+        margin-top: 3rem;
+    }
+    #navbar-content {
+        width: 100%;
+    }
+}
+
+// styles for laptops and desktops
+@media (min-width: 992px) {
+    #search-icon {
+        display: none;
+    }
+    .navbar-brand {
+        margin-right: 0px;
+    }
+    #navbar-content {
+        padding-bottom: 0.2rem;
+    }
+    .searchbar {
+        background-color: $light-gray;
+    }
+    .navbar-search {
+        padding: 1rem 4rem;
+    }
+    .nav-wrapper {
+        border-bottom: solid 0.1rem;
+    }
+    
+}
 
 .bi {
     display: inline-block;
@@ -96,10 +206,6 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
         margin: 0 1.5em;
     }
 }
-
-.navbar-search {
-    display: block;
-}
   
 .sidebar .nav-link {
     font-size: .875rem;
@@ -110,10 +216,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
     color: $aps-black;
 }
 
-.sidebar .nav-link.active {
-    color: $aps-white;
-    background-color: $aps-red;
-}
+.sidebar 
   
 .sidebar-heading {
     font-size: .75rem;
@@ -121,10 +224,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 
 // Navbar
   
-.navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-}
+
   
 .navbar .form-control {
     padding: .75rem 1rem;
