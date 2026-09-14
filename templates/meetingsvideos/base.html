@@ -1,10 +1,11 @@
 {% extends "meetingsvideos/shell.html" %}
 
 {% block body %}
+  <a href="#main-content" class="screen-reader-text skip-to-main-content-link">Skip to main content</a>
   <header class="header-container">
     {% include "meetingsvideos/nav-components.html" %}
   </header>
-  <main class="container">
+  <main class="container" id="main-content">
     {% block main %}{% endblock %}
   </main>
 {% endblock %}

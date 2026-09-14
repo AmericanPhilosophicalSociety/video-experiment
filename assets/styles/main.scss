@@ -69,6 +69,22 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 
 // navigation styles
 
+.skip-to-main-content-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 1em;
+    background-color: $aps-black;
+    color: $aps-white;
+    opacity: 0;
+}
+
+.skip-to-main-content-link:focus {
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+}
+
 .header-container {
     width: 100%;
     margin: auto;
