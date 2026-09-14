@@ -12,6 +12,26 @@ $aps-black: rgb(0, 0, 0);
 $body-font: Raleway, sans-serif;
 $accent-font: Gelasio, serif;
 
+/*
+--color-50: #FFEDEA;
+--color-100: #FEDBD5;
+--color-200: #FCC9C1;
+--color-300: #FAB7AD;
+--color-400: #F6A599;
+--color-500: #F29386;
+--color-600: #ED8074;
+--color-700: #E76D61;
+--color-800: #E15850;
+--color-900: #DA413F;
+--color-950: #D2232E;
+*/
+
+/*
+#D2232E
+#A81C25
+#E04650
+*/
+
 html {
     scrollbar-gutter: stable;
     scroll-behavior: auto !important;
@@ -178,56 +198,32 @@ header .container-fluid {
     height: 1rem;
   }
   
-
-// Sidebar
-.sidebar #sidebarMenu {
-    right: 0;
-}
-
-.offcanvas-header {
-    background-color: $aps-red;
-    color: $aps-white;
-}
-
-@media (min-width: 768px) {
-    .sidebar > div {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 48px;
-        background-color: $light-gray !important;
-        border-radius: 8px;
-        opacity: 0.6;
-        border-block: 0.125em inset $dark-gray;
-    }
-}
-
-@media (min-width: 1400px) {
-    .sidebar > div {
-        margin: 0 1.5em;
-    }
-}
-  
-.sidebar .nav-link {
-    font-size: .875rem;
-    font-weight: 500;
-}
-  
-.sidebar .nav-link {
-    color: $aps-black;
-}
-
-.sidebar 
-  
-.sidebar-heading {
-    font-size: .75rem;
-}
-
 // Navbar
-  
-
   
 .navbar .form-control {
     padding: .75rem 1rem;
+}
+
+// Facets
+
+.active-facets-container ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.active-facets-container li {
+    list-style: none;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid $aps-red;
+    border-radius: 4rem;
+    margin: 0 0.75rem;
+    background-color: $light-gray;
+}
+
+.facet-cancel {
+    font-weight: 600;
+    font-size: 1.25rem;
 }
 
 // Main
@@ -288,18 +284,28 @@ main {
     background-color: $medium-gray !important;
     border-color: $medium-gray !important;
 }
-// cards
+// video results
 
-.teaser {
-    border-radius: 16px;
-    max-width: 540px;
-    margin-bottom: 3px;
-}
-
-.teaser > .card-header {
+.teaser-title {
     border-left: solid $aps-red;
     font: 1.75em $accent-font;
 }
+
+.teaser-title > h3 {
+    padding-left: 0.25rem;
+}
+
+/*
+.speaker-box {
+    background-color: $light-gray;
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    border-radius: 8px;
+}
+
+.speaker-box a {
+    color: $aps-red;
+}
+*/
 
 // video teaser
 

@@ -1,32 +1,44 @@
-<form class='facet-filter-panel' id="facetSubmit{{ breakpoint }}" method="GET">
-  {{ form }}
-  <button type="submit" class="btn btn-primary">Filter results</button>
-</form>
-{% comment %}
-<form method="GET">
-  <div class="form-floating">
-    <select class="form-select subjectSelect" id="subjectSelect{{ breakpoint }}" name="lcsh" aria-label="Select a subject">
-      <option selected>Choose...</option>
-      {% for subject in subjects %}
-      <option value="{{ subject.subject }}">{{ subject.subject }} ({{ subject.n }})</option>
-      {% endfor %}
-    </select>
-    <label for="subjectSelect{{ breakpoint }}">Select a subject</label>
-  </div>
-  <div class="form-floating">
-    <select class="form-select disciplineSelect" id="disciplineSelect{{ breakpoint }}" name="disipline" aria-label="Select a discipline">
-      <option selected>Choose...</option>
-      {% for discipline in disciplines %}
-      <option value="{{ discipline.discipline}}">{{ discipline.discipline }} ({{ discipline.n }})</option>
-      {% endfor %}
-    </select>
-    <label for="disciplineSelect{{ breakpoint }}">Select a discipline</label>
-  </div>
-  <div class="input-group">
-    <input type="number" min="2003" max="2025" class="form-control" aria-label="Start year" name="start" placeholder="Start">
-    <span class="input-group-text">→</span>
-    <input type="number" min="2003" max="2025" class="form-control" aria-label="End year" name="end" placeholder="End">
-  </div>
-  <button type="submit" class="btn btn-primary">Filter results</button>
-</form>
-{% endcomment %}
+{% load meetingsvideos_extras %}
+<h4>Filter by subject:</h4>
+<ul>
+  {% for subject in lcsh %}
+    <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
+  {% endfor %}
+</ul>
+<h4>Filter by discipline:</h4>
+<ul>
+  {% for discipline in disciplines %}
+    <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
+  {% endfor %}
+</ul>
+<h4>Filter by date:</h4>
+<div class="input-group" id="date-filter">
+  <input type="number" name="start" class="form-select" min="{{ start.date__min|date:"Y" }}" max="{{ end.date__max|date:"Y" }}" placeholder="{{ start.date__min|date:"Y"}}" id="id_start">
+  <span class="input-group-text">→</span>
+  <input type="number" name="end" class="form-select" min="{{ start.date__min|date:"Y" }}" max="{{ end.date__max|date:"Y" }}" placeholder="{{ end.date__max|date:"Y"}}" id="id_end">
+  <button type="submit" id="date-submit" class="btn btn-primary">Search by date</button>
+</div>
+<script>
+  const dateButton = document.querySelector("#date-submit");
+  dateButton.addEventListener("click", () => {
+    const startDate = document.querySelector("#id_start").value;
+    const endDate = document.querySelector("#id_end").value;
+    const paramsString = window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    if (startDate) {
+      if (searchParams.has("start")) {
+        searchParams.set("start", startDate);
+      } else {
+      searchParams.append("start", startDate)
+      }
+    }
+    if (endDate) {
+      if (searchParams.has("end")) {
+        searchParams.set("end", endDate);
+      } else {
+        searchParams.append("end", endDate)
+      }
+    }
+    window.location = "?" + searchParams.toString();
+  } )
+</script>

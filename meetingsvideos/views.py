@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
+from django.db.models import Count, Min, Max
 from .forms import (
     AdvancedSearchForm,
     FacetForm,
@@ -122,16 +123,15 @@ class Landing(ListView):
         return queryset
 
 
-class IndexView(HTMXMixin, FormMixin, ListView):
+class IndexView(HTMXMixin, ListView):
     # model = Video
     template_name = "meetingsvideos/index.html"
     context_object_name = "videos"
     paginate_by = 10
     partial_template = "meetingsvideos/video-list.html"
-    form_class = FacetForm
 
     def get_queryset(self):
-        queryset = Video.objects.exclude_inductions()
+        queryset = Video.objects.all()
         # Not very DRY - would be better to abstract logic out to FilterView
         subjects = self.request.GET.getlist("lcsh")
         disciplines = self.request.GET.getlist("discipline")
@@ -151,21 +151,43 @@ class IndexView(HTMXMixin, FormMixin, ListView):
             queryset = queryset.filter(date__range=(start, end))
         return queryset
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["object_list"] = self.object_list
-        return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lcsh = (
+            LCSH.objects.filter(video__in=self.object_list)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:20]
+        )
 
-    def get_initial(self):
-        initial = super().get_initial()
-        params = self.request.GET.dict()
-        for k, v in params.items():
-            if k in ["start", "end"]:
-                params[k] = int(v)
-            else:
-                params.update({k: [v]})
-        initial.update(params)
-        return initial
+        lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
+        context['lcsh'] = lcsh
+
+        disciplines = (
+            AcademicDiscipline.objects.filter(video__in=self.object_list)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
+        context['disciplines'] = disciplines
+
+        start = self.object_list.aggregate(Min("date"))
+        context["start"] = start
+    
+        end = self.object_list.aggregate(Max("date"))
+        context["end"] = end
+
+        # handle existing filter tags
+        selected_lcsh = self.request.GET.getlist('lcsh', '')
+        selected_lcsh = [{"type": "Subject", "query_word": "lcsh", "label": sub} for sub in selected_lcsh]
+        selected_disciplines = self.request.GET.getlist('discipline', '')
+        selected_disciplines = [{"type": "Discipline", "query_word": "discipline", "label": d} for d in selected_disciplines]
+        active_filters = selected_lcsh + selected_disciplines
+        context['active_filters'] = active_filters
+
+        return context
 
 
 class VideoDetail(DetailView):
