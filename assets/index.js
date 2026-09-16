@@ -1,8 +1,5 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
-// import { addBackToTop } from 'vanilla-back-to-top';
-
-// addBackToTop();
 
 window.htmx = htmx;
 
@@ -119,13 +116,24 @@ export function parseDateFilter() {
 }
 
 export function applyTabNav(baseUrl) {
-  const paramsString = window.location.search;
+  let paramsString = window.location.search;
   if (paramsString) {
-    const tabTarget = "/" + baseUrl + window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    if (searchParams.has("first_letter")) {
+      searchParams.delete("first_letter");
+    };
+    paramsString = "?" + searchParams.toString();
+    const tabTarget = "/" + baseUrl + paramsString;
+    console.log(tabTarget);
     const selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
     const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
-    defaultTab.forEach((e) => e.classList.remove("active"));
+    defaultTab.forEach((e) => {
+      e.classList.remove("active");
+      e.setAttribute('aria-selected', 'false');
+      e.removeAttribute('aria-current');
+    });
     selectedTab.classList.add("active");
+    selectedTab.setAttribute('aria-selected', 'true');
+    selectedTab.setAttribute('aria-current', 'page');
   }
-
 }
