@@ -323,7 +323,12 @@ main {
 }
 
 .teaser-title > h3 {
-    padding-left: 0.25rem;
+    padding-left: 0.5rem;
+}
+
+// TODO: additional styling
+.results-count {
+    padding: 0.5rem;
 }
 
 /*
@@ -415,7 +420,9 @@ main {
 
 .alpha-link {
     color: $aps-red;
-    cursor: pointer;
+    border: none;
+    background-color: inherit;
+    padding: 0;
 }
 
 // nav tabs
