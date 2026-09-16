@@ -1,22 +1,46 @@
 {% load meetingsvideos_extras %}
-<h4>Filter by subject:</h4>
-<ul>
-  {% for subject in lcsh %}
-    <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
-  {% endfor %}
-</ul>
-<h4>Filter by discipline:</h4>
-<ul>
-  {% for discipline in disciplines %}
-    <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
-  {% endfor %}
-</ul>
+{% if disciplines %}
+  <h4>Filter by discipline:</h4>
+  <ul>
+    {% for discipline in disciplines|slice:":10" %}
+      <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
+    {% endfor %}
+    {% if disciplines|length > 10 %}
+      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-disciplines" role="button" aria-expanded="false" aria-controls="expand-disciplines">...More</a>
+    {% endif %}
+  </ul>
+  {% if disciplines|length > 10 %}
+    <ul class="collapse" id="expand-disciplines">
+      {% for discipline in disciplines|slice:"10:" %}
+        <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
+{% if lcsh %}
+  <h4>Filter by subject:</h4>
+  <ul>
+    {% for subject in lcsh|slice:":10" %}
+      <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
+    {% endfor %}
+    {% if lcsh|length > 10 %}
+      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-subjects" role="button" aria-expanded="false" aria-controls="expand-subjects">...More</a>
+    {% endif %}
+  </ul>
+  {% if lcsh|length > 10 %}
+    <ul class="collapse" id="expand-subjects">
+      {% for subject in lcsh|slice:"10:" %}
+        <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
 <h4>Filter by date:</h4>
 <div class="input-group" id="date-filter">
   <input type="number" name="start" class="form-select" min="{{ start.date__min|date:"Y" }}" max="{{ end.date__max|date:"Y" }}" placeholder="{{ start.date__min|date:"Y"}}" id="id_start">
   <span class="input-group-text">→</span>
   <input type="number" name="end" class="form-select" min="{{ start.date__min|date:"Y" }}" max="{{ end.date__max|date:"Y" }}" placeholder="{{ end.date__max|date:"Y"}}" id="id_end">
-  <button type="submit" id="date-submit" class="btn btn-primary">Search by date</button>
+  <button type="submit" id="date-submit" class="btn btn-primary">Apply</button>
 </div>
 <script>
   const dateButton = document.querySelector("#date-submit");

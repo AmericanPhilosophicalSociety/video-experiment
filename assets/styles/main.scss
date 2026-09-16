@@ -228,6 +228,11 @@ header .container-fluid {
     flex-wrap: wrap;
 }
 
+.active-facets-container h4, .facets h4 {
+    font-family: $accent-font;
+    color: $aps-red;
+}
+
 .active-facets-container li {
     list-style: none;
     padding: 0.25rem 0.75rem;
@@ -240,6 +245,16 @@ header .container-fluid {
 .facet-cancel {
     font-weight: 600;
     font-size: 1.25rem;
+}
+
+.expand-listitem {
+    list-style: none;
+    text-align: end;
+}
+
+// TODO: pick a different color or style for this
+#facets-display-btn {
+    text-align: end;
 }
 
 // Main

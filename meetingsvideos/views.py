@@ -156,7 +156,7 @@ class IndexView(HTMXMixin, ListView):
             LCSH.objects.filter(video__in=self.object_list)
             .annotate(n=Count("heading"))
             .values_list("heading", "n")
-            .order_by("-n")[:20]
+            .order_by("-n")[:40]
         )
 
         lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
