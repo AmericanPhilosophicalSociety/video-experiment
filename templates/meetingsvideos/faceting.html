@@ -42,27 +42,3 @@
   <input type="number" name="end" class="form-select" min="{{ start.date__min|date:"Y" }}" max="{{ end.date__max|date:"Y" }}" placeholder="{{ end.date__max|date:"Y"}}" id="id_end">
   <button type="submit" id="date-submit" class="btn btn-primary">Apply</button>
 </div>
-<script>
-  const dateButton = document.querySelector("#date-submit");
-  dateButton.addEventListener("click", () => {
-    const startDate = document.querySelector("#id_start").value;
-    const endDate = document.querySelector("#id_end").value;
-    const paramsString = window.location.search;
-    const searchParams = new URLSearchParams(paramsString);
-    if (startDate) {
-      if (searchParams.has("start")) {
-        searchParams.set("start", startDate);
-      } else {
-      searchParams.append("start", startDate)
-      }
-    }
-    if (endDate) {
-      if (searchParams.has("end")) {
-        searchParams.set("end", endDate);
-      } else {
-        searchParams.append("end", endDate)
-      }
-    }
-    window.location = "?" + searchParams.toString();
-  } )
-</script>

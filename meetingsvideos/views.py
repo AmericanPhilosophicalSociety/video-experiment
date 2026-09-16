@@ -152,6 +152,8 @@ class IndexView(HTMXMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        count = self.object_list.count()
+        context["count"] = count
         lcsh = (
             LCSH.objects.filter(video__in=self.object_list)
             .annotate(n=Count("heading"))

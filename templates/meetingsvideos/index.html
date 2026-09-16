@@ -13,6 +13,9 @@
     {% include "meetingsvideos/faceting.html" %}
   </div>
   <div class="col-12 col-lg-8">
+    <div class="results-count">
+      Results: {{ count }}
+    </div>
     {% include "meetingsvideos/video-list.html" with videos=videos %}
   </div>
 </div>
@@ -20,5 +23,6 @@
 {% block extra_js %}
 <script>
   jsFunctions.makeActive("videoNav");
+  jsFunctions.parseDateFilter();
 </script>
 {% endblock %}
