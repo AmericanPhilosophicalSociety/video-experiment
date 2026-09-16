@@ -27,7 +27,7 @@
                 <li><a class="dropdown-item" href="{% url 'headings' %}">Subject Headings</a></li>
                 <li><a class="dropdown-item" href="{% url 'disciplines' %}">Academic Discipline</a></li>
                 {% if user.is_authenticated %}
-                  <li><a class="dropdown-item" href="{% url 'departments' %}">APS Department</li>
+                  <li><a class="dropdown-item" href="{% url 'departments' %}">APS Department</a></li>
                 {% endif %}
               </ul>
             </li>
