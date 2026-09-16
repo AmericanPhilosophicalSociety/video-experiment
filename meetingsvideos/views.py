@@ -3,7 +3,6 @@ from django.db import transaction
 from django.db.models import Count, Min, Max
 from .forms import (
     AdvancedSearchForm,
-    FacetForm,
     VideoForm,
     SpeakerForm,
     AffiliationFormSet,
