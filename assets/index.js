@@ -93,4 +93,39 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function parseDateFilter() {
+  const dateButton = document.querySelector("#date-submit");
+  dateButton.addEventListener("click", () => {
+    const startDate = document.querySelector("#id_start").value;
+    const endDate = document.querySelector("#id_end").value;
+    const paramsString = window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    if (startDate) {
+      if (searchParams.has("start")) {
+        searchParams.set("start", startDate);
+      } else {
+      searchParams.append("start", startDate)
+      }
+    }
+    if (endDate) {
+      if (searchParams.has("end")) {
+        searchParams.set("end", endDate);
+      } else {
+        searchParams.append("end", endDate)
+      }
+    }
+    window.location = "?" + searchParams.toString();
+  })
+}
 
+export function applyTabNav(baseUrl) {
+  const paramsString = window.location.search;
+  if (paramsString) {
+    const tabTarget = "/" + baseUrl + window.location.search;
+    const selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
+    const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
+    defaultTab.forEach((e) => e.classList.remove("active"));
+    selectedTab.classList.add("active");
+  }
+
+}

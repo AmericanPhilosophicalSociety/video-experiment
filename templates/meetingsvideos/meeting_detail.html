@@ -19,7 +19,7 @@ APS Meetings Videos - {{ meeting.display_date }}
                             newTab.classList.add('active')">
 {% for date in dates %}
   {% if forloop.first %}
-    <li class="nav-item">
+    <li class="nav-item htmx-tab">
       <button class="nav-link active" role="tab" aria-controls="tab-contents" aria-current="page" aria-selected="true" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
     </li>
   {% else %}
@@ -41,5 +41,6 @@ APS Meetings Videos - {{ meeting.display_date }}
 {% block extra_js %}
 <script>
   jsFunctions.makeActive("meetingsNav");
+  jsFunctions.applyTabNav("meetings/{{ meeting.slug }}/");
 </script>
 {% endblock %}
