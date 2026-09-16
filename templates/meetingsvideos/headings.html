@@ -9,16 +9,16 @@ APS Meetings Videos - Subjects
     <h1>Subject Headings</h1>
     <ul class="nav nav-tabs">
       <li class="nav-item nav-tab-link htmx-tab">
-        <button class="nav-link active" role="tab" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</button>
+        <button class="nav-link active" role="tab" aria-controls="tab-contents" aria-selected="true" hx-get="{% url 'headings' %}" hx-target="#headings-list" hx-push-url="true">All</button>
       </li>
       <li class="nav-item nav-tab-link htmx-tab">
-        <button class="nav-link" role="tab" aria-selected="false" hx-get="{% url 'headings' %}?q=TOPIC&q=COMPLEX_SUBJECT" hx-target="#headings-list" hx-push-url="true">Topics</button>
+        <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{% url 'headings' %}?q=TOPIC&q=COMPLEX_SUBJECT" hx-target="#headings-list" hx-push-url="true">Topics</button>
       </li>
       <li class="nav-item nav-tab-link htmx-tab">
-        <button class="nav-link" role="tab" aria-selected="false" hx-get="{% url 'headings' %}?q=PERSONAL_NAME&q=CORPORATE_NAME" hx-target="#headings-list" hx-push-url="true">Names</button>
+        <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{% url 'headings' %}?q=PERSONAL_NAME&q=CORPORATE_NAME" hx-target="#headings-list" hx-push-url="true">Names</button>
       </li>
       <li class="nav-item nav-tab-link htmx-tab">
-        <button class="nav-link" role="tab" aria-selected="false" hx-get="{% url 'headings' %}?q=GEOGRAPHIC" hx-target="#headings-list" hx-push-url="true">Geographic</button>
+        <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{% url 'headings' %}?q=GEOGRAPHIC" hx-target="#headings-list" hx-push-url="true">Geographic</button>
       </li>
     </ul>
     <div id="headings-list">

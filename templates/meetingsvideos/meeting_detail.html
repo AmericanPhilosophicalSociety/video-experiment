@@ -20,11 +20,11 @@ APS Meetings Videos - {{ meeting.display_date }}
 {% for date in dates %}
   {% if forloop.first %}
     <li class="nav-item">
-      <button class="nav-link active" role="tab" aria-current="page" aria-selected="true" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
+      <button class="nav-link active" role="tab" aria-controls="tab-contents" aria-current="page" aria-selected="true" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
     </li>
   {% else %}
     <li class="nav-item">
-      <button class="nav-link" role="tab" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
+      <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
     </li>
   {% endif %}
 {% endfor %}
