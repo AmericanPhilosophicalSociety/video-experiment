@@ -258,6 +258,10 @@ class Meeting(WithNotes):
     def get_program_manifest(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
 
+    def random_video_choices(self):
+        # note this is not performant but fine for current database size
+        return self.video_set.order_by('?')[:3]
+
     def __str__(self):
         return self.display_date
 
