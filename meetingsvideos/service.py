@@ -1,6 +1,7 @@
 from django.db.models import Q
 
-# from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.contrib.postgres.aggregates import ArrayAgg
 from .models import Video, Speaker, LCSH
 
 
@@ -18,6 +19,24 @@ def build_q_object(query, fields_to_search):
         icontains_q = Q((icontains_string, query))
         search |= icontains_q
     return search
+
+
+def video_search(query):
+    search_vector = SearchVector("title", weight="A") + SearchVector("speakers__display_name", weight="A") + SearchVector("abstract", weight="B") + SearchVector("disciplines_name", weight="C") + SearchVector("lcsh_headings", weight="C") + SearchVector("meeting__display_date", weight="D") + SearchVector("speakers_position", weight="D") + SearchVector("speakers_institution", weight="D")
+
+    search_query = SearchQuery(query)
+
+    # call ArrayAgg on many to many fields to eliminate dupes
+    # basic example
+    results = Video.objects.annotate(
+        lcsh_headings=ArrayAgg("lcsh__heading", distinct=True),
+        disciplines_name=ArrayAgg("academic_disciplines__name", distinct=True),
+        speakers_position=ArrayAgg("speakers__affiliation__position", distinct=True),
+        speakers_institution=ArrayAgg("speakers__affiliation__institution", distinct=True),
+        rank=SearchRank(search_vector, search_query),
+    ).filter(rank__gte=0.3).order_by("-rank")
+
+    return results
 
 
 # execute basic search

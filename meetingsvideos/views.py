@@ -30,7 +30,7 @@ from .models import (
     Affiliation,
 )
 
-from .service import basic_search, advanced_search
+from .service import video_search, basic_search, advanced_search
 
 
 class HTMXMixin:
@@ -463,15 +463,16 @@ def search(request):
 def search_results(request):
     if request.method == "POST":
         query = request.POST["q"]
-        videos, speakers, subjects = basic_search(query)
+        # videos, speakers, subjects = basic_search(query)
+        videos = video_search(query)
         return render(
             request,
             "meetingsvideos/search_results.html",
             {
                 "query": query,
                 "videos": videos,
-                "speakers": speakers,
-                "subjects": subjects,
+                "speakers": None,
+                "subjects": None,
             },
         )
     else:
