@@ -12,26 +12,28 @@
     <div class="random-samples">
     <h5>Randomly chosen videos:</h5>
     {% for video in meeting.random_video_choices %}
-      <h6><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></h6>
-      <p>
-      {% for speaker in video.speakers.all %}
-        {% if video.speakers.all|length > 2 %}
-          {% if forloop.last is not True %}
-            {{ speaker.display_name }}, 
-          {% else %}
-            and {{ speaker.display_name }}
-          {% endif %}
-        {% elif video.speakers.all|length == 2 %}
-          {% if forloop.last is not True %}
-            {{ speaker.display_name }} and 
+      <dl>
+        <dt><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></dt>
+        <dl>
+        {% for speaker in video.speakers.all %}
+          {% if video.speakers.all|length > 2 %}
+            {% if forloop.last is not True %}
+              {{ speaker.display_name }}, 
+            {% else %}
+              and {{ speaker.display_name }}
+            {% endif %}
+          {% elif video.speakers.all|length == 2 %}
+            {% if forloop.last is not True %}
+              {{ speaker.display_name }} and 
+            {% else %}
+              {{ speaker.display_name }}
+            {% endif %}
           {% else %}
             {{ speaker.display_name }}
           {% endif %}
-        {% else %}
-          {{ speaker.display_name }}
-        {% endif %}
-      {% endfor %}
-      </p>
+        {% endfor %}
+        </dl>
+      </dl>
     {% endfor %}
     </div>
   {% else %}

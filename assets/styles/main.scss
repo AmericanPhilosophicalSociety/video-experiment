@@ -452,7 +452,7 @@ main {
     font-size: 1.25em;
 }
 
-// meeting lists
+// meeting and symposia lists
 .meeting-teaser {
     border-radius: 0.375rem 0.375rem 16px 16px;
 }
@@ -470,6 +470,10 @@ main {
     color: $dark-gray;
 }
 
+.random-samples > dl {
+    padding-left: 1rem;
+}
+
 .accordion-header > .accordion-button {
     font: 0.75em $accent-font;
     background-color: $light-gray;
@@ -478,6 +482,10 @@ main {
 .accordion-button:not(.collapsed) {
     color: $aps-white;
     background-color: $aps-red;
+}
+
+.accordion-item a:hover{
+    color: $dark-gray;
 }
 
 // filter panel
