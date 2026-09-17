@@ -9,7 +9,7 @@ from .forms import (
     SpeakerFormSet,
     LCSHSubjectFormSet,
 )
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
@@ -447,6 +447,10 @@ class DepartmentDetail(LoginRequiredMixin, DetailView):
     model = APSDepartment
     template_name = "meetingsvideos/department_detail.html"
     context_object_name = "department"
+
+
+class AboutView(TemplateView):
+    template_name="meetingsvideos/about.html"
 
 
 def search(request):
