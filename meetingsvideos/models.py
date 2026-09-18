@@ -266,7 +266,7 @@ class Meeting(WithNotes):
         return self.display_date
 
     class Meta:
-        ordering = ["start_date"]
+        ordering = ["-start_date"]
 
 
 class ProgramInfo(WithNotes):

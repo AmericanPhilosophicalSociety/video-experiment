@@ -392,6 +392,31 @@ class MeetingsList(HTMXMixin, ListView):
     paginate_by = 10
     partial_template = "meetingsvideos/meetings-list.html"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        start, end = [self.request.GET.get("start"), self.request.GET.get("end")]
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            queryset = queryset.filter(start_date__range=(start, end))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        start = self.object_list.aggregate(Min("start_date"))
+        context["start"] = start
+
+        end = self.object_list.aggregate(Max("end_date"))
+        context["end"] = end
+
+        return context
+
 
 class MeetingDetail(HTMXMixin, DetailView):
     model = Meeting
