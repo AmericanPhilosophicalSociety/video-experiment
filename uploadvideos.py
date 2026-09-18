@@ -11,7 +11,7 @@ from meetingsvideos.models import (
     Symposium,
     Speaker,
     Affiliation,
-    LCSH
+    LCSH,
 )
 from loc_authorities.api import LocAPI
 from django.db import transaction, IntegrityError
@@ -25,6 +25,7 @@ from django.db import transaction, IntegrityError
 # )
 
 logging.getLogger(__name__)
+
 
 # converts EDTF date to datetime object
 def process_date(string):
@@ -80,14 +81,20 @@ def process_affiliation(position, institution, meeting, speaker):
     affiliation.meetings.add(meeting)
     return
 
+
 # create LCSH and add to associated object
 # can be used to associate LCSH with a video or a speaker
 def create_lcsh(cell, object, field):
     # if spreadsheet cell is empty, no LCSH need to be created
     if not cell:
         return
-    
-    lcsh_fields_name = ["lcsh_geographic", "lcsh_name_personal", "lcsh_name_corporate", "speaker_lcsh"]
+
+    lcsh_fields_name = [
+        "lcsh_geographic",
+        "lcsh_name_personal",
+        "lcsh_name_corporate",
+        "speaker_lcsh",
+    ]
     lcsh_fields_subject = ["lcsh_topic", "lcsh_temporal"]
 
     if field in lcsh_fields_name:
@@ -106,39 +113,45 @@ def create_lcsh(cell, object, field):
             category = "PERSONAL_NAME"
         case "lcsh_topic":
             category = "TOPIC"
-        #TODO: is this right? should it be topic?
+        # TODO: is this right? should it be topic?
         case "lcsh_temporal":
             category = "OTHER"
         case _:
             category = "OTHER"
-    
+
     loc = LocAPI()
 
     lcsh_list = cell.strip().split("|")
     for lcsh_str in lcsh_list:
-        #if LCSH already in database, retrieve and use that without querying LOC
+        # if LCSH already in database, retrieve and use that without querying LOC
         lcsh_from_db = LCSH.objects.filter(heading=lcsh_str.strip())
         if lcsh_from_db:
             lcsh_obj = lcsh_from_db[0]
             if len(lcsh_from_db) > 1:
-                logging.exception(f"WARNING: more than one match found for LCSH {lcsh_str}. Make sure your video was associated with the correct one")
+                logging.exception(
+                    f"WARNING: more than one match found for LCSH {lcsh_str}. Make sure your video was associated with the correct one"
+                )
         else:
             uri = loc.retrieve_label(lcsh_str.strip(), authority=authority)
             time.sleep(1)
             if uri:
-                #TODO: this seems to cause issues when alabel doesn't match what's in the spreadsheet?
+                # TODO: this seems to cause issues when alabel doesn't match what's in the spreadsheet?
                 try:
-                    lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), uri=uri, authority="LOC")
+                    lcsh_obj, created = LCSH.objects.get_or_create(
+                        heading=lcsh_str.strip(), uri=uri, authority="LOC"
+                    )
                 # handle race conditions created by combination of atomic transactions and get_or_create
                 except IntegrityError:
                     lcsh_obj = LCSH.objects.get(uri=uri)
                     created = False
-            #special case for handling complex subject headings that can't be validated through LOC API
+            # special case for handling complex subject headings that can't be validated through LOC API
             # elif "--" in lcsh_str:
             #     lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="LOC", category="COMPLEX_SUBJECT")
             else:
                 try:
-                    lcsh_obj, created = LCSH.objects.get_or_create(heading=lcsh_str.strip(), authority="OTHER", category=category)
+                    lcsh_obj, created = LCSH.objects.get_or_create(
+                        heading=lcsh_str.strip(), authority="OTHER", category=category
+                    )
                     logging.exception(f"No URI found for LCSH: {lcsh_str}")
                 except IntegrityError:
                     lcsh_obj = LCSH.objects.get(uri=uri)
@@ -158,7 +171,7 @@ def create_lcsh(cell, object, field):
         #     object.lcsh = lcsh_obj
         #     object.label = lcsh_obj.heading
         #     object.save()
-        
+
 
 # create speaker object and add to video
 # only process display name and affiliation - speaker LCSH will be handled with other LCSH
@@ -170,7 +183,7 @@ def add_speaker_to_video(
     position_2,
     institution_2,
     meeting,
-    label
+    label,
 ):
     # CREATE SPEAKER LCSH FIRST
     # or do as a get or create?
@@ -181,8 +194,7 @@ def add_speaker_to_video(
 
     try:
         speaker, created = Speaker.objects.get_or_create(
-            display_name=display_name.strip(),
-            lcsh=lcsh_obj
+            display_name=display_name.strip(), lcsh=lcsh_obj
         )
     except IntegrityError:
         # handle race condition where speaker is created by another thread while get_or_create runs, AND condition where two different display names are given for the same speaker
@@ -219,7 +231,9 @@ def process_symposium(title, meeting, date):
                 symposium.save()
                 print("Symposium added: " + symposium.title)
             except Exception as e:
-                logging.exception(f"Error saving symposium {symposium} for meeting {meeting}")
+                logging.exception(
+                    f"Error saving symposium {symposium} for meeting {meeting}"
+                )
                 symposium.delete()
                 raise
         return symposium
@@ -292,7 +306,13 @@ def process_video(row):
         # do for lcsh_topic, lcsh_geographic, lcsh_temporal, lcsh_name_personal
         # need to split for all of these
         # print to log if not valid
-        lcsh_fields = ["lcsh_geographic", "lcsh_name_personal", "lcsh_name_corporate", "lcsh_topic", "lcsh_temporal"]
+        lcsh_fields = [
+            "lcsh_geographic",
+            "lcsh_name_personal",
+            "lcsh_name_corporate",
+            "lcsh_topic",
+            "lcsh_temporal",
+        ]
 
         for field in lcsh_fields:
             create_lcsh(row[field], video, field)
@@ -334,4 +354,6 @@ def upload_videos():
                 with transaction.atomic():
                     process_video(row)
             except Exception as e:
-                logging.exception(f"Error saving video {row['title']} in meeting {row['meeting']}")
+                logging.exception(
+                    f"Error saving video {row['title']} in meeting {row['meeting']}"
+                )

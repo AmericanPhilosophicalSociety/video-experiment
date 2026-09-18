@@ -168,7 +168,7 @@ class Speaker(models.Model):
     # prevent deletion of LCSH if still associated with a speaker
     lcsh = models.OneToOneField(LCSH, on_delete=models.PROTECT)
     objects = SpeakerManager()
-    #TODO: is this redundant with LCSH?
+    # TODO: is this redundant with LCSH?
     label = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from="display_name", unique=True)
 
@@ -257,6 +257,10 @@ class Meeting(WithNotes):
 
     def get_program_manifest(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
+
+    def random_video_choices(self):
+        # note this is not performant but fine for current database size
+        return self.video_set.order_by("?")[:3]
 
     def __str__(self):
         return self.display_date
