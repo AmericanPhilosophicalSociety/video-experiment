@@ -162,7 +162,7 @@ class IndexView(HTMXMixin, ListView):
         )
 
         lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
-        context['lcsh'] = lcsh
+        context["lcsh"] = lcsh
 
         disciplines = (
             AcademicDiscipline.objects.filter(video__in=self.object_list)
@@ -172,21 +172,27 @@ class IndexView(HTMXMixin, ListView):
         )
 
         disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
-        context['disciplines'] = disciplines
+        context["disciplines"] = disciplines
 
         start = self.object_list.aggregate(Min("date"))
         context["start"] = start
-    
+
         end = self.object_list.aggregate(Max("date"))
         context["end"] = end
 
         # handle existing filter tags
-        selected_lcsh = self.request.GET.getlist('lcsh', '')
-        selected_lcsh = [{"type": "Subject", "query_word": "lcsh", "label": sub} for sub in selected_lcsh]
-        selected_disciplines = self.request.GET.getlist('discipline', '')
-        selected_disciplines = [{"type": "Discipline", "query_word": "discipline", "label": d} for d in selected_disciplines]
+        selected_lcsh = self.request.GET.getlist("lcsh", "")
+        selected_lcsh = [
+            {"type": "Subject", "query_word": "lcsh", "label": sub}
+            for sub in selected_lcsh
+        ]
+        selected_disciplines = self.request.GET.getlist("discipline", "")
+        selected_disciplines = [
+            {"type": "Discipline", "query_word": "discipline", "label": d}
+            for d in selected_disciplines
+        ]
         active_filters = selected_lcsh + selected_disciplines
-        context['active_filters'] = active_filters
+        context["active_filters"] = active_filters
 
         return context
 
@@ -450,7 +456,7 @@ class DepartmentDetail(LoginRequiredMixin, DetailView):
 
 
 class AboutView(TemplateView):
-    template_name="meetingsvideos/about.html"
+    template_name = "meetingsvideos/about.html"
 
 
 def search(request):
@@ -476,7 +482,7 @@ def search_results(request):
             },
         )
     else:
-        return redirect("search")
+        return redirect("index")
 
 
 def search_results_advanced(request):

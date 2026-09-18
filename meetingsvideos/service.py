@@ -22,19 +22,35 @@ def build_q_object(query, fields_to_search):
 
 
 def video_search(query):
-    search_vector = SearchVector("title", weight="A") + SearchVector("speakers__display_name", weight="A") + SearchVector("abstract", weight="B") + SearchVector("disciplines_name", weight="C") + SearchVector("lcsh_headings", weight="C") + SearchVector("meeting__display_date", weight="D") + SearchVector("speakers_position", weight="D") + SearchVector("speakers_institution", weight="D")
-
-    search_query = SearchQuery(query)
+    search_vector = (
+        SearchVector("title", config="english_unaccent", weight="A")
+        + SearchVector("speakers__display_name", config="english_unaccent", weight="A")
+        + SearchVector("abstract", config="english_unaccent", weight="B")
+        + SearchVector("disciplines_name", config="english_unaccent", weight="C")
+        + SearchVector("lcsh_headings", config="english_unaccent", weight="C")
+        + SearchVector("meeting__display_date", config="english_unaccent", weight="C")
+        + SearchVector("speakers_position", config="english_unaccent", weight="C")
+        + SearchVector("speakers_institution", config="english_unaccent", weight="C")
+    )
+    search_query = SearchQuery(query, config="english_unaccent")
 
     # call ArrayAgg on many to many fields to eliminate dupes
     # basic example
-    results = Video.objects.annotate(
-        lcsh_headings=ArrayAgg("lcsh__heading", distinct=True),
-        disciplines_name=ArrayAgg("academic_disciplines__name", distinct=True),
-        speakers_position=ArrayAgg("speakers__affiliation__position", distinct=True),
-        speakers_institution=ArrayAgg("speakers__affiliation__institution", distinct=True),
-        rank=SearchRank(search_vector, search_query),
-    ).filter(rank__gte=0.3).order_by("-rank")
+    results = (
+        Video.objects.annotate(
+            lcsh_headings=ArrayAgg("lcsh__heading", distinct=True),
+            disciplines_name=ArrayAgg("academic_disciplines__name", distinct=True),
+            speakers_position=ArrayAgg(
+                "speakers__affiliation__position", distinct=True
+            ),
+            speakers_institution=ArrayAgg(
+                "speakers__affiliation__institution", distinct=True
+            ),
+            rank=SearchRank(search_vector, search_query),
+        )
+        .filter(rank__gte=0.1)
+        .order_by("-rank")
+    )
 
     return results
 
