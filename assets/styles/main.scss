@@ -1,16 +1,16 @@
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
 $aps-red: rgb(210, 35, 46);
-$light-gray: rgb(209, 211, 212);
+$light-gray: rgb(238, 145, 149);
 $light-gray-reduced-opacity: rgb(209, 211, 212, 0.8);
 $medium-gray: rgb(138, 140, 142);
 $dark-gray: rgb(77, 77, 79);
 $dark-gray-reduced-opacity: rgb(77, 77, 79, 0.4);
 $aps-white: rgb(255, 255, 255);
-$aps-black: rgb(0, 0, 0);
+$aps-black: rgb(51, 51, 51);
 
-$body-font: Raleway, sans-serif;
-$accent-font: Gelasio, serif;
+$body-font: "Noto Sans", sans-serif;
+$accent-font: "Libre Caslon Text", serif;
 
 /*
 --color-50: #FFEDEA;
@@ -272,13 +272,15 @@ main {
 }
 
 #hero {
-    background-color: $light-gray-reduced-opacity;
+    background-color: $aps-black;
     margin-top: 3rem;
     padding-bottom: 3em;
+    color: $aps-white;
 }
 
 #hero-title {
     font: 2em $accent-font;
+    color: $aps-white !important;
 }
 
 .landing-card {
