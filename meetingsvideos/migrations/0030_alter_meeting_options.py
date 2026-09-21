@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('meetingsvideos', '0029_create_unaccent_extension'),
+        ("meetingsvideos", "0029_create_unaccent_extension"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='meeting',
-            options={'ordering': ['-start_date']},
+            name="meeting",
+            options={"ordering": ["-start_date"]},
         ),
     ]

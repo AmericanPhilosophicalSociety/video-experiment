@@ -516,15 +516,14 @@ def search_results(request):
             videos = videos.filter(date__range=(start, end))
 
         selected_lcsh = [
-            {"type": "Subject", "query_word": "lcsh", "label": sub}
-            for sub in subjects
+            {"type": "Subject", "query_word": "lcsh", "label": sub} for sub in subjects
         ]
 
         selected_disciplines = [
             {"type": "Discipline", "query_word": "discipline", "label": d}
             for d in disciplines
         ]
-    
+
         active_filters = selected_lcsh + selected_disciplines
 
         count = videos.count()
