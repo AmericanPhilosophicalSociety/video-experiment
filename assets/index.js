@@ -1,5 +1,7 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
+import '@videojs/html/video/player';
+import '@videojs/html/video/skin';
 
 window.htmx = htmx;
 

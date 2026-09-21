@@ -9,6 +9,7 @@ node_modules/
 static/css/main.css
 static/css/main.css.map
 static/index-bundle.js
+static/node_modules_*
 videoupload.log
 servicefromnode.py
 urls.txt

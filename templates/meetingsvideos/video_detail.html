@@ -28,29 +28,11 @@
   </ul>
 
   <!--Set width and height in CSS and use media query for small breakpoints-->
-  <video
-    id="meeting-video"
-    class="video-js vjs-16-9"
-    controls
-    preload="auto"
-    poster="{% static 'images/aps-logo-mono.png' %}"
-    data-setup='{}'
-  >
-    <source src="{{ video.service_file }}" type="video/mp4" />
-    <p class="vjs-no-js">
-      To view this video please enable JavaScript, and consider upgrading to a
-      web browser that
-      <a href="https://videojs.com/html5-video-support/" target="_blank"
-        >supports HTML5 video</a>
-    </p>
-  </video>
-<!--
-<video width="320" height="240" controls>
-    <source src="{{ video.service_file }}" type="video/mp4">
-    <source src="{{ video.service_file }}" type="video/ogg">
-  Your browser does not support the video tag.
-</video>
--->
+  <video-player poster="{% static 'images/aps-logo-mono.png' %}">
+    <video-skin class="aspect-video">
+      <video id="meeting-video" preload="auto" src="{{ video.service_file }}"></video>
+    </video-skin>
+  </video-player>
 
 {% if video.display_notes %}
 <p>{{ video.display_notes }}</p>
@@ -142,5 +124,4 @@
 <script>
   jsFunctions.makeActive("videoNav");
 </script>
-<script src="https://vjs.zencdn.net/8.23.3/video.min.js"></script>
 {% endblock %}
