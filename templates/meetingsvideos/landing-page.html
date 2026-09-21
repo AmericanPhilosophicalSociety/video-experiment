@@ -1,14 +1,14 @@
-{% extends "meetingsvideos/shell.html" %}
+{% extends "meetingsvideos/base.html" %}
 {% load static %}
 
 {% block title %}
 APS Meetings Videos
 {% endblock %}
 
-{% block body %}
+{% block main %}
 
 <div id="landing">
-    <div class="container col-xxl-8 px-4 py-4">
+    <div class="container">
         <div id="hero" class="row flex-lg-row-reverse align-items-center g-5">
             <div class="col-10 col-sm-8 col-lg-6">
                 <img src="{% static 'images/meeting-pic.jpg' %}" class="d-block mx-lg-auto img-fluid" alt="Logo of the American Philosophical Society" width="700" height="500" loading="lazy">
@@ -22,7 +22,7 @@ APS Meetings Videos
             <div class="col-lg-6">
                 <h1 id="hero-title" class="display-5 fw-bold text-body-emphasis lh-1 mb-3">APS Meetings Archive: A Legacy of Useful Knowledge</h1>
                 <p class="lead">Each April and November, the American Philosophical Society convenes nearly 350 Members, their families, and distinguished guests for its biannual Meetings of the Members. These gatherings showcase the wide-ranging interests and expertise of the Society's community, offering a rare opportunity to explore ideas at the intersection of science, the humanities, and public life.</p>
-                <p class="lead">This archive offers access to the rich history of past Meetings, where groundbreaking ideas and timeless questions come to life.</p>
+                <p class="lead">Start exploring via the search bar above, or view one of the three randomly selected talks below.</p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> 
                     <a href="{% url 'index' %}" class="btn btn-lg btn-primary">Explore</a>
 
@@ -30,7 +30,7 @@ APS Meetings Videos
             </div>
         </div>
     </div>
-    <main class="container">
+    <div class="container">
         <div class="card-group">
             {% for video in videos %}
                 <div class="card landing-card">
@@ -54,6 +54,6 @@ APS Meetings Videos
                 </div>
             {% endfor %}
         </div>
-    </main>
+    </div>
 </div>
 {% endblock %}

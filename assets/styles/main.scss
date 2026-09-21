@@ -267,24 +267,14 @@ main {
 
 // Landing page
 
-#landing {
-    background-image: url("/static/images/aps-seal.png");
-    background-color: rgb(255, 255, 255, 0.9);
-    background-blend-mode: lighten;
-    // background properties need media queries
-    background-size: auto 70%;
-    background-repeat: no-repeat;
-    // background-position: 75% 100%;
-    background-position: Max(0px, calc(100vw - 550px)) bottom;
-    background-attachment: fixed;
+#landing > .container {
+    padding: 2rem 0;
 }
 
 #hero {
     background-color: $light-gray-reduced-opacity;
     margin-top: 3rem;
     padding-bottom: 3em;
-    border-radius: 1.5em;
-    border-block: 0.125em inset $dark-gray;
 }
 
 #hero-title {
@@ -298,7 +288,13 @@ main {
 .landing-card > .card-header {
     border-left: solid $aps-red;
     font: 1.25em $accent-font;
+    border-radius: 0;
 }
+
+.card.landing-card {
+    border-radius: 0;
+}
+
 // buttons
 
 .btn-primary {
