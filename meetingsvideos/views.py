@@ -493,7 +493,7 @@ def search(request):
 
 def search_results(request):
     if request.method == "GET":
-        query = request.GET["q"]
+        query = request.GET.get("q")
         # videos, speakers, subjects = basic_search(query)
         videos = video_search(query)
 
