@@ -24,19 +24,6 @@ htmx.onLoad(function(content) {
   }
 });
 
-function searchTabClick(event) {
-  const activeTabs = [document.querySelector('.nav-tab-link .active'), document.querySelector('.tab-pane.active')];
-  activeTabs.forEach(d => d.classList.remove('active'));
-  const newTab = event.target;
-  newTab.classList.add('active')
-  const target = newTab.href.split('#')[1]
-  document.getElementById(target).classList.add('active');
-}
-
-export function makeSearchTabs() {
-  const tabs = document.getElementById('nav-tabs');
-  tabs.addEventListener('click', searchTabClick);
-}
 
 function facetSubmit(event, element) {
   event.preventDefault();
