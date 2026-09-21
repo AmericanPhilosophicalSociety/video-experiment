@@ -48,8 +48,7 @@
       </div>
     </div>
     <div class="searchbar">
-      <form id="navbarSearch" role="search" action="{% url 'search_results' %}" method="post" class="navbar-search collapse navbar-collapse container">
-        {% csrf_token %}
+      <form id="navbarSearch" role="search" action="{% url 'search_results' %}" method="get" class="navbar-search collapse navbar-collapse container">
         <div class="input-group searchbar-input">
           <input type="text" class="form-control w-100 text-end" placeholder="Search..." aria-label="Search" aria-describedby="search-button" name="q">
           <button class="btn btn-outline-secondary" type="submit" id="search-button">

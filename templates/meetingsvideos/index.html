@@ -14,7 +14,7 @@
   </div>
   <div class="col-12 col-lg-8">
     <div class="results-count">
-      Results: {{ count }}
+      <p>{{ count }}{% if count > 1%} results{% else %} result{% endif %}</p>
     </div>
     {% include "meetingsvideos/video-list.html" with videos=videos %}
   </div>

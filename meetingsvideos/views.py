@@ -492,18 +492,76 @@ def search(request):
 
 
 def search_results(request):
-    if request.method == "POST":
-        query = request.POST["q"]
+    if request.method == "GET":
+        query = request.GET["q"]
         # videos, speakers, subjects = basic_search(query)
         videos = video_search(query)
+
+        # reuse logic from IndexView - not very DRY
+        subjects = request.GET.getlist("lcsh")
+        disciplines = request.GET.getlist("discipline")
+        start, end = [request.GET.get("start"), request.GET.get("end")]
+        for subject in subjects:
+            videos = videos.filter(lcsh__heading=subject)
+        for discipline in disciplines:
+            videos = videos.filter(academic_disciplines__name=discipline)
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            videos = videos.filter(date__range=(start, end))
+
+        selected_lcsh = [
+            {"type": "Subject", "query_word": "lcsh", "label": sub}
+            for sub in subjects
+        ]
+
+        selected_disciplines = [
+            {"type": "Discipline", "query_word": "discipline", "label": d}
+            for d in disciplines
+        ]
+    
+        active_filters = selected_lcsh + selected_disciplines
+
+        count = videos.count()
+
+        lcsh = (
+            LCSH.objects.filter(video__in=videos)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:40]
+        )
+
+        lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
+
+        disciplines = (
+            AcademicDiscipline.objects.filter(video__in=videos)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
+
+        start = videos.aggregate(Min("date"))
+        end = videos.aggregate(Max("date"))
+
         return render(
             request,
             "meetingsvideos/search_results.html",
             {
                 "query": query,
                 "videos": videos,
-                "speakers": None,
-                "subjects": None,
+                "count": count,
+                "lcsh": lcsh,
+                "disciplines": disciplines,
+                "start": start,
+                "end": end,
+                "active_filters": active_filters,
             },
         )
     else:
