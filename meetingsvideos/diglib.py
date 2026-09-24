@@ -2,7 +2,9 @@
 Scripts for communicating with the APS digital library
 """
 
+import json
 import logging
+import os
 import requests
 
 from django.conf import settings
@@ -76,7 +78,7 @@ class DiglibAPI:
         return thumbnail_path
 
     def generate_iiif_data(self, node_id, metadata, pdf_path, thumbnail_path):
-        doc_id = settings.BASE_URL + '/static/manifests/' + str(node_id)
+        doc_id = settings.BASE_URL + os.path.join(settings.STATIC_URL, 'manifests', str(node_id))
         iiif_data = {
             "@context": "https://iiif.io/api/presentation/2/context.json",
             "@id": doc_id,
@@ -135,3 +137,17 @@ class DiglibAPI:
         iiif_data.update("metadata": prepped_metadata)
 
         return iiif_data
+
+    def make_iiif_manifest(self, node_id):
+        """Generate but don't save IIIF manifest"""
+        metadata, mid = self.get_pdf_metadata(node_id)
+        pdf_path = self.retrieve_original_filepath(mid)
+        thumbnail_path = self.retrieve_thumbnail_path(node_id)
+        iiif_data = generate_iiif_data(node_id, metadata, pdf_path, thumbnail_path)
+        return iiif_data
+
+    def generate_and_save_iiif_manifest(node_id):
+        iiif_data = self.make_iiif_manifest(node_id)
+        filepath = os.path.join(settings.STATIC_URL, 'manifests', str(node_id))
+        with open(filepath, 'w') as f:
+            json.dump(iiif_data, f)
