@@ -39,6 +39,8 @@ def upload_meetings():
                     
                     if row["program_node"]:
                         meeting.program_node = row["program_node"]
+                        if row["program_viewer"] == "IIIF":
+                            meeting.manifest = f'https://diglib.amphilsoc.org/node/{meeting.program_node}/manifest'
                     meeting.save()
                     print(f"Meeting created: {row['display_date']}")
                     # print(process_date(row['start_date']))

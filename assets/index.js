@@ -96,10 +96,9 @@ window.addEventListener("DOMContentLoaded", (evt) => {
 
 export function initUV() {
   const uvDiv = document.querySelector("#uv");
-  const programNode = uvDiv.dataset.programNode;
+  const programManifest = uvDiv.dataset.manifest;
   const data = {
-    // manifest: `https://diglib.amphilsoc.org/node/${programNode}/manifest`,
-    manifest: "/static/manifests/sample/manifest.json",
+    manifest: programManifest,
     embedded: true
   };
 

@@ -56,7 +56,7 @@ class DiglibAPI:
         api_url = self.base_url + 'media/'
         url = api_url + str(mid) + '?_format=json'
         r = self.session.get(url).json()
-        pdf_path = r['field_media_document']['0']['url']
+        pdf_path = r['field_media_document'][0]['url']
         return pdf_path
 
 
@@ -83,27 +83,31 @@ class DiglibAPI:
             "@context": "https://iiif.io/api/presentation/2/context.json",
             "@id": doc_id,
             "@type": "sc:Manifest",
-            "label": metadata["title"]
+            "label": metadata["title"],
             "thumbnail": {
                 "@id": thumbnail_path,
                 "@type": "dctypes:Image",
             },
             "mediaSequences": [
                 {
-                    "@id": doc_id + '/s0'
+                    "@id": doc_id + '/s0',
                     "@type": "ixif:MediaSequence",
                     "label": "XSequence 0",
                     "elements": [
-                        "@id": pdf_path,
-                        "@type": "foaf:Document",
-                        "format": "application/pdf",
-                        "label": metadata["title"],
-                        "metadata": [
-                            "label" "pages",
-                            "value": metadata['field_extent'].replace('p.', '')
-                        ],
-                        "thumbnail": thumbnail_path,
-                    ]
+                        {
+                            "@id": pdf_path,
+                            "@type": "foaf:Document",
+                            "format": "application/pdf",
+                            "label": metadata["title"],
+                            "metadata": [
+                                {
+                                    "label": "pages",
+                                    "value": metadata['field_extent'].replace('p.', '')
+                                },
+                            ],
+                            "thumbnail": thumbnail_path,
+                        },
+                    ],
                 },
             ]
         }
@@ -134,7 +138,7 @@ class DiglibAPI:
              extent = metadata['field_extent'].split('|')[0]
              prepped_metadata.append(format_metadata("Extent", extent))
 
-        iiif_data.update("metadata": prepped_metadata)
+        iiif_data.update({"metadata": prepped_metadata})
 
         return iiif_data
 
@@ -143,11 +147,17 @@ class DiglibAPI:
         metadata, mid = self.get_pdf_metadata(node_id)
         pdf_path = self.retrieve_original_filepath(mid)
         thumbnail_path = self.retrieve_thumbnail_path(node_id)
-        iiif_data = generate_iiif_data(node_id, metadata, pdf_path, thumbnail_path)
+        iiif_data = self.generate_iiif_data(node_id, metadata, pdf_path, thumbnail_path)
         return iiif_data
 
-    def generate_and_save_iiif_manifest(node_id):
+    def generate_and_save_iiif_manifest(self, node_id):
         iiif_data = self.make_iiif_manifest(node_id)
-        filepath = os.path.join(settings.STATIC_URL, 'manifests', str(node_id))
+        manifest_folder = os.path.join(settings.STATIC_URL, 'manifests', str(node_id))
+        manifest_folder = manifest_folder.lstrip('/')
+        filepath = os.path.join(manifest_folder, 'manifest.json')
+        # ensure that directory exists
+        os.makedirs(manifest_folder, exist_ok=True)
         with open(filepath, 'w') as f:
             json.dump(iiif_data, f)
+
+        return iiif_data

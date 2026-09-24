@@ -6,6 +6,8 @@ from autoslug import AutoSlugField
 from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
 import logging
 
+from .diglib import DiglibAPI
+
 logger = logging.getLogger(__name__)
 
 
@@ -259,7 +261,10 @@ class Meeting(WithNotes):
     def generate_manifest(self):
         """Generate a manifest. This does not save, so you must separately call save"""
         if not self.manifest:
-            pass
+            diglib = DiglibAPI()
+            iiif_data = diglib.generate_and_save_iiif_manifest(self.node_id)
+            manifest_path = iiif_data["@id"] + "/manifest.json"
+            self.manifest = manifest_path
         
 
     def __str__(self):
