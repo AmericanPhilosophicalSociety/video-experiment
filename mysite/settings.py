@@ -26,6 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DB_SECRET_KEY")
 
+# Credentials for the APS Digital Library
+APS_DIGLIB_USERNAME = os.getenv("APS_DIGLIB_USERNAME")
+APS_DIGLIB_PASSWORD = os.getenv("APS_DIGLIB_PASSWORD")
+
+TECHNICAL_CONTACT = os.getenv("TECHNICAL_CONTACT")
+
+# base URL for use in constructing IIIF manifests
+BASE_URL = os.getenv('DJANGO_BASE_URL', 'http://127.0.0.1:8000')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

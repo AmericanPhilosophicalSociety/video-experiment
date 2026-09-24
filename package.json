@@ -32,6 +32,7 @@
     "htmx.org": "^2.0.6",
     "postcss-loader": "^8.1.1",
     "sass-loader": "^16.0.5",
-    "style-loader": "^4.0.0"
+    "style-loader": "^4.0.0",
+    "universalviewer": "^4.4.4"
   }
 }

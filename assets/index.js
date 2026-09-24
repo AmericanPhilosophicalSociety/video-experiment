@@ -1,5 +1,6 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
+import { init } from "universalviewer";
 // import { addBackToTop } from 'vanilla-back-to-top';
 
 // addBackToTop();
@@ -93,4 +94,16 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function initUV() {
+  const uvDiv = document.querySelector("#uv");
+  const programNode = uvDiv.dataset.programNode;
+  const data = {
+    // manifest: `https://diglib.amphilsoc.org/node/${programNode}/manifest`,
+    manifest: "/static/manifests/sample/manifest.json",
+    embedded: true
+  };
 
+  console.log(data.manifest)
+  init("uv", data);
+
+}
