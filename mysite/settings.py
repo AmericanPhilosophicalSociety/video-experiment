@@ -26,6 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DB_SECRET_KEY")
 
+# Credentials for the APS Digital Library
+APS_DIGLIB_USERNAME = os.getenv("APS_DIGLIB_USERNAME")
+APS_DIGLIB_PASSWORD = os.getenv("APS_DIGLIB_PASSWORD")
+
+TECHNICAL_CONTACT = os.getenv("TECHNICAL_CONTACT")
+
+# base URL for use in constructing IIIF manifests
+BASE_URL = os.getenv('DJANGO_BASE_URL', 'http://127.0.0.1:8000')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -35,6 +44,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     "meetingsvideos.apps.MeetingsvideosConfig",
     "import_export",
     "dal",
@@ -48,10 +58,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "django_htmx",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -137,10 +150,9 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static/")]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static/")]
 
 LOGIN_REDIRECT_URL = "/index/"
 
@@ -152,6 +164,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 LOGGING = {
     "version": 1,

@@ -1,5 +1,7 @@
-{% for video in videos %}
-  
-{% include "meetingsvideos/video_preview.html" with with_dates=False %}
-  
-{% endfor %}
+{% if program %}
+  {% include "meetingsvideos/program-viewer.html" %}
+{% else %}
+  {% for video in videos %}
+    {% include "meetingsvideos/video_preview.html" with with_dates=False %}
+  {% endfor %}
+{% endif %}

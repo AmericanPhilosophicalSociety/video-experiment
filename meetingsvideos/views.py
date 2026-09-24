@@ -376,8 +376,15 @@ class MeetingDetail(HTMXMixin, DetailView):
         context["dates"] = dates
         param = self.request.GET.get("q")
         if param:
-            parsed_param = [int(p) for p in param.split("-")]
-            query_date = datetime.date(*parsed_param)
+            try:
+                parsed_param = [int(p) for p in param.split("-")]
+                query_date = datetime.date(*parsed_param)
+                context["program"] = False
+            # if param is for program, it will produce a value error
+            # return some videos so we know videos exist
+            except ValueError:
+                query_date = dates[0]
+                context["program"] = True
         else:
             try:
                 query_date = dates[0]

@@ -1,5 +1,6 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
+import { init } from "universalviewer";
 // import { addBackToTop } from 'vanilla-back-to-top';
 
 // addBackToTop();
@@ -93,4 +94,15 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function initUV() {
+  const uvDiv = document.querySelector("#uv");
+  const programManifest = uvDiv.dataset.programManifest;
+  const data = {
+    manifest: programManifest,
+    embedded: true
+  };
 
+  console.log(data.manifest)
+  init("uv", data);
+
+}

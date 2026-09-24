@@ -10,7 +10,6 @@ APS Meetings Videos - {{ meeting.display_date }}
   {% if videos|length > 0 %}
   <ul class="nav nav-tabs" hx-target
   hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
-                            console.log(currentTab)
                             currentTab.setAttribute('aria-selected', 'false')
                             currentTab.classList.remove('active')
                             currentTab.removeAttribute('aria-current')
@@ -29,10 +28,21 @@ APS Meetings Videos - {{ meeting.display_date }}
     </li>
   {% endif %}
 {% endfor %}
+{% if meeting.program_node %}
+  <li class="nav-item">
+    <a class="nav-link" aria-selected="false" hx-get="{{ request.path }}?q=program" hx-target=".meetings-videos" hx-push-url="true">Program and Ephemera</a>
+  </li>
+{% endif %}
 </ul>
+{% if program %}
+  <div class="meetings-videos">
+    {% include "meetingsvideos/program-viewer.html" %}
+  </div>
+{% else %}
   <div class="meetings-videos">
   {% include "meetingsvideos/meeting-video-list.html" %}
   </div>
+  {% endif %}
 {% else %}
 <p>No videos are available for this meeting.</p>
 <p>{{ meeting.display_notes }}</p>

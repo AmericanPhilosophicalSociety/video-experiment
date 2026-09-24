@@ -6,6 +6,8 @@ from autoslug import AutoSlugField
 from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
 import logging
 
+from .diglib import DiglibAPI
+
 logger = logging.getLogger(__name__)
 
 
@@ -244,6 +246,7 @@ class Meeting(WithNotes):
         blank=True,
     )
     program_node = models.IntegerField(blank=True, null=True, unique=True)
+    manifest = models.URLField(blank=True, null=True)
     slug = AutoSlugField(populate_from="display_date", unique=True)
 
     def videos_by_time(self):
@@ -255,8 +258,14 @@ class Meeting(WithNotes):
     def get_program_url(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}"
 
-    def get_program_manifest(self):
-        return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
+    def generate_manifest(self):
+        """Generate a manifest. This does not save, so you must separately call save"""
+        if not self.manifest:
+            diglib = DiglibAPI()
+            iiif_data = diglib.generate_and_save_iiif_manifest(self.program_node)
+            manifest_path = iiif_data["@id"] + "/manifest.json"
+            self.manifest = manifest_path
+        
 
     def __str__(self):
         return self.display_date
