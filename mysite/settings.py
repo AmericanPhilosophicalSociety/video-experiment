@@ -44,6 +44,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     "meetingsvideos.apps.MeetingsvideosConfig",
     "import_export",
     "dal",
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django_htmx",
     'corsheaders',
-    "whitenoise",
 ]
 
 MIDDLEWARE = [
