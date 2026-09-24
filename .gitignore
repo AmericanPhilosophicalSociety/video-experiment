@@ -12,3 +12,5 @@ static/index-bundle.js
 videoupload.log
 servicefromnode.py
 urls.txt
+static/vendors-*
+static/node_modules*
