@@ -262,7 +262,7 @@ class Meeting(WithNotes):
         """Generate a manifest. This does not save, so you must separately call save"""
         if not self.manifest:
             diglib = DiglibAPI()
-            iiif_data = diglib.generate_and_save_iiif_manifest(self.node_id)
+            iiif_data = diglib.generate_and_save_iiif_manifest(self.program_node)
             manifest_path = iiif_data["@id"] + "/manifest.json"
             self.manifest = manifest_path
         

@@ -3,6 +3,8 @@ from datetime import date
 from meetingsvideos.models import Meeting
 import logging
 from django.db import transaction
+from requests.exceptions import ConnectionError
+import time
 
 
 logging.getLogger(__name__)
@@ -41,6 +43,12 @@ def upload_meetings():
                         meeting.program_node = row["program_node"]
                         if row["program_viewer"] == "IIIF":
                             meeting.manifest = f'https://diglib.amphilsoc.org/node/{meeting.program_node}/manifest'
+                        else:
+                            try:
+                                meeting.generate_manifest()
+                                time.sleep(5)
+                            except ConnectionError:
+                                logging.exception(f"Could not access diglib for meeting: {row['display_date']}")
                     meeting.save()
                     print(f"Meeting created: {row['display_date']}")
                     # print(process_date(row['start_date']))

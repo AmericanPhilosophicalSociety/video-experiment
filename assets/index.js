@@ -96,7 +96,7 @@ window.addEventListener("DOMContentLoaded", (evt) => {
 
 export function initUV() {
   const uvDiv = document.querySelector("#uv");
-  const programManifest = uvDiv.dataset.manifest;
+  const programManifest = uvDiv.dataset.programManifest;
   const data = {
     manifest: programManifest,
     embedded: true
