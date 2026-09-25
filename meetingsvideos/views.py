@@ -437,7 +437,7 @@ class MeetingDetail(HTMXMixin, DetailView):
                 query_date = dates[0]
             except IndexError:
                 query_date = None
-        context["videos"] = self.get_object().video_set.filter(date=query_date)
+        context["videos"] = self.get_object().video_set.filter(date=query_date).order_by("order_in_day")
         return context
 
 
