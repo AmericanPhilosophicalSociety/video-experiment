@@ -1,16 +1,36 @@
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
 $aps-red: rgb(210, 35, 46);
-$light-gray: rgb(209, 211, 212);
+$light-gray: rgb(238, 145, 149);
 $light-gray-reduced-opacity: rgb(209, 211, 212, 0.8);
 $medium-gray: rgb(138, 140, 142);
 $dark-gray: rgb(77, 77, 79);
 $dark-gray-reduced-opacity: rgb(77, 77, 79, 0.4);
 $aps-white: rgb(255, 255, 255);
-$aps-black: rgb(0, 0, 0);
+$aps-black: rgb(51, 51, 51);
 
-$body-font: Raleway, sans-serif;
-$accent-font: Gelasio, serif;
+$body-font: "Noto Sans", sans-serif;
+$accent-font: "Libre Caslon Text", serif;
+
+/*
+--color-50: #FFEDEA;
+--color-100: #FEDBD5;
+--color-200: #FCC9C1;
+--color-300: #FAB7AD;
+--color-400: #F6A599;
+--color-500: #F29386;
+--color-600: #ED8074;
+--color-700: #E76D61;
+--color-800: #E15850;
+--color-900: #DA413F;
+--color-950: #D2232E;
+*/
+
+/*
+#D2232E
+#A81C25
+#E04650
+*/
 
 html {
     scrollbar-gutter: stable;
@@ -49,18 +69,144 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 
 // navigation styles
 
-@media (max-width: 768px) {
-    .navbar {
-        background-color: $aps-white;
-    }
+.skip-to-main-content-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 1em;
+    background-color: $aps-black;
+    color: $aps-white;
+    opacity: 0;
+}
+
+.skip-to-main-content-link:focus {
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+}
+
+.header-container {
+    width: 100%;
+    margin: auto;
+}
+
+header .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.navbar > .container-fluid {
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.nav-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.nav-container {
+    display: flex;
+}
+
+.navbar-nav .nav-link.active {
+    border-bottom: solid 3px $aps-red;
 }
 
 .navbar-brand {
-    font: 100% $accent-font;
-    background-color: $aps-red;
-    color: $aps-white;
+    display: flex;
+    flex-grow: 2;
 }
 
+#aps-logo-branding {
+    height: 75px;
+}
+
+#navbar-content {
+    align-items: end;
+}
+
+.nav-separator {
+    height: 1.5rem;
+    width: 1px;
+    background-color: black;
+    margin: 2px;
+}
+
+.navbar-search {
+    width: 100%;
+    display: flex;
+}
+
+.searchbar {
+    width: 100%;
+}
+
+.searchbar-input {
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.searchbar-input > input {
+    border-radius: 4rem;
+}
+
+#search-button {
+    fill: $aps-white;
+    background-color: $aps-red;
+    border-radius: 0 4rem 4rem 0;
+    padding-left: 2rem;
+}
+
+// styles for phones only
+@media (min-width: 576) {
+    #aps-logo-branding {
+        height: 100px;
+    }
+}
+
+// styles for phones and tablets
+@media (max-width: 992px) {
+    .nav-separator {
+        display: none;
+    }
+    .navbar-nav .nav-link.active {
+        color: $aps-white;
+        background-color: $aps-red;
+    }
+    .nav-container {
+        flex-wrap: wrap;
+    }
+    .nav-container button {
+        margin-top: 3rem;
+    }
+    #navbar-content {
+        width: 100%;
+    }
+}
+
+// styles for laptops and desktops
+@media (min-width: 992px) {
+    #search-icon {
+        display: none;
+    }
+    .navbar-brand {
+        margin-right: 0px;
+    }
+    #navbar-content {
+        padding-bottom: 0.2rem;
+    }
+    .searchbar {
+        background-color: $light-gray;
+    }
+    .navbar-search {
+        padding: 1rem 4rem;
+    }
+    .nav-wrapper {
+        border-bottom: solid 0.1rem;
+    }
+    
+}
 
 .bi {
     display: inline-block;
@@ -68,66 +214,47 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
     height: 1rem;
   }
   
-
-// Sidebar
-.sidebar #sidebarMenu {
-    right: 0;
-}
-
-.offcanvas-header {
-    background-color: $aps-red;
-    color: $aps-white;
-}
-
-@media (min-width: 768px) {
-    .sidebar > div {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 48px;
-        background-color: $light-gray !important;
-        border-radius: 8px;
-        opacity: 0.6;
-        border-block: 0.125em inset $dark-gray;
-    }
-}
-
-@media (min-width: 1400px) {
-    .sidebar > div {
-        margin: 0 1.5em;
-    }
-}
-
-.navbar-search {
-    display: block;
-}
-  
-.sidebar .nav-link {
-    font-size: .875rem;
-    font-weight: 500;
-}
-  
-.sidebar .nav-link {
-    color: $aps-black;
-}
-
-.sidebar .nav-link.active {
-    color: $aps-white;
-    background-color: $aps-red;
-}
-  
-.sidebar-heading {
-    font-size: .75rem;
-}
-
 // Navbar
-  
-.navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-}
   
 .navbar .form-control {
     padding: .75rem 1rem;
+}
+
+// Facets
+
+.active-facets-container ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.active-facets-container h4, .facets h4 {
+    font-family: $accent-font;
+    color: $aps-red;
+}
+
+.active-facets-container li {
+    list-style: none;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid $aps-red;
+    border-radius: 4rem;
+    margin: 0 0.75rem;
+    background-color: $light-gray;
+}
+
+.facet-cancel {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.expand-listitem {
+    list-style: none;
+    text-align: end;
+}
+
+// TODO: pick a different color or style for this
+#facets-display-btn {
+    text-align: end;
 }
 
 // Main
@@ -140,28 +267,20 @@ main {
 
 // Landing page
 
-#landing {
-    background-image: url("/static/images/aps-seal.png");
-    background-color: rgb(255, 255, 255, 0.9);
-    background-blend-mode: lighten;
-    // background properties need media queries
-    background-size: auto 70%;
-    background-repeat: no-repeat;
-    // background-position: 75% 100%;
-    background-position: Max(0px, calc(100vw - 550px)) bottom;
-    background-attachment: fixed;
+#landing > .container {
+    padding: 2rem 0;
 }
 
 #hero {
-    background-color: $light-gray-reduced-opacity;
+    background-color: $aps-black;
     margin-top: 3rem;
     padding-bottom: 3em;
-    border-radius: 1.5em;
-    border-block: 0.125em inset $dark-gray;
+    color: $aps-white;
 }
 
 #hero-title {
     font: 2em $accent-font;
+    color: $aps-white !important;
 }
 
 .landing-card {
@@ -171,7 +290,13 @@ main {
 .landing-card > .card-header {
     border-left: solid $aps-red;
     font: 1.25em $accent-font;
+    border-radius: 0;
 }
+
+.card.landing-card {
+    border-radius: 0;
+}
+
 // buttons
 
 .btn-primary {
@@ -188,18 +313,33 @@ main {
     background-color: $medium-gray !important;
     border-color: $medium-gray !important;
 }
-// cards
+// video results
 
-.teaser {
-    border-radius: 16px;
-    max-width: 540px;
-    margin-bottom: 3px;
-}
-
-.teaser > .card-header {
+.teaser-title {
     border-left: solid $aps-red;
     font: 1.75em $accent-font;
 }
+
+.teaser-title > h3 {
+    padding-left: 0.5rem;
+}
+
+// TODO: additional styling
+.results-count {
+    padding: 0.5rem;
+}
+
+/*
+.speaker-box {
+    background-color: $light-gray;
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    border-radius: 8px;
+}
+
+.speaker-box a {
+    color: $aps-red;
+}
+*/
 
 // video teaser
 
@@ -261,8 +401,8 @@ main {
 
 // size for video player
 
-.video-js {
-    // height: 183px;
+video-skin {
+    height: 16rem;
     width: 100%;
 }
 
@@ -278,7 +418,9 @@ main {
 
 .alpha-link {
     color: $aps-red;
-    cursor: pointer;
+    border: none;
+    background-color: inherit;
+    padding: 0;
 }
 
 // nav tabs
@@ -308,9 +450,26 @@ main {
     font-size: 1.25em;
 }
 
-// meeting lists
+// meeting and symposia lists
 .meeting-teaser {
     border-radius: 0.375rem 0.375rem 16px 16px;
+}
+
+.random-samples {
+    padding: 0.5rem 2rem;
+}
+
+.random-samples a {
+    color: $aps-red;
+    font-weight: 600;
+}
+
+.random-samples a:hover {
+    color: $dark-gray;
+}
+
+.random-samples > dl {
+    padding-left: 1rem;
 }
 
 .accordion-header > .accordion-button {
@@ -321,6 +480,10 @@ main {
 .accordion-button:not(.collapsed) {
     color: $aps-white;
     background-color: $aps-red;
+}
+
+.accordion-item a:hover{
+    color: $dark-gray;
 }
 
 // filter panel

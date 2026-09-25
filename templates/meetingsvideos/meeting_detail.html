@@ -10,7 +10,6 @@ APS Meetings Videos - {{ meeting.display_date }}
   {% if videos|length > 0 %}
   <ul class="nav nav-tabs" hx-target
   hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
-                            console.log(currentTab)
                             currentTab.setAttribute('aria-selected', 'false')
                             currentTab.classList.remove('active')
                             currentTab.removeAttribute('aria-current')
@@ -20,12 +19,12 @@ APS Meetings Videos - {{ meeting.display_date }}
                             newTab.classList.add('active')">
 {% for date in dates %}
   {% if forloop.first %}
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" aria-selected="true" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</a>
+    <li class="nav-item htmx-tab">
+      <button class="nav-link active" role="tab" aria-controls="tab-contents" aria-current="page" aria-selected="true" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
     </li>
   {% else %}
     <li class="nav-item">
-      <a class="nav-link" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</a>
+      <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
     </li>
   {% endif %}
 {% endfor %}
@@ -42,5 +41,6 @@ APS Meetings Videos - {{ meeting.display_date }}
 {% block extra_js %}
 <script>
   jsFunctions.makeActive("meetingsNav");
+  jsFunctions.applyTabNav("meetings/{{ meeting.slug }}/");
 </script>
 {% endblock %}

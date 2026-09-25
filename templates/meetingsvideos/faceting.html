@@ -1,32 +1,38 @@
-<form class='facet-filter-panel' id="facetSubmit{{ breakpoint }}" method="GET">
-  {{ form }}
-  <button type="submit" class="btn btn-primary">Filter results</button>
-</form>
-{% comment %}
-<form method="GET">
-  <div class="form-floating">
-    <select class="form-select subjectSelect" id="subjectSelect{{ breakpoint }}" name="lcsh" aria-label="Select a subject">
-      <option selected>Choose...</option>
-      {% for subject in subjects %}
-      <option value="{{ subject.subject }}">{{ subject.subject }} ({{ subject.n }})</option>
+{% load meetingsvideos_extras %}
+{% if disciplines %}
+  <h4>Filter by discipline:</h4>
+  <ul>
+    {% for discipline in disciplines|slice:":10" %}
+      <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
+    {% endfor %}
+    {% if disciplines|length > 10 %}
+      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-disciplines" role="button" aria-expanded="false" aria-controls="expand-disciplines">...More</a>
+    {% endif %}
+  </ul>
+  {% if disciplines|length > 10 %}
+    <ul class="collapse" id="expand-disciplines">
+      {% for discipline in disciplines|slice:"10:" %}
+        <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
       {% endfor %}
-    </select>
-    <label for="subjectSelect{{ breakpoint }}">Select a subject</label>
-  </div>
-  <div class="form-floating">
-    <select class="form-select disciplineSelect" id="disciplineSelect{{ breakpoint }}" name="disipline" aria-label="Select a discipline">
-      <option selected>Choose...</option>
-      {% for discipline in disciplines %}
-      <option value="{{ discipline.discipline}}">{{ discipline.discipline }} ({{ discipline.n }})</option>
+    </ul>
+  {% endif %}
+{% endif %}
+{% if lcsh %}
+  <h4>Filter by subject:</h4>
+  <ul>
+    {% for subject in lcsh|slice:":10" %}
+      <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
+    {% endfor %}
+    {% if lcsh|length > 10 %}
+      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-subjects" role="button" aria-expanded="false" aria-controls="expand-subjects">...More</a>
+    {% endif %}
+  </ul>
+  {% if lcsh|length > 10 %}
+    <ul class="collapse" id="expand-subjects">
+      {% for subject in lcsh|slice:"10:" %}
+        <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
       {% endfor %}
-    </select>
-    <label for="disciplineSelect{{ breakpoint }}">Select a discipline</label>
-  </div>
-  <div class="input-group">
-    <input type="number" min="2003" max="2025" class="form-control" aria-label="Start year" name="start" placeholder="Start">
-    <span class="input-group-text">→</span>
-    <input type="number" min="2003" max="2025" class="form-control" aria-label="End year" name="end" placeholder="End">
-  </div>
-  <button type="submit" class="btn btn-primary">Filter results</button>
-</form>
-{% endcomment %}
+    </ul>
+  {% endif %}
+{% endif %}
+{% include "meetingsvideos/date-filter.html" %}

@@ -1,8 +1,7 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
-// import { addBackToTop } from 'vanilla-back-to-top';
-
-// addBackToTop();
+import '@videojs/html/video/player';
+import '@videojs/html/video/skin';
 
 window.htmx = htmx;
 
@@ -27,19 +26,6 @@ htmx.onLoad(function(content) {
   }
 });
 
-function searchTabClick(event) {
-  const activeTabs = [document.querySelector('.nav-tab-link .active'), document.querySelector('.tab-pane.active')];
-  activeTabs.forEach(d => d.classList.remove('active'));
-  const newTab = event.target;
-  newTab.classList.add('active')
-  const target = newTab.href.split('#')[1]
-  document.getElementById(target).classList.add('active');
-}
-
-export function makeSearchTabs() {
-  const tabs = document.getElementById('nav-tabs');
-  tabs.addEventListener('click', searchTabClick);
-}
 
 function facetSubmit(event, element) {
   event.preventDefault();
@@ -93,4 +79,50 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function parseDateFilter() {
+  const dateButton = document.querySelector("#date-submit");
+  dateButton.addEventListener("click", () => {
+    const startDate = document.querySelector("#id_start").value;
+    const endDate = document.querySelector("#id_end").value;
+    const paramsString = window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    if (startDate) {
+      if (searchParams.has("start")) {
+        searchParams.set("start", startDate);
+      } else {
+      searchParams.append("start", startDate)
+      }
+    }
+    if (endDate) {
+      if (searchParams.has("end")) {
+        searchParams.set("end", endDate);
+      } else {
+        searchParams.append("end", endDate)
+      }
+    }
+    window.location = "?" + searchParams.toString();
+  })
+}
 
+export function applyTabNav(baseUrl) {
+  let paramsString = window.location.search;
+  if (paramsString) {
+    const searchParams = new URLSearchParams(paramsString);
+    if (searchParams.has("first_letter")) {
+      searchParams.delete("first_letter");
+    };
+    paramsString = "?" + searchParams.toString();
+    const tabTarget = "/" + baseUrl + paramsString;
+    console.log(tabTarget);
+    const selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
+    const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
+    defaultTab.forEach((e) => {
+      e.classList.remove("active");
+      e.setAttribute('aria-selected', 'false');
+      e.removeAttribute('aria-current');
+    });
+    selectedTab.classList.add("active");
+    selectedTab.setAttribute('aria-selected', 'true');
+    selectedTab.setAttribute('aria-current', 'page');
+  }
+}

@@ -15,11 +15,13 @@ APS Meetings Videos - {{ speaker.display_name }}
     <h2>Talks by this speaker</h2>
     {% for video in speaker.video_set.all %}
         {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+        <hr>
     {% endfor %}
 
     <h2>Talks about this speaker</h2>
     {% for video in speaker.lcsh.video_set.all %}
         {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+        <hr>
     {% endfor %}
 
     <!-- else, display only talks by this speaker -->
@@ -28,6 +30,7 @@ APS Meetings Videos - {{ speaker.display_name }}
     <h2>Talks</h2>
     {% for video in speaker.video_set.all %}
         {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+        <hr>
     {% endfor %}
 
     {% endif %}
@@ -35,6 +38,6 @@ APS Meetings Videos - {{ speaker.display_name }}
 {% endblock %}
 {% block extra_js %}
 <script>
-  jsFunctions.makeActive("speakerNav");
+  jsFunctions.makeActive("browseNav");
 </script>
 {% endblock %}

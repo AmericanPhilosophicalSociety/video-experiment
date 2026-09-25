@@ -4,7 +4,7 @@
     {% for a in alphabet %}
     {% if a in available_letters %}
     {% querystring request.GET first_letter=a as query %}
-    <li><a class="alpha-link" hx-get="{{ request.path }}{{ query }}" hx-target="#headings-list" hx-push-url="true">{{ a }}</a></li>
+    <li><button class="alpha-link" tabindex="0" role="link" hx-get="{{ request.path }}{{ query }}" hx-target="#headings-list" hx-push-url="true">{{ a }}</button></li>
     {% comment %}
       <li><a href="{{ request.path }}{{ query }}">{{ a }}</a></li>
     {% endcomment %}

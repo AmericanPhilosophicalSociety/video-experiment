@@ -13,11 +13,13 @@ APS Meetings Videos - {{ lcsh.heading }}
 <h3>As speaker</h3>
 {% for video in videos_by_speaker %}
   {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+  <hr>
 {% endfor %}
 <hr>
 <h3>As subject</h3>
 {% for video in lcsh.video_set.all %}
     {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+    <hr>
 {% endfor %}
 
 <!-- if LCSH only used as speaker, display all talks by this speaker -->
@@ -25,6 +27,7 @@ APS Meetings Videos - {{ lcsh.heading }}
 
 {% for video in videos_by_speaker %}
     {% include "meetingsvideos/video_preview_no_names.html" %}
+    <hr>
 {% endfor %}
 
 <!-- if LCSH only used as subject, display all talks with this subject -->
@@ -32,6 +35,7 @@ APS Meetings Videos - {{ lcsh.heading }}
 
 {% for video in lcsh.video_set.all %}
     {% include "meetingsvideos/video_preview.html" with show_dates=True%}
+    <hr>
 {% endfor %}
 
 {% endif %}
@@ -39,6 +43,6 @@ APS Meetings Videos - {{ lcsh.heading }}
 {% endblock %}
 {% block extra_js %}
 <script>
-  jsFunctions.makeActive("headingsNav");
+  jsFunctions.makeActive("browseNav");
 </script>
 {% endblock %}
