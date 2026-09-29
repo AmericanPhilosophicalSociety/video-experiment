@@ -313,6 +313,7 @@ class Video(ProgramInfo):
     node = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
+    vtt_file = models.URLField(blank=True, null=True)
 
     ADMIN_CATEGORY_CHOICES = {
         "ARCHIVES": "APS Archives",
@@ -371,3 +372,10 @@ class Video(ProgramInfo):
     class Meta:
         # ordering = ["title"]
         ordering = ["-date", "-order_in_day"]
+
+
+class Subtitle(models.Model):
+    start = models.DurationField()
+    end = models.DurationField()
+    text = models.CharField(max_length=512)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
