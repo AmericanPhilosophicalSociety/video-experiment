@@ -381,13 +381,18 @@ main {
     padding-left: 0.5em;
 }
 
-#video-container .list-group-item {
-    background-color: $light-gray;
-}
-
 .speaker-list {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+}
+
+.speaker-list, .speaker-list .list-group-item {
+    background-color: $aps-black;
+    color: $aps-white;
+}
+
+.list-group.speaker-list h3 > a {
+    color: $aps-white;
 }
 
 #metadata-table {
