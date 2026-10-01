@@ -105,24 +105,33 @@ export function parseDateFilter() {
 }
 
 export function applyTabNav(baseUrl) {
+  // remove any active links
+  const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
+  defaultTab.forEach((e) => {
+    e.classList.remove("active");
+    e.setAttribute('aria-selected', 'false');
+    e.removeAttribute('aria-current');
+  });
   let paramsString = window.location.search;
-  if (paramsString) {
-    const searchParams = new URLSearchParams(paramsString);
-    if (searchParams.has("first_letter")) {
-      searchParams.delete("first_letter");
-    };
+  const searchParams = new URLSearchParams(paramsString);
+  if (searchParams.has("first_letter")) {
+    searchParams.delete("first_letter");
+  };
+  // JavaScript scoping means we need to define this outside the block
+  let selectedTab = ''
+  // check if search params are empty to select tab other than first
+  if (searchParams.size > 0) {
+    console.log("We have params")
     paramsString = "?" + searchParams.toString();
     const tabTarget = "/" + baseUrl + paramsString;
-    console.log(tabTarget);
-    const selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
-    const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
-    defaultTab.forEach((e) => {
-      e.classList.remove("active");
-      e.setAttribute('aria-selected', 'false');
-      e.removeAttribute('aria-current');
-    });
+    selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
+  } else {
+    // select first tab as default
+    const firstTab = document.querySelector('.nav-tabs').firstElementChild;
+    selectedTab = firstTab.querySelector('.nav-link');
+  };
+    console.log(selectedTab);
     selectedTab.classList.add("active");
     selectedTab.setAttribute('aria-selected', 'true');
     selectedTab.setAttribute('aria-current', 'page');
-  }
 }
