@@ -1,6 +1,47 @@
 {% load meetingsvideos_extras %} 
   {% with offset=page_obj.number|pagination_offset %}
   {% for symposium in symposia %}
+    <div class="teaser-title">
+      <h3><a href="{% url 'symposium_detail' symposium.slug %}">{{ symposium.title }}</a></h3>
+  </div>
+    <div class="random-samples">
+      <h5>{{ symposium.meeting }}</h5>
+    {% for video in symposium.videos_by_time %}
+      <dl>
+        <dt><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></dt>
+        <dl>
+        {% for speaker in video.speakers.all %}
+          {% if video.speakers.all|length > 2 %}
+            {% if forloop.last is not True %}
+              {{ speaker.display_name }}, 
+            {% else %}
+              and {{ speaker.display_name }}
+            {% endif %}
+          {% elif video.speakers.all|length == 2 %}
+            {% if forloop.last is not True %}
+              {{ speaker.display_name }} and 
+            {% else %}
+              {{ speaker.display_name }}
+            {% endif %}
+          {% else %}
+            {{ speaker.display_name }}
+          {% endif %}
+        {% endfor %}
+        </dl>
+      </dl>
+    {% endfor %}
+    </div>
+  <a href="{% url 'symposium_detail' symposium.slug %}" class="btn btn-primary">View all talks</a>
+  <hr>
+  {% if page_obj.has_next and forloop.last %}
+  <span
+      hx-get="{% url 'symposia' %}?page={{ page_obj.next_page_number }}"
+      hx-swap="afterend"
+      hx-trigger="revealed"
+  >
+  </span>
+  {% endif %}
+    {% comment %}
     {% with iter=forloop.counter|add:offset %}
     <div class="accordion-item">
       <h2 class="accordion-header">
@@ -46,5 +87,6 @@
     >
     </span>
     {% endif %}
+    {% endcomment %}
   {% endfor %}
 {% endwith %}

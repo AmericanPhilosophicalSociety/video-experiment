@@ -1,6 +1,7 @@
 {% load static %}
 {% load meetingsvideos_extras %} 
-<div class="card teaser video-teaser">
+<div class="video-teaser">
+    {% comment %}
     <div class="video-placeholder" role="image">
         <a href="{% url 'video_detail' video.slug %}">
             <svg class="overlay" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-btn" viewBox="0 0 16 16">
@@ -9,21 +10,39 @@
             </svg>
         </a>
     </div>
-    <h3 class=card-header><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></h3>
-    <div class="card-body">
-        <ul class="list-group speaker-list">
-            {% for speaker in video.speakers.all %}
-            <li class="list-group-item">
-            <h4><a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a></h4>
-              {% for affiliation in speaker.affiliation_set|filter_affiliations:video.meeting %}
-              {{ affiliation|linebreaks }}
-              {% endfor %}
-            </li>
-            {% endfor %}
-        </ul>
-        {% if show_dates %}
-        <div class="video-date">{{ video.date|date:"F j, Y" }}</div>
-        {% endif %}
+    {% endcomment %}
+    <div class="teaser-title">
+      <h3><a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a></h3>
+    </div>
+    {% if show_dates %}
+      <div class="video-date">{{ video.date|date:"F j, Y" }}</div>
+    {% endif %}
+    <div>
+          {% with speakers=video.speakers.all %}
+            {% if speakers|length > 0 %}
+              <div class="speaker-box">
+                <h5>
+                  {% for speaker in speakers %}
+                    {% if speakers|length > 2 %}
+                      {% if forloop.last is not True %}
+                        <a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a>, 
+                      {% else %}
+                        and <a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a>
+                      {% endif %}
+                    {% elif speakers|length == 2 %}
+                      {% if forloop.last is not True %}
+                        <a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a> and 
+                      {% else %}
+                        <a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a>
+                      {% endif %}
+                    {% else %}
+                      <a href="{% url 'speaker_detail' speaker.slug %}">{{ speaker.display_name }}</a>
+                    {% endif %}
+                  {% endfor %}
+                </h5>
+              </div>
+            {% endif %}
+          {% endwith %}
         {% if video.abstract %}
         <p>{{ video.abstract }}</p>
         {% endif %}

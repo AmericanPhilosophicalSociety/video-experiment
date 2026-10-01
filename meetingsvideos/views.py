@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
+from django.db.models import Count, Min, Max
 from .forms import (
     AdvancedSearchForm,
-    FacetForm,
     VideoForm,
     SpeakerForm,
     AffiliationFormSet,
     SpeakerFormSet,
     LCSHSubjectFormSet,
 )
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
@@ -30,7 +30,7 @@ from .models import (
     Affiliation,
 )
 
-from .service import basic_search, advanced_search
+from .service import video_search, basic_search, advanced_search
 
 
 class HTMXMixin:
@@ -122,16 +122,15 @@ class Landing(ListView):
         return queryset
 
 
-class IndexView(HTMXMixin, FormMixin, ListView):
+class IndexView(HTMXMixin, ListView):
     # model = Video
     template_name = "meetingsvideos/index.html"
     context_object_name = "videos"
     paginate_by = 10
     partial_template = "meetingsvideos/video-list.html"
-    form_class = FacetForm
 
     def get_queryset(self):
-        queryset = Video.objects.exclude_inductions()
+        queryset = Video.objects.all()
         # Not very DRY - would be better to abstract logic out to FilterView
         subjects = self.request.GET.getlist("lcsh")
         disciplines = self.request.GET.getlist("discipline")
@@ -151,21 +150,51 @@ class IndexView(HTMXMixin, FormMixin, ListView):
             queryset = queryset.filter(date__range=(start, end))
         return queryset
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["object_list"] = self.object_list
-        return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        count = self.object_list.count()
+        context["count"] = count
+        lcsh = (
+            LCSH.objects.filter(video__in=self.object_list)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:40]
+        )
 
-    def get_initial(self):
-        initial = super().get_initial()
-        params = self.request.GET.dict()
-        for k, v in params.items():
-            if k in ["start", "end"]:
-                params[k] = int(v)
-            else:
-                params.update({k: [v]})
-        initial.update(params)
-        return initial
+        lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
+        context["lcsh"] = lcsh
+
+        disciplines = (
+            AcademicDiscipline.objects.filter(video__in=self.object_list)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
+        context["disciplines"] = disciplines
+
+        start = self.object_list.aggregate(Min("date"))
+        context["start"] = start
+
+        end = self.object_list.aggregate(Max("date"))
+        context["end"] = end
+
+        # handle existing filter tags
+        selected_lcsh = self.request.GET.getlist("lcsh", "")
+        selected_lcsh = [
+            {"type": "Subject", "query_word": "lcsh", "label": sub}
+            for sub in selected_lcsh
+        ]
+        selected_disciplines = self.request.GET.getlist("discipline", "")
+        selected_disciplines = [
+            {"type": "Discipline", "query_word": "discipline", "label": d}
+            for d in selected_disciplines
+        ]
+        active_filters = selected_lcsh + selected_disciplines
+        context["active_filters"] = active_filters
+
+        return context
 
 
 class VideoDetail(DetailView):
@@ -363,6 +392,31 @@ class MeetingsList(HTMXMixin, ListView):
     paginate_by = 10
     partial_template = "meetingsvideos/meetings-list.html"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        start, end = [self.request.GET.get("start"), self.request.GET.get("end")]
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            queryset = queryset.filter(start_date__range=(start, end))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        start = self.object_list.aggregate(Min("start_date"))
+        context["start"] = start
+
+        end = self.object_list.aggregate(Max("end_date"))
+        context["end"] = end
+
+        return context
+
 
 class MeetingDetail(HTMXMixin, DetailView):
     model = Meeting
@@ -383,7 +437,7 @@ class MeetingDetail(HTMXMixin, DetailView):
                 query_date = dates[0]
             except IndexError:
                 query_date = None
-        context["videos"] = self.get_object().video_set.filter(date=query_date)
+        context["videos"] = self.get_object().video_set.filter(date=query_date).order_by("order_in_day")
         return context
 
 
@@ -426,6 +480,10 @@ class DepartmentDetail(LoginRequiredMixin, DetailView):
     context_object_name = "department"
 
 
+class AboutView(TemplateView):
+    template_name = "meetingsvideos/about.html"
+
+
 def search(request):
     context = {}
     context["advanced_search"] = AdvancedSearchForm()
@@ -434,21 +492,79 @@ def search(request):
 
 
 def search_results(request):
-    if request.method == "POST":
-        query = request.POST["q"]
-        videos, speakers, subjects = basic_search(query)
+    if request.method == "GET":
+        query = request.GET.get("q")
+        # videos, speakers, subjects = basic_search(query)
+        videos = video_search(query)
+
+        # reuse logic from IndexView - not very DRY
+        subjects = request.GET.getlist("lcsh")
+        disciplines = request.GET.getlist("discipline")
+        start, end = [request.GET.get("start"), request.GET.get("end")]
+        for subject in subjects:
+            videos = videos.filter(lcsh__heading=subject)
+        for discipline in disciplines:
+            videos = videos.filter(academic_disciplines__name=discipline)
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            videos = videos.filter(date__range=(start, end))
+
+        selected_lcsh = [
+            {"type": "Subject", "query_word": "lcsh", "label": sub} for sub in subjects
+        ]
+
+        selected_disciplines = [
+            {"type": "Discipline", "query_word": "discipline", "label": d}
+            for d in disciplines
+        ]
+
+        active_filters = selected_lcsh + selected_disciplines
+
+        count = videos.count()
+
+        lcsh = (
+            LCSH.objects.filter(video__in=videos)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:40]
+        )
+
+        lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
+
+        disciplines = (
+            AcademicDiscipline.objects.filter(video__in=videos)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
+
+        start = videos.aggregate(Min("date"))
+        end = videos.aggregate(Max("date"))
+
         return render(
             request,
             "meetingsvideos/search_results.html",
             {
                 "query": query,
                 "videos": videos,
-                "speakers": speakers,
-                "subjects": subjects,
+                "count": count,
+                "lcsh": lcsh,
+                "disciplines": disciplines,
+                "start": start,
+                "end": end,
+                "active_filters": active_filters,
             },
         )
     else:
-        return redirect("search")
+        return redirect("index")
 
 
 def search_results_advanced(request):

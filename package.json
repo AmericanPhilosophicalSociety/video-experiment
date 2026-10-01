@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development",
+    "dev": "webpack --mode development --watch",
+    "prod": "webpack --mode production",
     "sass": "sass assets/styles/main.scss static/css/main.css"
   },
   "repository": {
@@ -25,6 +26,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@videojs/html": "^10.0.0-rc.2",
     "autoprefixer": "^10.4.21",
     "bootstrap": "^5.3.8",
     "css-loader": "^7.1.2",
@@ -33,5 +35,8 @@
     "postcss-loader": "^8.1.1",
     "sass-loader": "^16.0.5",
     "style-loader": "^4.0.0"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.5.1": true
   }
 }
