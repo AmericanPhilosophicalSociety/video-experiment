@@ -1,6 +1,4 @@
 <h4>Filter by date:</h4>
-<p>Start: {{ start_date }}</p>
-<p>End {{ end_date }}</p>
 <div class="input-group" id="date-filter">
   <input type="number" name="start" class="form-select" min="{{ start_date|date:"Y" }}" max="{{ end_date|date:"Y" }}" placeholder="{{ start_date|date:"Y"}}" id="id_start">
   <span class="input-group-text">→</span>
