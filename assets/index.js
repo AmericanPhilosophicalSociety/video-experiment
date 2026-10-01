@@ -1,5 +1,6 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
+import { init } from "universalviewer";
 import '@videojs/html/video/player';
 import '@videojs/html/video/skin';
 
@@ -79,6 +80,18 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function initUV() {
+  const uvDiv = document.querySelector("#uv");
+  const programManifest = uvDiv.dataset.programManifest;
+  const data = {
+    manifest: programManifest,
+    embedded: true
+  };
+
+  console.log(data.manifest)
+  init("uv", data);
+}
+
 export function parseDateFilter() {
   const dateButton = document.querySelector("#date-submit");
   dateButton.addEventListener("click", () => {
@@ -121,7 +134,6 @@ export function applyTabNav(baseUrl) {
   let selectedTab = ''
   // check if search params are empty to select tab other than first
   if (searchParams.size > 0) {
-    console.log("We have params")
     paramsString = "?" + searchParams.toString();
     const tabTarget = "/" + baseUrl + paramsString;
     selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);

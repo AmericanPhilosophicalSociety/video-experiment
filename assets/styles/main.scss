@@ -1,8 +1,9 @@
 @import "../../node_modules/bootstrap/scss/bootstrap";
+@import "../../node_modules/universalviewer/dist/esm/index";
 
 $aps-red: rgb(210, 35, 46);
-$light-gray: rgb(238, 145, 149);
-$light-gray-reduced-opacity: rgb(209, 211, 212, 0.8);
+$light-red: rgb(238, 145, 149);
+$light-gray: rgb(209, 211, 212);
 $medium-gray: rgb(138, 140, 142);
 $dark-gray: rgb(77, 77, 79);
 $dark-gray-reduced-opacity: rgb(77, 77, 79, 0.4);
@@ -197,7 +198,7 @@ header .container-fluid {
         padding-bottom: 0.2rem;
     }
     .searchbar {
-        background-color: $light-gray;
+        background-color: $light-red;
     }
     .navbar-search {
         padding: 1rem 4rem;
@@ -491,20 +492,6 @@ video-skin {
     padding-left: 1rem;
 }
 
-.accordion-header > .accordion-button {
-    font: 0.75em $accent-font;
-    background-color: $light-gray;
-}
-
-.accordion-button:not(.collapsed) {
-    color: $aps-white;
-    background-color: $aps-red;
-}
-
-.accordion-item a:hover{
-    color: $dark-gray;
-}
-
 // filter panel
 @media (max-width: 1200px) {
     // only show fullsized text on largest breakpoints
@@ -581,4 +568,10 @@ input.vTextField {
     border: 1px solid #dee2e6;
     border-radius: 0.375rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+// program viewer
+
+#uv {
+    height: 640px;
 }
