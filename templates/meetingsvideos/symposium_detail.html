@@ -9,7 +9,8 @@ APS Meetings Videos - {{ symposium.title }}
   <h1>{{ symposium.title }}</h1>
   <h2>{{ symposium.meeting }}</h2>
   {% for video in symposium.videos_by_time %}
-    {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+    {% include "meetingsvideos/video_preview.html" with show_dates=False %}
+    <hr>
   {% endfor %}
 </div>
 {% endblock %}

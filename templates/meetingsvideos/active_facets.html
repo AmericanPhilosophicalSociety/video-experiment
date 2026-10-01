@@ -1,0 +1,11 @@
+{% load meetingsvideos_extras %}
+{% if active_filters %}
+  <div class="active-facets-container">
+    <h4>Active facets:</h4>
+    <ul>
+      {% for filter in active_filters %}
+        <li><a href="{% remove_qsetarg filter.query_word filter.label %}">{{ filter.type }}: {{ filter.label }} <span class="facet-cancel">&times;</span></a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}

@@ -38,7 +38,8 @@ urlpatterns = [
         views.SpeakerUpdateView.as_view(),
         name="speaker_edit",
     ),
-    path("search/", views.search, name="search"),
+    path("about/", views.AboutView.as_view(), name="about"),
+    # path("search/", views.search, name="search"),
     path("search_results/", views.search_results, name="search_results"),
     path(
         "search_results_advanced/",
