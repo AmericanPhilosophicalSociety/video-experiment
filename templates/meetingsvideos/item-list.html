@@ -13,7 +13,7 @@
     {% endif %}
     {% endfor %}
     {% querystring request.GET first_letter=None as query %}
-    <li><a class="alpha-link" hx-get="{{ request.path }}{{ query }}" hx-target="#headings-list" hx-push-url="true">all</a></li>
+    <li><button class="alpha-link" tabindex="0" role="link" hx-get="{{ request.path }}{{ query }}" hx-target="#headings-list" hx-push-url="true">all</button></li>
   </ul>
 {% endif %}
 <div id="topic-list">
