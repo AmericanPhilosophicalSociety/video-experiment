@@ -35,4 +35,4 @@
     </ul>
   {% endif %}
 {% endif %}
-{% include "meetingsvideos/date-filter.html" %}
+{% include "meetingsvideos/date-filter.html" with start_date=start.date__min end_date=end.date__max %}

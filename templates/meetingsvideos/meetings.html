@@ -13,7 +13,7 @@ APS Meetings Videos - All Meetings
     Filter results
   </button>
   <div id="facets-menu" class="facets collapse col-lg-4 d-lg-block">
-    {% include "meetingsvideos/date-filter.html" %}
+    {% include "meetingsvideos/date-filter.html" with start_date=start.start_date__min end_date=end.end_date__max %}
   </div>
   <div class="col-12 col-lg-8"> 
     {% include "meetingsvideos/meetings-list.html" %}
