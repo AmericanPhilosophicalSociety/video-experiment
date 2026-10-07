@@ -480,9 +480,20 @@ class DepartmentDetail(LoginRequiredMixin, DetailView):
     context_object_name = "department"
 
 
-class AboutView(TemplateView):
+def about_view(request):
+    return redirect("landing_page")
+
+
+class FAQView(TemplateView):
     template_name = "meetingsvideos/about.html"
 
+
+class TechnicalView(TemplateView):
+    template_name = "meetingsvideos/technical.html"
+
+
+class CreditsView(TemplateView):
+    template_name = "meetingsvideos/credits.html"
 
 def search(request):
     context = {}
