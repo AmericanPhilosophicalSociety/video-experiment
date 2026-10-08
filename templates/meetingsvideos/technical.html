@@ -1,0 +1,46 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block title %}
+APS Meetings Videos - Technical
+{% endblock %}
+
+{% block main %}
+<ul class="nav nav-tabs">
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab" role="tab" aria-controls="tab-contents" aria-selected="false" href="{% url 'faq' %}">FAQ</a>
+  </li>
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab active" role="tab" aria-controls="tab-contents" aria-selected="true" href="#">Technical</a>
+  </li>
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab" role="tab" aria-controls="tab-contents" aria-selected="false" href="{% url 'credits' %}">Credits</a>
+  </li>
+</ul>
+<div id="about">
+  <h1>Technical</h1>
+  <p>Meetings Video is implemented as a custom Python/Django application developed by the <a href="https://www.amphilsoc.org/center-digital-scholarship" target="_blank">Center for Digital Scholarship</a> at the American Philosophical Society. The project code is open source and available on <a href="https://github.com/AmericanPhilosophicalSociety/video-experiment" target="_blank">Github</a>.</p>
+  <h2>Custom Software</h2>
+  <p>The CDS actively develops open source software to advance its projects. The following packages were developed or enhanced for this project:</p>
+  <ul>
+    <li><a href="https://github.com/AmericanPhilosophicalSociety/video-experiment" target="_blank">video-experiment</a></li>
+    <li><a href="https://github.com/AmericanPhilosophicalSociety/loc-authorities" target="_blank">loc-authorities</a></li>
+    <li><a href="https://github.com/drnelson6/asr-tools" target="_blank">asr-tools</a></li>
+  </ul>
+  <h2>Technologies used:</h2>
+  <p>This project relies upon an ecosystem of existing open source software. The project team thanks the maintainers of these software packages for their work which made this project possible.</p>
+  <ul>
+    <li><a href="https://www.python.org/" target="_blank">Python</a></li>
+    <li><a href="https://www.djangoproject.com/" target="_blank">Django</a></li>
+    <li><a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a></li>
+    <li><a href="https://htmx.org/" target="_blank">htmx</a></li>
+    <li><a href="https://videojs.org/" target="_blank">Video.js</a></li>
+    <li><a href="https://universalviewer.io/" target="_blank">Universal Viewer</a></li>
+    <li><a href="https://webpack.js.org/" target="_blank">Webpack</a></li>
+    <li><a href="https://www.islandora.ca/" target="_blank">Islandora</a></li>
+    <li><a href="https://www.nvidia.com/en-us/ai-data-science/products/nemo/" target="_blank">NVIDIA NeMo</a></li>
+    <li><a href="https://vllm.ai/" target="_blank">vLLM</a></li>
+  </ul>
+  <h2>AI Use Disclosure</h2>
+    <p>Transcripts for videos were generated using <a href="https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2" target="_blank">NVIDIA Parakeet (nvidia/parakeet-tdt-0.6b-v2)</a>, an automatic speech recognition model. Transcripts were proofread by human reviewers and corrected mostly for incorrectly identified proper names. Initial summaries for talks were generated using a locally run version of <a href="https://huggingface.co/google/gemma-4-26B-A4B-it" target="_blank">Gemma (google/gemma-4-26B-A4B-it)</a>. All machine generated summaries were reviewed by a human reviewer for stylistic consistency and factual accuracy.</p>
+</div>
+{% endblock %}

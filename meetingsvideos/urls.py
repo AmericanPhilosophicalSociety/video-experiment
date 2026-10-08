@@ -38,7 +38,10 @@ urlpatterns = [
         views.SpeakerUpdateView.as_view(),
         name="speaker_edit",
     ),
-    path("about/", views.AboutView.as_view(), name="about"),
+    path("about/", views.about_view, name="about"),
+    path("about/faq", views.FAQView.as_view(), name="faq"),
+    path("about/technical", views.TechnicalView.as_view(), name="technical"),
+    path("about/credts", views.CreditsView.as_view(), name="credits"),
     # path("search/", views.search, name="search"),
     path("search_results/", views.search_results, name="search_results"),
     path(

@@ -1,0 +1,62 @@
+{% extends "meetingsvideos/base.html" %}
+
+{% block title %}
+APS Meetings Videos - Credits
+{% endblock %}
+
+{% block main %}
+<ul class="nav nav-tabs">
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab" role="tab" aria-controls="tab-contents" aria-selected="false" href="{% url 'faq' %}">FAQ</a>
+  </li>
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab" role="tab" aria-controls="tab-contents" aria-selected="false" href="{% url 'technical' %}">Technical</a>
+  </li>
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab active" role="tab" aria-controls="tab-contents" aria-selected="true" href="#">Credits</a>
+  </li>
+</ul>
+<div id="about">
+<h1>Credits</h1>
+<h2>Primary Investigators</h2>
+<ul>
+  <li>Bayard L. Miller</li>
+  <li>David Ragnar Nelson</li>
+  <li>Yumi Dineen Shiroma</li>
+</ul>
+<h2>Technical Contributors</h2>
+<ul>
+  <li>David Ragnar Nelson</li>
+  <li>Yumi Dineen Shiroma</li>
+</ul>
+<h2>Data Curation and Management</h2>
+<ul>
+  <li>Yumi Dineen Shiroma</li>
+  <li>Elias Larralde</li>
+  <li>Jessica Hutchison</li>
+</ul>
+<h2>Archival Video Management</h2>
+<ul>
+  <li>Sabrina Bocanegra</li>
+  <li>Elias Larralde</li>
+  <li>Jessica Hutchison</li>
+  <li>Joseph DiLullo</li>
+</ul>
+<h2>Program and Ephemera Digitization</h2>
+<ul>
+  <li>Yumi Dineen Shiroma</li>
+  <li>Sabrina Bocanegra</li>
+</ul>
+<h2>Special Thanks</h2>
+<ul>
+  <li>Brenna Holland</li>
+  <li>Grayson Morley</li>
+  <li>Barbara Grosz</li>
+  <li>Johanna Drucker</li>
+  <li>Nina Jablonski</li>
+  <li>Erin Farrell</li>
+  <li>Thomas Johns</li>
+  <li><a href="https://georgeblood.com/" target="_blank">George Blood LP</a></li>
+</ul>
+</div>
+{% endblock %}
