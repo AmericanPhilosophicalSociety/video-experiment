@@ -350,6 +350,11 @@ main {
 
 // video teaser
 
+.video-teaser {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+
 .video-teaser > img {
     background-color: $dark-gray;
     border-radius: 16px;
