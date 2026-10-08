@@ -2,37 +2,48 @@
 {% if disciplines %}
   <h4>Filter by discipline:</h4>
   <ul>
+
+  <!-- create first 10 disciplines -->
     {% for discipline in disciplines|slice:":10" %}
       <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
     {% endfor %}
-    {% if disciplines|length > 10 %}
-      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-disciplines" role="button" aria-expanded="false" aria-controls="expand-disciplines">...More</a>
-    {% endif %}
-  </ul>
+
+  <!-- create next 10 disciplines -->
   {% if disciplines|length > 10 %}
-    <ul class="collapse" id="expand-disciplines">
+      <span class="collapse" id="expand-disciplines">
       {% for discipline in disciplines|slice:"10:" %}
         <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
       {% endfor %}
-    </ul>
+      </span>
+
+  <!-- create more button -->
+      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-disciplines" role="button" aria-expanded="false" aria-controls="expand-disciplines">...More</a></li>
   {% endif %}
+  </ul>
+
 {% endif %}
+
 {% if lcsh %}
   <h4>Filter by subject:</h4>
   <ul>
+
+    <!-- create first 10 subjects -->
     {% for subject in lcsh|slice:":10" %}
       <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
     {% endfor %}
+
+    <!-- create next 20 subjects -->
     {% if lcsh|length > 10 %}
-      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-subjects" role="button" aria-expanded="false" aria-controls="expand-subjects">...More</a>
+      <span class="collapse" id="expand-subjects">
+        {% for subject in lcsh|slice:"10:" %}
+          <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
+        {% endfor %}
+      </span>
+
+    <!-- create more button -->
+      <li class="expand-listitem"><a class="expand-facets" data-bs-toggle="collapse" href="#expand-subjects" role="button" aria-expanded="false" aria-controls="expand-subjects">...More</a></li>
     {% endif %}
   </ul>
-  {% if lcsh|length > 10 %}
-    <ul class="collapse" id="expand-subjects">
-      {% for subject in lcsh|slice:"10:" %}
-        <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
 {% endif %}
+
 {% include "meetingsvideos/date-filter.html" with start_date=start.date__min end_date=end.date__max %}
