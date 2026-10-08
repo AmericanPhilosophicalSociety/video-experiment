@@ -46,7 +46,7 @@ body {
 
 h1 {
     font-family: $accent-font;
-    padding-top: .75em;
+    // padding-top: .75em;
     padding-bottom: .75em;
 }
 
@@ -91,6 +91,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 .header-container {
     width: 100%;
     margin: auto;
+    padding-bottom: 2em;
 }
 
 header .container-fluid {
@@ -276,7 +277,7 @@ main {
 
 #hero {
     background-color: $aps-black;
-    margin-top: 3rem;
+    margin-top: 2rem;
     padding-bottom: 3em;
     color: $aps-white;
 }
@@ -294,6 +295,9 @@ main {
     border-left: solid $aps-red;
     font: 1.25em $accent-font;
     border-radius: 0;
+    min-height: 6rem;
+    display: flex;
+    align-items: center;
 }
 
 .card.landing-card {
