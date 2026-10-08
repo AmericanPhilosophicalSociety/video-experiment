@@ -41,7 +41,6 @@ function facetSubmit(event, element) {
   };
   badKeys.forEach((key) => search.delete(key));
   let query = search.toString()
-  console.log(query)
   document.location.search = query;
 };
 
@@ -87,8 +86,6 @@ export function initUV() {
     manifest: programManifest,
     embedded: true
   };
-
-  console.log(data.manifest)
   init("uv", data);
 }
 
@@ -142,7 +139,6 @@ export function applyTabNav(baseUrl) {
     const firstTab = document.querySelector('.nav-tabs').firstElementChild;
     selectedTab = firstTab.querySelector('.nav-link');
   };
-    console.log(selectedTab);
     selectedTab.classList.add("active");
     selectedTab.setAttribute('aria-selected', 'true');
     selectedTab.setAttribute('aria-current', 'page');
