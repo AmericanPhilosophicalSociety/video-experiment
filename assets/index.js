@@ -81,12 +81,14 @@ window.addEventListener("DOMContentLoaded", (evt) => {
 
 export function initUV() {
   const uvDiv = document.querySelector("#uv");
-  const programManifest = uvDiv.dataset.programManifest;
-  const data = {
-    manifest: programManifest,
-    embedded: true
-  };
-  init("uv", data);
+  if (uvDiv) {
+    const programManifest = uvDiv.dataset.programManifest;
+    const data = {
+      manifest: programManifest,
+      embedded: true
+    };
+    init("uv", data);
+  }
 }
 
 export function parseDateFilter() {
