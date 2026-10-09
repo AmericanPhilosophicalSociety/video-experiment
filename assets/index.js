@@ -116,20 +116,20 @@ export function parseDateFilter() {
   })
 }
 
-function moreToLess() {
-  const currentText = this.innerHTML
+function moreToLess(e) {
+  const currentText = e.target.innerHTML
   if (currentText === "...More") {
-    this.innerHTML = "...Less"
+    e.target.innerHTML = "...Less"
   } else {
-    this.innerHTML = "...More"
+    e.target.innerHTML = "...More"
   }
 }
 
 export function moreHandler() {
   const moreButtons = document.querySelectorAll('.expand-facets')
-  moreButtons.forEach(function handleItem(e) {
-    e.addEventListener('click', moreToLess)
-  }
+  moreButtons.forEach((e) => e.addEventListener('click', (d) => {
+    moreToLess(d);
+  })
 )}
 
 export function applyTabNav(baseUrl) {
