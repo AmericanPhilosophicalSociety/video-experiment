@@ -8,8 +8,8 @@ APS Meetings Videos - {{ meeting.display_date }}
 <div class="container" id="video-container">
   <h1>{{ meeting.display_date }}</h1>
   {% if videos|length > 0 %}
-  <ul class="nav nav-tabs" hx-target
-  hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
+    <ul class="nav nav-tabs" hx-target
+    hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
                             currentTab.setAttribute('aria-selected', 'false')
                             currentTab.classList.remove('active')
                             currentTab.removeAttribute('aria-current')
@@ -17,42 +17,51 @@ APS Meetings Videos - {{ meeting.display_date }}
                             newTab.setAttribute('aria-current', 'page')
                             newTab.setAttribute('aria-selected', 'true')
                             newTab.classList.add('active')">
-{% for date in dates %}
-  {% if forloop.first %}
-    <li class="nav-item htmx-tab">
-      <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
-    </li>
+    {% for date in dates %}
+      {% if forloop.first %}
+        <li class="nav-item htmx-tab">
+          <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if meeting.program_node %}
+      <li class="nav-item">
+        <a class="nav-link" aria-selected="false" hx-get="{{ request.path }}?q=program" hx-target=".meetings-videos" hx-push-url="true">Program and Ephemera</a>
+      </li>
+    {% endif %}
+    </ul>
+    {% if program %}
+      <div class="meetings-videos">
+        {% include "meetingsvideos/program-viewer.html" %}
+      </div>
+    {% else %}
+      <div class="meetings-videos">
+        {% include "meetingsvideos/meeting-video-list.html" %}
+      </div>
+    {% endif %}
   {% else %}
-    <li class="nav-item">
-      <button class="nav-link" role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="{{ request.path }}?q={{ date|date:'Y-m-d' }}" hx-target=".meetings-videos" hx-push-url="true">{{ date|date:"F j, Y" }}</button>
-    </li>
+    <p>No videos are available for this meeting.</p>
+    <p>{{ meeting.display_notes }}</p>
+    {% if meeting.manifest %}
+      {% include "meetingsvideos/program-viewer.html" %}
+    {% endif %}
   {% endif %}
-{% endfor %}
-{% if meeting.program_node %}
-  <li class="nav-item">
-    <a class="nav-link" aria-selected="false" hx-get="{{ request.path }}?q=program" hx-target=".meetings-videos" hx-push-url="true">Program and Ephemera</a>
-  </li>
-{% endif %}
-</ul>
-{% if program %}
-  <div class="meetings-videos">
-    {% include "meetingsvideos/program-viewer.html" %}
-  </div>
-{% else %}
-  <div class="meetings-videos">
-  {% include "meetingsvideos/meeting-video-list.html" %}
-  </div>
-  {% endif %}
-{% else %}
-<p>No videos are available for this meeting.</p>
-<p>{{ meeting.display_notes }}</p>
-{% endif %}
 </div>
 {% endblock %}
 {% block extra_js %}
 <script>
   jsFunctions.makeActive("meetingsNav");
-  jsFunctions.applyTabNav("meetings/{{ meeting.slug }}/");
+</script>
+{% if videos|length > 0 %}
+  <script>
+    jsFunctions.applyTabNav("meetings/{{ meeting.slug }}/");
+  </script>
+{% endif %}
+<script>
   jsFunctions.initUV();
 </script>
 {% endblock %}
