@@ -1,4 +1,5 @@
 {% for meeting in meetings %}
+<div class="meeting-teaser">
   <div class="teaser-title">
     <h3><a href="{% url 'meeting_detail' meeting.slug %}">{{ meeting.start_date|date:"F j" }}-{{ meeting.end_date|date:"j, Y"}}</a></h3>
   </div>
@@ -35,6 +36,7 @@
     </div>
   {% endif %}
   <a href="{% url 'meeting_detail' meeting.slug %}" class="btn btn-primary">View all talks</a>
+  </div>
   <hr>
   {% if page_obj.has_next and forloop.last %}
   <span
