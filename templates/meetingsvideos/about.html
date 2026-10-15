@@ -5,37 +5,63 @@ APS Meetings Videos - About
 {% endblock %}
 
 {% block main %}
-<h1>About the Project</h1>
+<ul class="nav nav-tabs">
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab active" role="tab" aria-controls="tab-contents" aria-selected="true" href="#">FAQ</a>
+  </li>
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab" role="tab" aria-controls="tab-contents" aria-selected="false" href="{% url 'technical' %}">Technical</a>
+  </li>
+  <li class="nav-item nav-tab-link">
+    <a class="nav-link about-tab" role="tab" aria-controls="tab-contents" aria-selected="false" href="{% url 'credits' %}">Credits</a>
+  </li>
+</ul>
+<div id="about">
+<h1>FAQ</h1>
+<h2>APS Meetings Videos</h2>
 <dl>
   <dt>
     What are the Meetings of the American Philosophical Society?
   </dt>
   <dd>
-    The Meetings of the American Philosophical Society (APS) are twice-yearly gatherings of elected members of the APS and their invited guests. Meetings are held in April and November. Each Meeting consists of a central program of talks on a wide variety of topics, reflecting the broad interests and expertise of the Membership.
+    The Meetings of the American Philosophical Society (APS) are twice-yearly gatherings of elected Members of the APS and their invited guests. Meetings are held in April and November. Each Meeting consists of a central program of talks on a wide variety of topics, reflecting the broad interests and expertise of the Membership.
   </dd>
   <dt>
     What is the American Philosophical Society?
   </dt>
   <dd>
-    The American Philosophical Society (APS) is the oldest learned society in North America. Founded by Benjamin Franklin in 1743 for the purpose of “promoting useful knowledge,” the APS today has around 1000 living Members. Members are elected from all fields, including the natural and applied sciences, social sciences, the humanities, the arts, and law.
+    The <a href="https://www.amphilsoc.org/" target="_blank">American Philosophical Society</a> (APS) is the oldest learned society in North America. Founded by Benjamin Franklin in 1743 for the purpose of “promoting useful knowledge,” the APS today has around <a href="https://members.amphilsoc.org/s/member-directory" target="_blank">1,000 living Members</a>. Members are elected from all fields, including the natural and applied sciences, social sciences, the humanities, the arts, and law.
   </dd>
   <dt>
-    What does this site contain?
+    What's on this site?
   </dt>
   <dd>
-    This site contains recordings of talks, concerts, and member inductions from the APS Meetings from November 2003 to the present. In all, there are currently over 500 talks.
+    This site features recordings of talks, concerts, and Member inductions from the APS Meetings from November 2003 to the present. In all, there are currently over 500 talks.
   </dd>
   <dt>
     What are the talks about?
   </dt>
   <dd>
-    Talks cover all fields of scholarship, including physics, biology, medicine, the law, history, history of art, political science… If you can think of it, it is probably in there! In addition, many Meetings feature a musical performance, the presentation of awards, and the induction of new Members to the APS.
+    Talks cover all fields of scholarship, including physics, biology, medicine, the law, history, history of art, political science, and more. In addition, many Meetings feature a musical performance, the presentation of awards, and the induction of new Members to the APS. The diversity of offerings here on the Meetings of the American Philosophical Society site represent the broad interests and expertise of the Membership and invited guests.
   </dd>
   <dt>
     What else happens at a Meeting?
   </dt>
   <dd>
-    In addition to the talks, Meetings include business meetings of the APS’s committees and council, as well as social events for Members and invited guests. The team is working to incorporate ephemera and photographs from each Meeting to document this part of the event.
+    In addition to the talks, Meetings include business meetings of the APS’s Committees and Council, as well as social events for Members and invited guests. The <a href="https://www.amphilsoc.org/center-digital-scholarship" target="_blank">project team</a> is working to incorporate ephemera and photographs to document these portions of the Society’s Meetings.
   </dd>
 </dl>
+</div>
+<div id="technical-about" class="tab-content">
+  <h1>Techincal</h1>
+  <p>Meetings Video is implemented as a custom Python/Django application developed by the <a href="https://www.amphilsoc.org/center-digital-scholarship" target="_blank">Center for Digital Scholarship</a> at the American Philosophical Society. The project code is open source and available on Github.</p>
+</div>
+<div id="credits" class="tab-content">
+  {% lorem %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  jsFunctions.aboutPageTabs()
+</script>
 {% endblock %}
