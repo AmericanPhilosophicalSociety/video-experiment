@@ -117,20 +117,19 @@ export function parseDateFilter() {
 }
 
 function moreToLess(e) {
-  const currentText = e.target.innerHTML
-  if (currentText === "...More") {
-    e.target.innerHTML = "...Less"
-  } else {
-    e.target.innerHTML = "...More"
-  }
+  const collapseButton = document.querySelector(`[href="#${e.id}"]`)
+  e.addEventListener('show.bs.collapse', () => {
+    collapseButton.innerHTML = '...Less'
+  })
+  e.addEventListener('hidden.bs.collapse', () => {
+    collapseButton.innerHTML = '...More'
+  })
 }
 
 export function moreHandler() {
-  const moreButtons = document.querySelectorAll('.expand-facets')
-  moreButtons.forEach((e) => e.addEventListener('click', (d) => {
-    moreToLess(d);
-  })
-)}
+  const collapses = document.querySelectorAll('.addt-facets');
+  collapses.forEach(moreToLess);
+}
 
 export function applyTabNav(baseUrl) {
   // remove any active links

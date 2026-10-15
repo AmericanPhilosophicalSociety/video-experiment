@@ -10,7 +10,7 @@
 
   <!-- create remaining disciplines -->
   {% if disciplines|length > 10 %}
-      <span class="collapse" id="expand-disciplines">
+      <span class="collapse addt-facets" id="expand-disciplines">
       {% for discipline in disciplines|slice:"10:" %}
         <li><a href="{% add_qsetarg "discipline" discipline.name %}">{{ discipline.name }}</a> ({{ discipline.count }})</li>
       {% endfor %}
@@ -34,7 +34,7 @@
 
     <!-- create remaining subjects -->
     {% if lcsh|length > 10 %}
-      <span class="collapse" id="expand-subjects">
+      <span class="collapse addt-facets" id="expand-subjects">
         {% for subject in lcsh|slice:"10:" %}
           <li><a href="{% add_qsetarg "lcsh" subject.heading %}">{{ subject.heading }}</a> ({{ subject.count }})</li>
         {% endfor %}
