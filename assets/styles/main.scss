@@ -46,6 +46,8 @@ body {
 
 h1 {
     font-family: $accent-font;
+    // padding-top: .75rem;
+    padding-bottom: .75rem;
 }
 
 // link styles
@@ -89,6 +91,7 @@ h1 > a:focus, h2 > a:focus, h3 > a:focus, h4 > a:focus, h5 > a:focus, h6 > a:foc
 .header-container {
     width: 100%;
     margin: auto;
+    padding-bottom: 2rem;
 }
 
 header .container-fluid {
@@ -108,6 +111,7 @@ header .container-fluid {
 
 .nav-container {
     display: flex;
+    padding-bottom: .5rem;
 }
 
 .navbar-nav .nav-link.active {
@@ -222,6 +226,9 @@ header .container-fluid {
 }
 
 // Facets
+#facets-menu {
+    padding-right: 5rem;
+}
 
 .active-facets-container ul {
     display: flex;
@@ -274,7 +281,7 @@ main {
 
 #hero {
     background-color: $aps-black;
-    margin-top: 3rem;
+    margin-top: 2rem;
     padding-bottom: 3em;
     color: $aps-white;
 }
@@ -292,6 +299,9 @@ main {
     border-left: solid $aps-red;
     font: 1.25em $accent-font;
     border-radius: 0;
+    min-height: 8rem;
+    display: flex;
+    align-items: center;
 }
 
 .card.landing-card {
@@ -343,6 +353,11 @@ main {
 */
 
 // video teaser
+
+.video-teaser {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
 
 .video-teaser > img {
     background-color: $dark-gray;
@@ -472,7 +487,9 @@ video-skin {
 
 // meeting and symposia lists
 .meeting-teaser {
-    border-radius: 0.375rem 0.375rem 16px 16px;
+    // border-radius: 0.375rem 0.375rem 16px 16px;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
 }
 
 .random-samples {

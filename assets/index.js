@@ -116,6 +116,21 @@ export function parseDateFilter() {
   })
 }
 
+function moreToLess(e) {
+  const collapseButton = document.querySelector(`[href="#${e.id}"]`)
+  e.addEventListener('show.bs.collapse', () => {
+    collapseButton.innerHTML = '...Less'
+  })
+  e.addEventListener('hidden.bs.collapse', () => {
+    collapseButton.innerHTML = '...More'
+  })
+}
+
+export function moreHandler() {
+  const collapses = document.querySelectorAll('.addt-facets');
+  collapses.forEach(moreToLess);
+}
+
 export function applyTabNav(baseUrl) {
   // remove any active links
   const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
