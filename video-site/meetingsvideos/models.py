@@ -1,9 +1,12 @@
 from django.db import models
 from django.db.models.functions import Substr
+from django.urls import reverse
 from autoslug import AutoSlugField
 
 from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
 import logging
+
+from .diglib import DiglibAPI
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +37,7 @@ class LCSHManager(AlphaManager):
 
 
 class SpeakerManager(AlphaManager):
-    order_field = "label"
+    order_field = "lcsh__heading"
 
 
 class VideoManager(models.Manager):
@@ -45,7 +48,7 @@ class VideoManager(models.Manager):
 
 class LCSH(models.Model):
     heading = models.CharField(max_length=200)
-    uri = models.CharField(max_length=200, blank=True, null=True)
+    uri = models.CharField(max_length=200, blank=True, null=True, unique=True)
     slug = AutoSlugField(populate_from="heading", unique=True)
 
     CATEGORY_CHOICES = {
@@ -164,19 +167,28 @@ class Speaker(models.Model):
         max_length=200,
         help_text="The name as it would appear on a program, in order with no dates, e.g. 'Joyce Carol Oates'",
     )
-    lcsh = models.ForeignKey(LCSH, blank=True, null=True, on_delete=models.SET_NULL)
+    # prevent deletion of LCSH if still associated with a speaker
+    lcsh = models.OneToOneField(LCSH, on_delete=models.PROTECT)
     objects = SpeakerManager()
-    label = models.CharField(max_length=200, blank=True, null=True)
+    # TODO: is this redundant with LCSH?
+    label = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from="display_name", unique=True)
 
+    # @property
+    # def label(self):
+    #     return self.lcsh.heading
+
     def __str__(self):
-        return self.label
+        # return self.label
+        return self.lcsh.heading
 
     def save(self, **kwargs):
         self.display_name = self.display_name.strip()
-        if self.lcsh and not self.label:
-            self.label = self.lcsh.heading
+        self.label = self.lcsh.heading
         super().save(**kwargs)
+
+    def get_absolute_url(self):
+        return reverse("speaker_detail", kwargs={"slug": self.slug})
 
     # TODO: if we want to keep using this, refactor to still work now that an affiliation can be associated with multiple meetings
     # def get_most_recent_affiliation(self):
@@ -186,7 +198,8 @@ class Speaker(models.Model):
     #         return ""
 
     class Meta:
-        ordering = ["label"]
+        # ordering = ["label"]
+        ordering = ["lcsh__heading"]
 
 
 class Affiliation(models.Model):
@@ -233,6 +246,7 @@ class Meeting(WithNotes):
         blank=True,
     )
     program_node = models.IntegerField(blank=True, null=True, unique=True)
+    manifest = models.URLField(blank=True, null=True)
     slug = AutoSlugField(populate_from="display_date", unique=True)
 
     def videos_by_time(self):
@@ -240,18 +254,28 @@ class Meeting(WithNotes):
 
     def videos_by_date(self, query_date):
         return self.video_set.filter(date=query_date).order_by("order_in_day")
-    
+
     def get_program_url(self):
         return f"https://diglib.amphilsoc.org/node/{self.program_node}"
-    
-    def get_program_manifest(self):
-        return f"https://diglib.amphilsoc.org/node/{self.program_node}/manifest"
+
+    def generate_manifest(self):
+        """Generate a manifest. This does not save, so you must separately call save"""
+        if not self.manifest:
+            diglib = DiglibAPI()
+            iiif_data = diglib.generate_and_save_iiif_manifest(self.program_node)
+            manifest_path = iiif_data["@id"] + "/manifest.json"
+            self.manifest = manifest_path
+        
+
+    def random_video_choices(self):
+        # note this is not performant but fine for current database size
+        return self.video_set.order_by("?")[:3]
 
     def __str__(self):
         return self.display_date
 
     class Meta:
-        ordering = ["start_date"]
+        ordering = ["-start_date"]
 
 
 class ProgramInfo(WithNotes):
@@ -322,6 +346,9 @@ class Video(ProgramInfo):
     academic_disciplines = models.ManyToManyField(AcademicDiscipline)
 
     objects = VideoManager()
+
+    def get_absolute_url(self):
+        return reverse("video_detail", kwargs={"slug": self.slug})
 
     def first_in_symposium(self):
         # videos = Symposium.objects.get(pk=self.symposium.pk)

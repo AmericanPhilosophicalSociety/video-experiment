@@ -26,6 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DB_SECRET_KEY")
 
+# Credentials for the APS Digital Library
+APS_DIGLIB_USERNAME = os.getenv("APS_DIGLIB_USERNAME")
+APS_DIGLIB_PASSWORD = os.getenv("APS_DIGLIB_PASSWORD")
+
+TECHNICAL_CONTACT = os.getenv("TECHNICAL_CONTACT")
+
+# base URL for use in constructing IIIF manifests
+BASE_URL = os.getenv('DJANGO_BASE_URL', 'http://127.0.0.1:8000')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv("DEBUG")))
 
@@ -37,8 +46,12 @@ CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_TRUSTED_ORIGINS").split(" ")
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     "meetingsvideos.apps.MeetingsvideosConfig",
     "import_export",
+    "dal",
+    "dal_alight",
+    "loc_authorities",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,10 +60,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "django_htmx",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -136,10 +152,11 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static/")]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static/")]
+
+LOGIN_REDIRECT_URL = "/index/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -150,10 +167,17 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
+        "upload_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "videoupload.log"),
+        },
         "console": {"class": "logging.StreamHandler"},
     },
     "root": {
@@ -161,6 +185,11 @@ LOGGING = {
         "level": "WARNING",
     },
     "loggers": {
+        "": {
+            "handlers": ["upload_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
         "django": {
             "handlers": ["console"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),

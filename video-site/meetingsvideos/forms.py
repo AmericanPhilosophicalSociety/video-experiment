@@ -1,6 +1,7 @@
 from django import forms
-from .models import APSDepartment, AcademicDiscipline, LCSH
+from .models import APSDepartment, AcademicDiscipline, LCSH, Speaker, Video, Affiliation
 from django.db.models import Count
+from loc_authorities.forms import LocField, LocWidget
 
 
 class AdvancedSearchForm(forms.Form):
@@ -66,50 +67,107 @@ class SubjectModelChoiceField(forms.ModelChoiceField):
         return super().prepare_value(value)
 
 
-class FacetForm(forms.Form):
-    template_name = "meetingsvideos/facet-form.html"
-    lcsh = SubjectModelChoiceField(
-        queryset=None,
-        required=False,
-        label="Subject",
-        widget=forms.Select(attrs={"class": "form-select"}),
-        empty_label="Choose...",
-    )
-    discipline = SubjectModelChoiceField(
-        queryset=None,
-        required=False,
-        widget=forms.Select(attrs={"class": "form-select"}),
-        empty_label="Choose...",
-    )
-    start = forms.IntegerField(
-        min_value=2003,
-        max_value=2025,
-        required=False,
-        widget=forms.NumberInput(attrs={"class": "form-select"}),
-    )
-    end = forms.IntegerField(
-        min_value=2003,
-        max_value=2025,
-        required=False,
-        widget=forms.NumberInput(attrs={"class": "form-select"}),
+class AffiliationForm(forms.ModelForm):
+    class Meta:
+        model = Affiliation
+        fields = ["meetings", "position", "institution"]
+        widgets = {
+            "meetings": forms.SelectMultiple(attrs={"class": "form-select"}),
+            "position": forms.TextInput(attrs={"class": "form-control"}),
+            "institution": forms.TextInput(attrs={"class": "form-control"}),
+        }
+
+
+AffiliationFormSet = forms.inlineformset_factory(
+    Speaker, Affiliation, form=AffiliationForm, can_delete=False, extra=1
+)
+
+
+class SpeakerForm(forms.ModelForm):
+    class Meta:
+        model = Speaker
+        fields = [
+            "display_name",
+            "label",
+            "lcsh",
+        ]
+
+        widgets = {
+            "display_name": forms.TextInput(attrs={"class": "form-control"}),
+            "label": forms.TextInput(attrs={"class": "form-control"}),
+            "lcsh": forms.Select(attrs={"class": "form-select"}),
+        }
+
+
+class VideoForm(forms.ModelForm):
+    error_css_class = "error-message"
+
+    class Meta:
+        model = Video
+        fields = [
+            "title",
+            "lecture_additional_info",
+            "date",
+            "order_in_day",
+            "abstract",
+            "node",
+            "service_file",
+            "admin_category",
+            "academic_disciplines",
+            "display_notes",
+            "admin_notes",
+            "doi",
+            "proceedings_title",
+            # "lcsh",
+            # "aps_departments",
+        ]
+        widgets = {
+            "display_notes": forms.Textarea(attrs={"class": "form-control"}),
+            "admin_notes": forms.Textarea(attrs={"class": "form-control"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "lecture_additional_info": forms.TextInput(attrs={"class": "form-control"}),
+            "date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "order_in_day": forms.NumberInput(attrs={"class": "form-control"}),
+            "abstract": forms.Textarea(attrs={"class": "form-control"}),
+            "academic_disciplines": forms.SelectMultiple(
+                attrs={"class": "form-select"}
+            ),
+            "doi": forms.URLInput(attrs={"class": "form-control"}),
+            "proceedings_title": forms.TextInput(attrs={"class": "form-control"}),
+            "node": forms.NumberInput(attrs={"class": "form-control"}),
+            "service_file": forms.URLInput(attrs={"class": "form-control"}),
+            "admin_category": forms.Select(attrs={"class": "form-select"}),
+            # "lcsh": ,
+            # "aps_departments",
+        }
+
+
+SpeakerFormSet = forms.modelformset_factory(
+    Speaker,
+    fields=["display_name", "lcsh", "label"],
+    extra=0,
+    widgets={
+        "display_name": forms.TextInput(attrs={"class": "form-control"}),
+        "lcsh": forms.Select(attrs={"class": "form-select"}),
+        "label": forms.TextInput(attrs={"class": "form-control"}),
+    },
+)
+
+
+class LCSHSubjectForm(forms.ModelForm):
+    uri = LocField(
+        widget=LocWidget(url="loc-authorities:subject-suggest"),
     )
 
-    def __init__(self, object_list, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    class Meta:
+        model = LCSH
+        fields = ["heading", "uri", "authority"]
+        widgets = {
+            "heading": forms.TextInput(attrs={"class": "form-control"}),
+            "authority": forms.Select(attrs={"class": "form-select"}),
+        }
 
-        sub_query = (
-            LCSH.objects.filter(video__in=object_list)
-            .annotate(n=Count("heading"))
-            .values_list("heading", "n")
-            .order_by("-n")[:20]
-        )
 
-        discipline_query = (
-            AcademicDiscipline.objects.filter(video__in=object_list)
-            .annotate(n=Count("name"))
-            .values_list("name", "n")
-            .order_by("-n")[:20]
-        )
-
-        self.fields["lcsh"].queryset = sub_query
-        self.fields["discipline"].queryset = discipline_query
+LCSHSubjectFormSet = forms.modelformset_factory(
+    LCSH, form=LCSHSubjectForm, extra=1, can_delete=True
+)

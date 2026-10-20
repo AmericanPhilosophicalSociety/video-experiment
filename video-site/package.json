@@ -26,6 +26,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@videojs/html": "^10.0.0-rc.2",
     "autoprefixer": "^10.4.21",
     "bootstrap": "^5.3.8",
     "css-loader": "^7.1.2",
@@ -33,6 +34,7 @@
     "htmx.org": "^2.0.6",
     "postcss-loader": "^8.1.1",
     "sass-loader": "^16.0.5",
-    "style-loader": "^4.0.0"
+    "style-loader": "^4.0.0",
+    "universalviewer": "^4.4.4"
   }
 }

@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0021_alter_symposium_date"),
     ]

@@ -1,9 +1,19 @@
 from django.shortcuts import render, redirect
-from .forms import AdvancedSearchForm, FacetForm
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormMixin
+from django.db import transaction
+from django.db.models import Count, Min, Max
+from .forms import (
+    AdvancedSearchForm,
+    VideoForm,
+    SpeakerForm,
+    AffiliationFormSet,
+    SpeakerFormSet,
+    LCSHSubjectFormSet,
+)
+from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic.edit import FormMixin, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from random import sample
 from string import ascii_uppercase
@@ -17,9 +27,10 @@ from .models import (
     AcademicDiscipline,
     APSDepartment,
     Speaker,
+    Affiliation,
 )
 
-from .service import basic_search, advanced_search
+from .service import video_search, basic_search, advanced_search
 
 
 class HTMXMixin:
@@ -111,16 +122,15 @@ class Landing(ListView):
         return queryset
 
 
-class IndexView(HTMXMixin, FormMixin, ListView):
+class IndexView(HTMXMixin, ListView):
     # model = Video
     template_name = "meetingsvideos/index.html"
     context_object_name = "videos"
     paginate_by = 10
     partial_template = "meetingsvideos/video-list.html"
-    form_class = FacetForm
 
     def get_queryset(self):
-        queryset = Video.objects.exclude_inductions()
+        queryset = Video.objects.all()
         # Not very DRY - would be better to abstract logic out to FilterView
         subjects = self.request.GET.getlist("lcsh")
         disciplines = self.request.GET.getlist("discipline")
@@ -140,27 +150,143 @@ class IndexView(HTMXMixin, FormMixin, ListView):
             queryset = queryset.filter(date__range=(start, end))
         return queryset
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["object_list"] = self.object_list
-        return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        count = self.object_list.count()
+        context["count"] = count
+        lcsh = (
+            LCSH.objects.filter(video__in=self.object_list)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:40]
+        )
 
-    def get_initial(self):
-        initial = super().get_initial()
-        params = self.request.GET.dict()
-        for k, v in params.items():
-            if k in ["start", "end"]:
-                params[k] = int(v)
-            else:
-                params.update({k: [v]})
-        initial.update(params)
-        return initial
+        lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
+        context["lcsh"] = lcsh
+
+        disciplines = (
+            AcademicDiscipline.objects.filter(video__in=self.object_list)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
+        context["disciplines"] = disciplines
+
+        start = self.object_list.aggregate(Min("date"))
+        context["start"] = start
+
+        end = self.object_list.aggregate(Max("date"))
+        context["end"] = end
+
+        # handle existing filter tags
+        selected_lcsh = self.request.GET.getlist("lcsh", "")
+        selected_lcsh = [
+            {"type": "Subject", "query_word": "lcsh", "label": sub}
+            for sub in selected_lcsh
+        ]
+        selected_disciplines = self.request.GET.getlist("discipline", "")
+        selected_disciplines = [
+            {"type": "Discipline", "query_word": "discipline", "label": d}
+            for d in selected_disciplines
+        ]
+        active_filters = selected_lcsh + selected_disciplines
+        context["active_filters"] = active_filters
+
+        return context
 
 
 class VideoDetail(DetailView):
     model = Video
     context_object_name = "video"
     template_name = "meetingsvideos/video_detail.html"
+
+
+class VideoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Video
+    form_class = VideoForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context["speakers"] = SpeakerFormSet(self.request.POST, prefix="speaker")
+            context["lcsh"] = LCSHSubjectFormSet(self.request.POST, prefix="lcsh")
+        else:
+            context["speakers"] = SpeakerFormSet(
+                queryset=self.object.speakers.all(), prefix="speaker"
+            )
+            context["lcsh"] = LCSHSubjectFormSet(
+                queryset=self.object.lcsh.all(), prefix="lcsh"
+            )
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        speaker_form = context["speakers"]
+        lcsh_form = context["lcsh"]
+        # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
+        # parent object in this implementation
+        with transaction.atomic():
+            added_subjects = []
+            # do not allow saves of any forms if the forms are invalid
+            if lcsh_form.is_valid() and speaker_form.is_valid():
+                # handle speaker form
+                speaker_form.instance = self.object
+                speaker_form.save()
+                lcsh_form.instance = self.object
+                # capture object instance without updating database
+                saved_lcsh = lcsh_form.save(commit=False)
+
+                # now handle saving/deleting etc...
+                new_subjects = [sub for sub in saved_lcsh if sub.pk is None]
+
+                # isolate and save existing subjects
+                existing_subjects = [
+                    sub for sub in saved_lcsh if sub not in new_subjects
+                ]
+                for sub in existing_subjects:
+                    sub.save()
+
+                # handle deletes
+                if lcsh_form.deleted_objects:
+                    for obj in lcsh_form.deleted_objects:
+                        self.object.lcsh.remove(obj)
+                        # check to see if this subject still has references or if it should be deleted
+                        if len(obj.video_set.all()) == 0:
+                            obj.delete()
+
+                # handle new subjects
+                for sub in new_subjects:
+                    if sub.uri and sub.authority == "LOC":
+                        obj, _ = LCSH.objects.get_or_create(
+                            heading=sub.heading, uri=sub.uri, authority=sub.authority
+                        )
+                        added_subjects.append(obj)
+                        obj.save()
+                    else:
+                        # local subject - check validity through heading
+                        obj, _ = LCSH.objects.get_or_create(
+                            heading=sub.heading, authority=sub.authority
+                        )
+                        added_subjects.append(obj)
+                        obj.save()
+
+                self.object = form.save()
+
+                # handle adding any created subjects
+                if len(added_subjects) > 0:
+                    for sub in added_subjects:
+                        self.object.lcsh.add(sub)
+                    self.object.save()
+
+                return super().form_valid(form)
+            else:
+                return self.form_invalid(form)
+                # we need to explicitly trigger form_invalid logic here
+
+        def form_invalid(self, form):
+            return super().form_invalid(form)
 
 
 class HeadingsView(AlphaFilterView):
@@ -184,6 +310,7 @@ class HeadingDetail(DetailView):
 
 class SpeakersView(AlphaFilterView):
     model = Speaker
+    form_class = SpeakerForm
     queryset_method = Speaker.objects.with_first_letter
     template_name = "meetingsvideos/speakers.html"
     link_template = "speaker_detail"
@@ -195,12 +322,100 @@ class SpeakerDetail(DetailView):
     context_object_name = "speaker"
 
 
+class SpeakerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Speaker
+    form_class = SpeakerForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context["affiliations"] = AffiliationFormSet(
+                self.request.POST, instance=self.object, prefix="affiliation"
+            )
+        else:
+            context["affiliations"] = AffiliationFormSet(
+                instance=self.object, prefix="affiliation"
+            )
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        affiliation_form = context["affiliations"]
+        # TODO: if speaker is being added (currently not allowed in form), it is not saved to the
+        # parent object in this implementation
+        # added_affiliations = []
+        with transaction.atomic():
+            if affiliation_form.is_valid():
+                affiliation_form.instance = self.object
+                saved_affiliations = affiliation_form.save(commit=False)
+
+                # now handle saving/deleting etc...
+                new_affiliations = [a for a in saved_affiliations if a.pk is None]
+
+                # isolate and save existing subjects
+                existing_affiliations = [
+                    a for a in saved_affiliations if a not in new_affiliations
+                ]
+                for a in existing_affiliations:
+                    a.save()
+
+                for a in new_affiliations:
+                    obj, _ = Affiliation.objects.get_or_create(
+                        speaker=self.object,
+                        position=a.position,
+                        institution=a.institution,
+                    )
+                    obj.save()
+                    # need to grab meeting from the cleaned form. Probably not the most efficient implementation
+                    for f in affiliation_form.cleaned_data:
+                        if f["position"] == obj.position:
+                            meetings = f["meetings"]
+                            obj.meetings.add(*meetings)
+
+                self.object = form.save()
+
+                return super().form_valid(form)
+            else:
+                return self.form_invalid(form)
+
+                # TODO:
+                # Add new affiliations to parent
+                # handle invalidation
+
+        return super().form_valid(form)
+
+
 class MeetingsList(HTMXMixin, ListView):
     model = Meeting
     template_name = "meetingsvideos/meetings.html"
     context_object_name = "meetings"
     paginate_by = 10
     partial_template = "meetingsvideos/meetings-list.html"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        start, end = [self.request.GET.get("start"), self.request.GET.get("end")]
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            queryset = queryset.filter(start_date__range=(start, end))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        start = self.object_list.aggregate(Min("start_date"))
+        context["start"] = start
+
+        end = self.object_list.aggregate(Max("end_date"))
+        context["end"] = end
+
+        return context
 
 
 class MeetingDetail(HTMXMixin, DetailView):
@@ -215,14 +430,21 @@ class MeetingDetail(HTMXMixin, DetailView):
         context["dates"] = dates
         param = self.request.GET.get("q")
         if param:
-            parsed_param = [int(p) for p in param.split("-")]
-            query_date = datetime.date(*parsed_param)
+            try:
+                parsed_param = [int(p) for p in param.split("-")]
+                query_date = datetime.date(*parsed_param)
+                context["program"] = False
+            # if param is for program, it will produce a value error
+            # return some videos so we know videos exist
+            except ValueError:
+                query_date = dates[0]
+                context["program"] = True
         else:
             try:
                 query_date = dates[0]
             except IndexError:
                 query_date = None
-        context["videos"] = self.get_object().video_set.filter(date=query_date)
+        context["videos"] = self.get_object().video_set.filter(date=query_date).order_by("order_in_day")
         return context
 
 
@@ -252,17 +474,21 @@ class DisciplineDetail(DetailView):
     context_object_name = "discipline"
 
 
-# class DepartmentList(TopicView):
-#     model = APSDepartment
-#     template_name = "meetingsvideos/departments.html"
-#     link_template = "department_detail"
-#     content_template = "meetingsvideos/department-content.html"
+class DepartmentList(LoginRequiredMixin, TopicView):
+    model = APSDepartment
+    template_name = "meetingsvideos/departments.html"
+    link_template = "department_detail"
+    content_template = "meetingsvideos/department-content.html"
 
 
-# class DepartmentDetail(DetailView):
-#     model = APSDepartment
-#     template_name = "meetingsvideos/department_detail.html"
-#     context_object_name = "department"
+class DepartmentDetail(LoginRequiredMixin, DetailView):
+    model = APSDepartment
+    template_name = "meetingsvideos/department_detail.html"
+    context_object_name = "department"
+
+
+class AboutView(TemplateView):
+    template_name = "meetingsvideos/about.html"
 
 
 def search(request):
@@ -273,21 +499,79 @@ def search(request):
 
 
 def search_results(request):
-    if request.method == "POST":
-        query = request.POST["q"]
-        videos, speakers, subjects = basic_search(query)
+    if request.method == "GET":
+        query = request.GET.get("q")
+        # videos, speakers, subjects = basic_search(query)
+        videos = video_search(query)
+
+        # reuse logic from IndexView - not very DRY
+        subjects = request.GET.getlist("lcsh")
+        disciplines = request.GET.getlist("discipline")
+        start, end = [request.GET.get("start"), request.GET.get("end")]
+        for subject in subjects:
+            videos = videos.filter(lcsh__heading=subject)
+        for discipline in disciplines:
+            videos = videos.filter(academic_disciplines__name=discipline)
+        if start or end:
+            # set start dates outside of scope if the user selects nothing
+            start = (
+                datetime.date(int(start), 1, 1) if start else datetime.date(1980, 1, 1)
+            )
+            end = (
+                datetime.date(int(end), 12, 31) if end else datetime.date(2050, 12, 31)
+            )
+            videos = videos.filter(date__range=(start, end))
+
+        selected_lcsh = [
+            {"type": "Subject", "query_word": "lcsh", "label": sub} for sub in subjects
+        ]
+
+        selected_disciplines = [
+            {"type": "Discipline", "query_word": "discipline", "label": d}
+            for d in disciplines
+        ]
+
+        active_filters = selected_lcsh + selected_disciplines
+
+        count = videos.count()
+
+        lcsh = (
+            LCSH.objects.filter(video__in=videos)
+            .annotate(n=Count("heading"))
+            .values_list("heading", "n")
+            .order_by("-n")[:40]
+        )
+
+        lcsh = [{"heading": sub[0], "count": sub[1]} for sub in lcsh]
+
+        disciplines = (
+            AcademicDiscipline.objects.filter(video__in=videos)
+            .annotate(n=Count("name"))
+            .values_list("name", "n")
+            .order_by("-n")[:20]
+        )
+
+        disciplines = [{"name": d[0], "count": d[1]} for d in disciplines]
+
+        start = videos.aggregate(Min("date"))
+        end = videos.aggregate(Max("date"))
+
         return render(
             request,
             "meetingsvideos/search_results.html",
             {
                 "query": query,
                 "videos": videos,
-                "speakers": speakers,
-                "subjects": subjects,
+                "count": count,
+                "lcsh": lcsh,
+                "disciplines": disciplines,
+                "start": start,
+                "end": end,
+                "active_filters": active_filters,
             },
         )
     else:
-        return redirect("search")
+        return redirect("index")
 
 
 def search_results_advanced(request):

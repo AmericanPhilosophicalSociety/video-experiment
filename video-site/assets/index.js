@@ -1,8 +1,8 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
-// import { addBackToTop } from 'vanilla-back-to-top';
-
-// addBackToTop();
+import { init } from "universalviewer";
+import '@videojs/html/video/player';
+import '@videojs/html/video/skin';
 
 window.htmx = htmx;
 
@@ -27,19 +27,6 @@ htmx.onLoad(function(content) {
   }
 });
 
-function searchTabClick(event) {
-  const activeTabs = [document.querySelector('.nav-tab-link .active'), document.querySelector('.tab-pane.active')];
-  activeTabs.forEach(d => d.classList.remove('active'));
-  const newTab = event.target;
-  newTab.classList.add('active')
-  const target = newTab.href.split('#')[1]
-  document.getElementById(target).classList.add('active');
-}
-
-export function makeSearchTabs() {
-  const tabs = document.getElementById('nav-tabs');
-  tabs.addEventListener('click', searchTabClick);
-}
 
 function facetSubmit(event, element) {
   event.preventDefault();
@@ -54,7 +41,6 @@ function facetSubmit(event, element) {
   };
   badKeys.forEach((key) => search.delete(key));
   let query = search.toString()
-  console.log(query)
   document.location.search = query;
 };
 
@@ -93,4 +79,84 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function initUV() {
+  const uvDiv = document.querySelector("#uv");
+  if (uvDiv) {
+    const programManifest = uvDiv.dataset.programManifest;
+    const data = {
+      manifest: programManifest,
+      embedded: true
+    };
+    init("uv", data);
+  }
+}
 
+export function parseDateFilter() {
+  const dateButton = document.querySelector("#date-submit");
+  dateButton.addEventListener("click", () => {
+    const startDate = document.querySelector("#id_start").value;
+    const endDate = document.querySelector("#id_end").value;
+    const paramsString = window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    if (startDate) {
+      if (searchParams.has("start")) {
+        searchParams.set("start", startDate);
+      } else {
+      searchParams.append("start", startDate)
+      }
+    }
+    if (endDate) {
+      if (searchParams.has("end")) {
+        searchParams.set("end", endDate);
+      } else {
+        searchParams.append("end", endDate)
+      }
+    }
+    window.location = "?" + searchParams.toString();
+  })
+}
+
+function moreToLess(e) {
+  const collapseButton = document.querySelector(`[href="#${e.id}"]`)
+  e.addEventListener('show.bs.collapse', () => {
+    collapseButton.innerHTML = '...Less'
+  })
+  e.addEventListener('hidden.bs.collapse', () => {
+    collapseButton.innerHTML = '...More'
+  })
+}
+
+export function moreHandler() {
+  const collapses = document.querySelectorAll('.addt-facets');
+  collapses.forEach(moreToLess);
+}
+
+export function applyTabNav(baseUrl) {
+  // remove any active links
+  const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
+  defaultTab.forEach((e) => {
+    e.classList.remove("active");
+    e.setAttribute('aria-selected', 'false');
+    e.removeAttribute('aria-current');
+  });
+  let paramsString = window.location.search;
+  const searchParams = new URLSearchParams(paramsString);
+  if (searchParams.has("first_letter")) {
+    searchParams.delete("first_letter");
+  };
+  // JavaScript scoping means we need to define this outside the block
+  let selectedTab = ''
+  // check if search params are empty to select tab other than first
+  if (searchParams.size > 0) {
+    paramsString = "?" + searchParams.toString();
+    const tabTarget = "/" + baseUrl + paramsString;
+    selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
+  } else {
+    // select first tab as default
+    const firstTab = document.querySelector('.nav-tabs').firstElementChild;
+    selectedTab = firstTab.querySelector('.nav-link');
+  };
+    selectedTab.classList.add("active");
+    selectedTab.setAttribute('aria-selected', 'true');
+    selectedTab.setAttribute('aria-current', 'page');
+}
