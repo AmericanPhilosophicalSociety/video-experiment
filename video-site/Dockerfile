@@ -3,7 +3,7 @@
 ###########
 
 # build frontend dependencies
-FROM node:21 as front
+FROM node:21 AS front
 
 WORKDIR /usr/src/app
 
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run prod
 
 # pull official base image
-FROM python:3.13-slim-bookworm as builder
+FROM python:3.13-slim-bookworm AS builder
 
 # set work directory
 WORKDIR /usr/src/app
