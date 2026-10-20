@@ -1,6 +1,7 @@
 {% load meetingsvideos_extras %} 
   {% with offset=page_obj.number|pagination_offset %}
   {% for symposium in symposia %}
+  <div class="meeting-teaser">
     <div class="teaser-title">
       <h3><a href="{% url 'symposium_detail' symposium.slug %}">{{ symposium.title }}</a></h3>
   </div>
@@ -32,6 +33,7 @@
     {% endfor %}
     </div>
   <a href="{% url 'symposium_detail' symposium.slug %}" class="btn btn-primary">View all talks</a>
+  </div>
   <hr>
   {% if page_obj.has_next and forloop.last %}
   <span

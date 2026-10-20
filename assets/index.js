@@ -1,5 +1,6 @@
 import 'bootstrap';
 import htmx from 'htmx.org/dist/htmx.esm';
+import { init } from "universalviewer";
 import '@videojs/html/video/player';
 import '@videojs/html/video/skin';
 
@@ -40,7 +41,6 @@ function facetSubmit(event, element) {
   };
   badKeys.forEach((key) => search.delete(key));
   let query = search.toString()
-  console.log(query)
   document.location.search = query;
 };
 
@@ -79,6 +79,18 @@ window.addEventListener("DOMContentLoaded", (evt) => {
   
 })
 
+export function initUV() {
+  const uvDiv = document.querySelector("#uv");
+  if (uvDiv) {
+    const programManifest = uvDiv.dataset.programManifest;
+    const data = {
+      manifest: programManifest,
+      embedded: true
+    };
+    init("uv", data);
+  }
+}
+
 export function parseDateFilter() {
   const dateButton = document.querySelector("#date-submit");
   dateButton.addEventListener("click", () => {
@@ -104,6 +116,21 @@ export function parseDateFilter() {
   })
 }
 
+function moreToLess(e) {
+  const collapseButton = document.querySelector(`[href="#${e.id}"]`)
+  e.addEventListener('show.bs.collapse', () => {
+    collapseButton.innerHTML = '...Less'
+  })
+  e.addEventListener('hidden.bs.collapse', () => {
+    collapseButton.innerHTML = '...More'
+  })
+}
+
+export function moreHandler() {
+  const collapses = document.querySelectorAll('.addt-facets');
+  collapses.forEach(moreToLess);
+}
+
 export function applyTabNav(baseUrl) {
   // remove any active links
   const defaultTab = document.querySelectorAll(".htmx-tab>.nav-link.active")
@@ -121,7 +148,6 @@ export function applyTabNav(baseUrl) {
   let selectedTab = ''
   // check if search params are empty to select tab other than first
   if (searchParams.size > 0) {
-    console.log("We have params")
     paramsString = "?" + searchParams.toString();
     const tabTarget = "/" + baseUrl + paramsString;
     selectedTab = document.querySelector(`[hx-get="${tabTarget}"`);
@@ -130,7 +156,6 @@ export function applyTabNav(baseUrl) {
     const firstTab = document.querySelector('.nav-tabs').firstElementChild;
     selectedTab = firstTab.querySelector('.nav-link');
   };
-    console.log(selectedTab);
     selectedTab.classList.add("active");
     selectedTab.setAttribute('aria-selected', 'true');
     selectedTab.setAttribute('aria-current', 'page');

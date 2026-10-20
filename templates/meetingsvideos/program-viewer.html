@@ -1,0 +1,8 @@
+<div class="uv" id="uv" data-program-manifest="{{ meeting.manifest }}"></div>
+{% if program %}
+  {% block extra_js %}
+  <script>
+    jsFunctions.initUV();
+  </script>
+  {% endblock %}
+{% endif %}
