@@ -35,7 +35,7 @@
       <p>No videos are available for this meeting.</p>
     </div>
   {% endif %}
-  <a href="{% url 'meeting_detail' meeting.slug %}" class="btn btn-primary">View all talks</a>
+  <a href="{% url 'meeting_detail' meeting.slug %}" class="btn btn-primary">View meeting</a>
   </div>
   <hr>
   {% if page_obj.has_next and forloop.last %}
