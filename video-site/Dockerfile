@@ -3,7 +3,7 @@
 ###########
 
 # build frontend dependencies
-FROM node:21 AS front
+FROM node:21-slim AS front
 
 WORKDIR /usr/src/app
 
