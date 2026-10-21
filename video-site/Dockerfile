@@ -8,7 +8,7 @@ FROM node:21-slim AS front
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
 
 RUN npm run prod
