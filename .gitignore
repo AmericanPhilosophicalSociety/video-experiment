@@ -22,7 +22,6 @@ video-site/static/index-bundle.js*
 static/node_modules_*
 # Logs
 videoupload.log
-servicefromnode.py
 urls.txt
 static/vendors-*
 static/node_modules*

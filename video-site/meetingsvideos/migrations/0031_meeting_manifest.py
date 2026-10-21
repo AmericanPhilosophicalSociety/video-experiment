@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('meetingsvideos', '0027_speaker_label'),
+        ('meetingsvideos', '0030_alter_meeting_options'),
     ]
 
     operations = [
