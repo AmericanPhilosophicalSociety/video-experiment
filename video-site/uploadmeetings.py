@@ -3,7 +3,7 @@ from datetime import date
 from meetingsvideos.models import Meeting
 import logging
 from django.db import transaction
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, JSONDecodeError
 import time
 
 
@@ -48,7 +48,7 @@ def upload_meetings():
                             try:
                                 meeting.generate_manifest()
                                 time.sleep(5)
-                            except ConnectionError:
+                            except (ConnectionError, JSONDecodeError) as e:
                                 logging.exception(f"Could not access diglib for meeting: {row['display_date']}")
                     meeting.save()
                     print(f"Meeting created: {row['display_date']}")
