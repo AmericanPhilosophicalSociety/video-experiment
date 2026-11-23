@@ -326,7 +326,7 @@ class Video(ProgramInfo):
     node = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
-    vtt_file = models.URLField(blank=True, null=True)
+    vtt_file = models.FileField(blank=True, null=True, upload_to="transcripts/")
 
     ADMIN_CATEGORY_CHOICES = {
         "ARCHIVES": "APS Archives",
