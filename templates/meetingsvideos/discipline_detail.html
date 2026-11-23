@@ -10,11 +10,12 @@ APS Meetings Videos - {{ discipline.name }}
 
 {% for video in discipline.video_set.all %}
     {% include "meetingsvideos/video_preview.html" with show_dates=True %}
+    <hr>
 {% endfor %}
 </div>
 {% endblock %}
 {% block extra_js %}
 <script>
-  jsFunctions.makeActive("disciplinesNav");
+  jsFunctions.makeActive("browseNav");
 </script>
 {% endblock %}

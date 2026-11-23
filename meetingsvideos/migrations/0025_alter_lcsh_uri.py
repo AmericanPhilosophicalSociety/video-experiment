@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0024_meeting_program_node_video_proceedings_title"),
     ]

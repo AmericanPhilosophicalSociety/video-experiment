@@ -3,9 +3,12 @@ from datetime import date
 from meetingsvideos.models import Meeting
 import logging
 from django.db import transaction
+from requests.exceptions import ConnectionError
+import time
 
 
 logging.getLogger(__name__)
+
 
 def process_date(str):
     lst = str.split("-")
@@ -27,7 +30,7 @@ def upload_meetings():
                     # meetings.csv now contains records with program nodes but no videos or other data - skip these for now
                     if not row["start_date"]:
                         continue
-                    
+
                     meeting, created = Meeting.objects.get_or_create(
                         display_date=row["display_date"],
                         start_date=process_date(row["start_date"]),
@@ -36,9 +39,17 @@ def upload_meetings():
                         display_notes=row["display_notes"],
                         admin_notes=row["admin_notes"],
                     )
-                    
+
                     if row["program_node"]:
                         meeting.program_node = row["program_node"]
+                        if row["program_viewer"] == "IIIF":
+                            meeting.manifest = f'https://diglib.amphilsoc.org/node/{meeting.program_node}/manifest'
+                        else:
+                            try:
+                                meeting.generate_manifest()
+                                time.sleep(5)
+                            except ConnectionError:
+                                logging.exception(f"Could not access diglib for meeting: {row['display_date']}")
                     meeting.save()
                     print(f"Meeting created: {row['display_date']}")
                     # print(process_date(row['start_date']))

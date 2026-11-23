@@ -6,6 +6,7 @@ diff-match-patch==20230430
 Django==6.1
 django-autocomplete-light==5.0.0
 django-autoslug==1.9.9
+django-cors-headers==4.9.0
 django-debug-toolbar==4.4.6
 django-htmx==1.23.2
 django-import-export==4.1.1
@@ -26,3 +27,4 @@ tablib==3.5.0
 typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.5.0
+whitenoise==6.12.0

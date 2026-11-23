@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("meetingsvideos", "0026_alter_speaker_options_remove_speaker_label_and_more"),
     ]
