@@ -1,0 +1,18 @@
+[project]
+name = "video-site"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.1.2",
+    "django-autocomplete-light>=5.0.0",
+    "django-autoslug>=1.9.9",
+    "django-cors-headers>=4.9.0",
+    "django-htmx>=1.29.0",
+    "gunicorn>=26.2.0",
+    "loc-authorities>=0.4.0",
+    "psycopg>=3.3.6",
+    "python-dotenv>=1.2.4",
+    "whitenoise>=6.12.0",
+]
