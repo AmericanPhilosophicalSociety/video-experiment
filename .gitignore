@@ -16,3 +16,5 @@ urls.txt
 static/vendors-*
 static/node_modules*
 static/manifests
+uv.lock
+.python-version
