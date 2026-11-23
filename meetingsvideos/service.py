@@ -24,7 +24,7 @@ def build_q_object(query, fields_to_search):
 def video_search(query):
     search_vector = (
         SearchVector("title", config="english_unaccent", weight="A")
-        + SearchVector("speakers__display_name", config="english_unaccent", weight="A")
+        + SearchVector("speakers_name", config="english_unaccent", weight="A")
         + SearchVector("abstract", config="english_unaccent", weight="B")
         + SearchVector("disciplines_name", config="english_unaccent", weight="C")
         + SearchVector("lcsh_headings", config="english_unaccent", weight="C")
@@ -38,6 +38,7 @@ def video_search(query):
     # basic example
     results = (
         Video.objects.annotate(
+            speakers_name=ArrayAgg("speakers__display_name", distinct=True),
             lcsh_headings=ArrayAgg("lcsh__heading", distinct=True),
             disciplines_name=ArrayAgg("academic_disciplines__name", distinct=True),
             speakers_position=ArrayAgg(

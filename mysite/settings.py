@@ -46,7 +46,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "meetingsvideos.apps.MeetingsvideosConfig",
-    "import_export",
     "dal",
     "dal_alight",
     "loc_authorities",
