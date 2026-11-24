@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models.functions import Substr
 from django.urls import reverse
 from autoslug import AutoSlugField
+from datetime import timedelta
+import webvtt
 
 from loc_authorities.api import LocEntity, NameEntity, SubjectEntity
 import logging
@@ -306,6 +308,19 @@ class Symposium(ProgramInfo):
         ordering = ["-date"]
 
 
+class Subtitle(models.Model):
+    start = models.DurationField()
+    end = models.DurationField()
+    text = models.TextField()
+    video = models.ForeignKey("Video", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text[50:]
+
+    class Meta:
+        ordering = ["start"]
+
+
 class Video(ProgramInfo):
     lecture_additional_info = models.CharField(
         blank=True,
@@ -326,6 +341,7 @@ class Video(ProgramInfo):
     node = models.IntegerField(blank=True, null=True, unique=True)
     service_file = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
+    vtt_file = models.FileField(blank=True, null=True, upload_to="transcripts/")
 
     ADMIN_CATEGORY_CHOICES = {
         "ARCHIVES": "APS Archives",
@@ -380,6 +396,20 @@ class Video(ProgramInfo):
 
     def get_diglib_url(self):
         return f"https://diglib.amphilsoc.org/node/{self.node}"
+
+    def create_subtitles(self):
+        """Automatically create items of class Subtitle from webvtt transcript"""
+        with self.vtt_file.open('r') as f:
+            vtt = webvtt.from_buffer(f)
+
+        for caption in vtt:
+            sub = Subtitle(
+                start=timedelta(milliseconds=caption.start_in_milliseconds),
+                end=timedelta(milliseconds=caption.end_in_milliseconds),
+                text=caption.text,
+                video=self
+            )
+            sub.save()
 
     class Meta:
         # ordering = ["title"]

@@ -8,7 +8,6 @@
 
 {% block main %}
 <link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet" />
-
 <div class="container" id="video-container">
   <div class="video-title">
     <h1>{{ video.title }}</h1>
@@ -19,7 +18,17 @@
     <!--Set width and height in CSS and use media query for small breakpoints-->
   <video-player poster="{% static 'images/aps-logo-mono.png' %}">
     <video-skin class="aspect-video">
-      <video id="meeting-video" preload="auto" src="{{ video.service_file }}"></video>
+      <video id="meeting-video" preload="auto" src="{{ video.service_file }}">
+      {% if video.vtt_file %}
+        <track kind="captions" src="{% get_media_prefix %}{{ video.vtt_file }}" srclang="en" label="English" default />
+      {% endif %}
+      </video>
+      {% if video.vtt_file %}
+        <media-captions-button class="media-captions-button">
+          <span class="active">Captions Off</span>
+          <span class="inactive">Captions On</span>
+        </media-captions-button>
+      {% endif %}
     </video-skin>
   </video-player>
   <ul class="list-group speaker-list">

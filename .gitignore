@@ -17,3 +17,4 @@ static/node_modules*
 static/manifests
 .python-version
 uv.lock
+media/
